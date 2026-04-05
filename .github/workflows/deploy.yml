@@ -2,32 +2,17 @@ name: Deploy
 
 on:
   push:
-    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to deploy (tag, branch, or SHA)"
+        required: false
+        default: "main"
 
 jobs:
-  quality:
-    name: Quality checks
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-
-      - run: npm ci
-      - run: npx tsc -b
-      - run: npm run build
-
   deploy:
-    name: Deploy to GCP
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: quality
+    name: Deploy to Cloud Run
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -37,6 +22,8 @@ jobs:
       GAR_REPO: us-central1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/portfolio
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
 
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v3
@@ -50,14 +37,23 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
+      - name: Determine version tag
+        id: version
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            echo "tag=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=sha-${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build and push image
         run: |
           docker build \
             --build-arg VITE_ASSETS_BASE_URL=${{ vars.ASSETS_BUCKET_URL }} \
-            -t ${{ env.GAR_REPO }}/frontend:${{ github.sha }} \
+            -t ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }} \
             -t ${{ env.GAR_REPO }}/frontend:latest \
             .
-          docker push ${{ env.GAR_REPO }}/frontend:${{ github.sha }}
+          docker push ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }}
           docker push ${{ env.GAR_REPO }}/frontend:latest
 
       - name: Deploy to Cloud Run
@@ -65,11 +61,11 @@ jobs:
         with:
           service: portfolio-frontend
           region: us-central1
-          image: ${{ env.GAR_REPO }}/frontend:${{ github.sha }}
+          image: ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }}
 
       - name: Deployment summary
         run: |
           echo "## Deployment Complete" >> "$GITHUB_STEP_SUMMARY"
           URL=$(gcloud run services describe portfolio-frontend --region=us-central1 --format='value(status.url)')
           echo "- **URL**: $URL" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **Image**: \`${{ github.sha }}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Version**: \`${{ steps.version.outputs.tag }}\`" >> "$GITHUB_STEP_SUMMARY"
