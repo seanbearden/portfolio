@@ -1,0 +1,75 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  quality:
+    name: Quality checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+      - run: npx tsc -b
+      - run: npm run build
+
+  deploy:
+    name: Deploy to GCP
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: quality
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      REGION: us-central1
+      GAR_REPO: us-central1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/portfolio
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: "projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ vars.WIF_POOL }}/providers/${{ vars.WIF_PROVIDER }}"
+          service_account: "${{ vars.GCP_SERVICE_ACCOUNT }}"
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+      - name: Build and push image
+        run: |
+          docker build \
+            --build-arg VITE_ASSETS_BASE_URL=${{ vars.ASSETS_BUCKET_URL }} \
+            -t ${{ env.GAR_REPO }}/frontend:${{ github.sha }} \
+            -t ${{ env.GAR_REPO }}/frontend:latest \
+            .
+          docker push ${{ env.GAR_REPO }}/frontend:${{ github.sha }}
+          docker push ${{ env.GAR_REPO }}/frontend:latest
+
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v3
+        with:
+          service: portfolio-frontend
+          region: us-central1
+          image: ${{ env.GAR_REPO }}/frontend:${{ github.sha }}
+
+      - name: Deployment summary
+        run: |
+          echo "## Deployment Complete" >> "$GITHUB_STEP_SUMMARY"
+          URL=$(gcloud run services describe portfolio-frontend --region=us-central1 --format='value(status.url)')
+          echo "- **URL**: $URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Image**: \`${{ github.sha }}\`" >> "$GITHUB_STEP_SUMMARY"

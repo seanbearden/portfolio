@@ -21,4 +21,12 @@ Thumbs.db
 
 # Build
 build/
+frontend/dist/
 *.log
+
+# Terraform
+infrastructure/.terraform/
+infrastructure/*.tfstate
+infrastructure/*.tfstate.backup
+infrastructure/.terraform.lock.hcl
+infrastructure/terraform.tfvars

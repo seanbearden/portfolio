@@ -1,0 +1,106 @@
+{
+  "hero": {
+    "name": "Sean Bearden Ph.D.",
+    "headline": "Data Scientist and Researcher",
+    "email": "seanbearden@seanbearden.com"
+  },
+  "social": {
+    "linkedin": "https://www.linkedin.com/in/sean-bearden-730aa189/",
+    "twitter": "https://twitter.com/Dr_Bearden",
+    "github": "https://github.com/seanbearden",
+    "kaggle": "https://www.kaggle.com/seanbearden"
+  },
+  "experience": [
+    {
+      "company": "Valmar Holdings LLC",
+      "role": "Data Scientist / Chief Analytics Officer",
+      "period": "2020-2023",
+      "highlights": [
+        "Underwriting systems design",
+        "Lead forecasting models",
+        "Fraud detection evaluation"
+      ]
+    },
+    {
+      "company": "UC San Diego",
+      "role": "Graduate Researcher",
+      "period": "2016-2020",
+      "highlights": [
+        "Dynamical system optimization",
+        "Algorithm comparison studies",
+        "Neural network research"
+      ]
+    },
+    {
+      "company": "Wyzant",
+      "role": "Private Tutor",
+      "period": "2015-2019",
+      "highlights": [
+        "Physics and mathematics instruction",
+        "Alternative learning styles focus"
+      ]
+    },
+    {
+      "company": "SUNY Buffalo",
+      "role": "Student Researcher",
+      "period": "2013-2015",
+      "highlights": [
+        "Spin-laser simulation",
+        "Nonlinear dynamical systems"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Ph.D. Physics",
+      "school": "UC San Diego",
+      "year": "2020"
+    },
+    {
+      "degree": "M.S. Physics",
+      "school": "UC San Diego",
+      "year": "2018"
+    },
+    {
+      "degree": "B.S. Physics & Applied Mathematics",
+      "school": "SUNY Buffalo",
+      "year": "2015"
+    },
+    {
+      "degree": "A.S. Natural Sciences",
+      "school": "Ohio University",
+      "year": "2011"
+    }
+  ],
+  "awards": [
+    "UC President's Dissertation Year Fellowship",
+    "NSF Graduate Research Fellowship",
+    "Alfred P. Sloan University Center Fellowship",
+    "Barry Goldwater Scholarship",
+    "UCSD Summer Research Fellowship"
+  ],
+  "skills": {
+    "programming": [
+      "MATLAB",
+      "Python",
+      "JavaScript"
+    ],
+    "datascience": [
+      "Machine Learning",
+      "LLMs",
+      "Forecasting",
+      "scikit-learn",
+      "LangChain"
+    ],
+    "cloud": [
+      "Google Cloud Platform",
+      "AWS"
+    ],
+    "research": [
+      "Dynamical Systems",
+      "Optimization",
+      "Computational Physics"
+    ]
+  },
+  "about": "Sean Bearden earned his Ph.D. in Physics from UC San Diego as a member of Dr. Massimiliano Di Ventra's research group, focusing on constraint satisfaction problems using digital memcomputing machines. A nontraditional learner who began his academic journey while incarcerated, he went from a GED to a Ph.D. He is committed to lifelong learning, creative projects with Arduino and Raspberry Pi, and practices Brazilian Jiu-Jitsu in San Diego."
+}

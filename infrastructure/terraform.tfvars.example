@@ -1,0 +1,5 @@
+project_id        = "seanbearden-portfolio"
+region            = "us-central1"
+github_repo       = "seanbearden/portfolio"
+assets_bucket_name = "seanbearden-assets"
+domain            = "seanbearden.com"
