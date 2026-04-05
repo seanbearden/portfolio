@@ -1,5 +1,5 @@
 ---
-"frontend": minor
+"portfolio": minor
 ---
 
 Initial portfolio site with full Squarespace content migration
