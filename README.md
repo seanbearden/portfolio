@@ -1,37 +1,63 @@
 # Sean Bearden — Portfolio Website
 
-Personal portfolio website for Sean Bearden, Ph.D. — migrating from Squarespace to Google Cloud.
+Personal portfolio website for Sean Bearden, Ph.D. — self-hosted on Google Cloud, migrated from Squarespace.
 
-## Project Status
+## Architecture
 
-**Phase 1: Data Extraction** — Complete. All content, images, and PDFs scraped from the existing Squarespace site at seanbearden.com.
+![Architecture](sean_bearden_website_outline.svg)
 
-## Repository Structure
+**Stack:** React 19 + Vite + TypeScript + Shadcn/ui + Tailwind CSS, served by nginx on Cloud Run.
+
+**Infrastructure:** Terraform-managed GCP (Cloud Run, Cloud Storage, Artifact Registry, Workload Identity Federation). Estimated $2–5/mo for Phase 1.
+
+## Phases
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| **1. Portfolio Site** | Static site with blog, portfolio, publications, about | In progress |
+| **2. Resume Chatbot** | "Talk to my resume" powered by Claude/Gemini | Planned |
+| **3. Data Playground** | Upload data → instant analysis, dashboards, ML demos | Planned |
+
+## Development
+
+```bash
+cd frontend
+npm install
+npm run dev       # localhost:5173
+npm run build     # typecheck + production build
+```
+
+## Release Flow
 
 ```
-site-data/
-  sitemap.json            # Full URL map with metadata
-  home.md                 # Hero, about, experience, education, awards, skills
-  portfolio.md            # 8 portfolio projects with descriptions and links
-  publications.md         # 6 peer-reviewed publications
-  contact.md              # Contact info and social links
-  blog-posts.md           # 25 blog posts (full content)
-  images.md               # Asset inventory with source URLs
-  external-links.md       # All outbound links and redirect map
-  assets/
-    pdfs/                 # Resume, dissertation synopsis, papers, slides (5 files)
-    images/               # Photos, figures, logos, screenshots (37 files)
+Feature PR (add changeset via `cd frontend && npx changeset`)
+  → merge to main
+    → Release action opens "Version Packages" PR
+      → merge → creates v* tag → Deploy action → Cloud Run
 ```
 
-## Content Summary
+Manual deploy: `gh workflow run deploy`
 
-- **Portfolio Projects:** 8 (resume chatbot, UFC analysis, PhD research video, publications, presentations)
-- **Blog Posts:** 25 (2018–2024, covering data science, Kaggle, physics research, storytelling)
-- **Publications:** 6 peer-reviewed (Nature Scientific Reports, Communications Physics, Europhysics Letters, Physical Review Applied, Applied Physics Letters)
-- **Education:** Ph.D. Physics (UC San Diego), M.S. Physics (UCSD), B.S. Physics & Applied Mathematics (SUNY Buffalo)
+## Project Structure
+
+```
+content/                  # Blog posts (.md), portfolio (.md), home/publications (.json)
+frontend/                 # React SPA (Vite + Shadcn/ui + Tailwind)
+infrastructure/           # Terraform for GCP resources
+scripts/                  # Content conversion + asset upload
+site-data/                # Original Squarespace extraction (reference)
+.changeset/               # Release management config
+.github/workflows/        # CI, Release, Deploy pipelines
+```
+
+## Content
+
+- **8** portfolio projects (data science, physics research, AI)
+- **25** blog posts (2018–2024)
+- **6** peer-reviewed publications (Nature, Europhysics Letters, Physical Review Applied, Applied Physics Letters)
+- **37** images + **5** PDFs hosted on Cloud Storage
 
 ## Migration Notes
 
-- Resume chatbot (bearden-resume-chatbot.com) will be migrated to this app at a later stage
-- `/first-fight` page (UFC project) dropped from migration scope
-- Some Squarespace images served as WebP; renamed to correct extensions
+- Resume chatbot (bearden-resume-chatbot.com) migrating to this app in Phase 2
+- Old Squarespace URLs redirect automatically via React Router
