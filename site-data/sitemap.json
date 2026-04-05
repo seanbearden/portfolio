@@ -1,0 +1,204 @@
+{
+  "site_url": "https://seanbearden.com",
+  "scraped_date": "2026-04-05",
+  "platform": "Squarespace",
+  "pages": [
+    {"url": "/", "title": "Home", "lastmod": "2024-04-29"},
+    {"url": "/portfolio", "title": "Portfolio", "lastmod": "2023-10-23"},
+    {"url": "/publications", "title": "Publications", "lastmod": "2020-11-12"},
+    {"url": "/contact", "title": "Contact", "lastmod": "2020-05-11"},
+    {"url": "/news", "title": "News/Blog", "lastmod": "2024-05-11"}
+  ],
+  "blog_posts": [
+    {
+      "url": "/news/2024/5/11/empowering-businesses-with-generative-ai-new-tools-and-insights-post-google-cloud-next-24",
+      "title": "Empowering Businesses with Generative AI: New Tools and Insights Post Google Cloud Next '24",
+      "date": "2024-05-11",
+      "categories": ["Professional Development"],
+      "tags": ["Data Science", "AI"]
+    },
+    {
+      "url": "/news/2024/5/11/google-cloud-next-24-exploring-the-power-of-gemini-15-pro-and-vertex-ai",
+      "title": "Google Cloud Next '24: Exploring the Power of Gemini 1.5 Pro and Vertex AI",
+      "date": "2024-04-15",
+      "categories": ["Professional Development"],
+      "tags": ["Data Science", "AI"]
+    },
+    {
+      "url": "/news/2024/4/8/bridging-academia-and-industry-insights-from-the-future-of-work-conference",
+      "title": "Bridging Academia and Industry: Insights from the Future of Work Conference",
+      "date": "2024-04-08",
+      "categories": ["Engagement"],
+      "tags": []
+    },
+    {
+      "url": "/news/2024/2/16/a-new-milestone-kaggle-notebook-expert-amp-top-500",
+      "title": "A New Milestone: Kaggle Notebook Expert & Top 500",
+      "date": "2024-02-16",
+      "categories": ["Professional Development", "Award"],
+      "tags": ["Kaggle"]
+    },
+    {
+      "url": "/news/2024/2/14/celebrating-my-journey-to-kaggle-discussions-expert-and-top-500",
+      "title": "Celebrating My Journey to Kaggle Discussions Expert and Top 500",
+      "date": "2024-02-14",
+      "categories": ["Professional Development", "Award"],
+      "tags": ["Kaggle"]
+    },
+    {
+      "url": "/news/2024/2/7/delving-into-the-home-credit-credit-risk-model-stability-kaggle-competition",
+      "title": "Delving into the 'Home Credit - Credit Risk Model Stability' Kaggle Competition",
+      "date": "2024-02-07",
+      "categories": ["Professional Development"],
+      "tags": ["Kaggle", "Data Science"]
+    },
+    {
+      "url": "/news/2024/2/7/my-journey-to-the-first-gold-medal-strategies-and-insights",
+      "title": "My Journey to the First Gold Medal: Strategies and Insights",
+      "date": "2023-12-28",
+      "categories": ["Professional Development", "Award"],
+      "tags": ["Kaggle"]
+    },
+    {
+      "url": "/news/engaging-with-the-kaggle-community",
+      "title": "Engaging with the Kaggle Community",
+      "date": "2023-12-01",
+      "categories": ["Professional Development"],
+      "tags": ["Kaggle"]
+    },
+    {
+      "url": "/news/2024/2/7/presenting-to-ucsd-sloan-scholars-strengthening-your-online-presence",
+      "title": "Giving Back to the Future of Science: My Experience with the Sloan Foundation UCEM at UCSD",
+      "date": "2023-08-25",
+      "categories": ["Professional Development"],
+      "tags": ["UCSD"]
+    },
+    {
+      "url": "/news/2020/11/12/scientific-reports-efficient-solution-of-boolean-satisfiability-problems-with-digital-memcomputing",
+      "title": "Scientific Reports: Efficient solution of Boolean satisfiability problems with digital memcomputing",
+      "date": "2020-11-12",
+      "categories": [],
+      "tags": []
+    },
+    {
+      "url": "/news/2020/10/19/officially-dr-bearden",
+      "title": "Officially Dr. Bearden!",
+      "date": "2020-10-16",
+      "categories": [],
+      "tags": []
+    },
+    {
+      "url": "/news/2020/6/16/uc-presidents-dissertation-year-fellowship",
+      "title": "UC President's Dissertation Year Fellowship",
+      "date": "2020-06-16",
+      "categories": ["Award"],
+      "tags": ["fellowship", "ucsd"]
+    },
+    {
+      "url": "/news/2020/5/14/sassy-san-diego-reboot",
+      "title": "SASSY San Diego: Reboot",
+      "date": "2020-05-14",
+      "categories": [],
+      "tags": []
+    },
+    {
+      "url": "/news/2020/5/6/qampa-with-physics-today",
+      "title": "Q&A with Physics Today",
+      "date": "2020-05-06",
+      "categories": [],
+      "tags": []
+    },
+    {
+      "url": "/news/2020/4/29/online-story-hour-social-skills",
+      "title": "Story Collider's Online Story Hour",
+      "date": "2020-04-29",
+      "categories": [],
+      "tags": ["Story Collider"]
+    },
+    {
+      "url": "/news/2020/4/24/fbuwe8m7h62bp92zbia32ulgyxyop0",
+      "title": "Triton (Virtual) Tutor",
+      "date": "2020-04-24",
+      "categories": ["Tutoring"],
+      "tags": []
+    },
+    {
+      "url": "/news/2020/3/3/aps-march-meeting-presentation",
+      "title": "APS March Meeting Presentation",
+      "date": "2020-03-03",
+      "categories": [],
+      "tags": []
+    },
+    {
+      "url": "/news/2020/2/21/the-story-collider",
+      "title": "The Story Collider",
+      "date": "2020-02-21",
+      "categories": ["Storytelling"],
+      "tags": ["Story Collider"]
+    },
+    {
+      "url": "/news/2019/11/3/2019-sacnas-conference-drgey-jhb7r",
+      "title": "2019 SACNAS Conference",
+      "date": "2019-11-03",
+      "categories": [],
+      "tags": []
+    },
+    {
+      "url": "/news/2019/10/23/darpa-funded-memcomputing-research",
+      "title": "DARPA-Funded Research: Applying Memcomputing to AI",
+      "date": "2019-10-23",
+      "categories": [],
+      "tags": []
+    },
+    {
+      "url": "/news/2019/10/21/institute-for-the-global-entrepreneur-mini-mba-program",
+      "title": "Institute for the Global Entrepreneur, Mini MBA Program",
+      "date": "2018-09-21",
+      "categories": [],
+      "tags": []
+    },
+    {
+      "url": "/news/2019/10/21/rady-school-of-management-micro-mba-program",
+      "title": "Rady School of Management, Micro-MBA Program",
+      "date": "2018-08-15",
+      "categories": [],
+      "tags": []
+    },
+    {
+      "url": "/news/2019/10/17/engineering-graduate-amp-scholarly-talks-strengthening-your-nsf-proposal",
+      "title": "Engineering Graduate & Scholarly Talks: Strengthening your NSF Proposal",
+      "date": "2019-10-11",
+      "categories": [],
+      "tags": []
+    },
+    {
+      "url": "/news/2019/10/17/aps-march-meeting-2018-instantons-in-self-organizing-logic-gates",
+      "title": "APS March Meeting 2018: Instantons in Self-Organizing Logic Gates",
+      "date": "2018-03-07",
+      "categories": [],
+      "tags": []
+    },
+    {
+      "url": "/news/2019/10/17/sept-24th-2019-ucsd-extension-leadership-and-teamwork-program",
+      "title": "UCSD Extension, Leadership and Teamwork Program",
+      "date": "2019-09-24",
+      "categories": [],
+      "tags": []
+    }
+  ],
+  "blog_categories": [
+    "Engagement",
+    "Tutoring",
+    "Professional Development",
+    "Storytelling",
+    "Award"
+  ],
+  "blog_tags": [
+    "Data Science",
+    "Story Collider",
+    "UCSD",
+    "AI",
+    "fellowship",
+    "Kaggle"
+  ]
+}
