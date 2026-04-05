@@ -23,7 +23,7 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
-      - run: cd frontend && npm ci
+      - run: npm ci --workspace=frontend
 
       - name: Create release PR or publish
         id: changesets
@@ -31,8 +31,8 @@ jobs:
         with:
           title: "release: version packages"
           commit: "release: version packages"
-          version: cd frontend && npx changeset version
-          publish: cd frontend && npx changeset tag
+          version: npx changeset version
+          publish: npx changeset tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
