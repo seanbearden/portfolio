@@ -22,7 +22,6 @@ jobs:
           node-version: 22
 
       - run: npm ci
-      - run: cd frontend && npm ci
 
       - name: Create release PR or publish
         id: changesets
