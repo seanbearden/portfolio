@@ -30,7 +30,7 @@ jobs:
           title: "release: version packages"
           commit: "release: version packages"
           version: npx changeset version
-          publish: node -e "const v=require('./package.json').version;require('child_process').execSync('git tag v'+v);console.log('Tagged v'+v)"
+          publish: node scripts/tag-version.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
