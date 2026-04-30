@@ -14,28 +14,38 @@ export function HomePage() {
   return (
     <div className="mx-auto max-w-5xl px-4">
       {/* Hero */}
-      <section className="py-20 text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-          {home.hero.name}
-        </h1>
-        <p className="mt-4 text-xl text-muted-foreground">
-          {home.hero.headline}
-        </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link to="/portfolio" className={cn(buttonVariants())}>
-            View Portfolio
-          </Link>
-          <a
-            href={pdfUrl("Bearden_Resume_Online.pdf")}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(buttonVariants({ variant: "outline" }))}
-          >
-            Resume
-          </a>
-          <Link to="/contact" className={cn(buttonVariants({ variant: "outline" }))}>
-            <Mail className="mr-2 h-4 w-4" /> Contact
-          </Link>
+      <section className="py-16 md:py-20">
+        <div className="flex flex-col items-center gap-8 md:flex-row md:gap-12 md:text-left">
+          <img
+            src={assetUrl("dr_bearden_celebration.webp")}
+            alt="Sean Bearden"
+            className="h-40 w-40 shrink-0 rounded-full object-cover ring-4 ring-border md:h-56 md:w-56"
+            loading="eager"
+          />
+          <div className="text-center md:text-left">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+              {home.hero.name}
+            </h1>
+            <p className="mt-4 text-xl text-muted-foreground">
+              {home.hero.headline}
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
+              <Link to="/portfolio" className={cn(buttonVariants())}>
+                View Portfolio
+              </Link>
+              <a
+                href={pdfUrl("Bearden_Resume_Online.pdf")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(buttonVariants({ variant: "outline" }))}
+              >
+                Resume
+              </a>
+              <Link to="/contact" className={cn(buttonVariants({ variant: "outline" }))}>
+                <Mail className="mr-2 h-4 w-4" /> Contact
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
