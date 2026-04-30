@@ -140,3 +140,18 @@ resource "google_service_account_iam_member" "wif_binding" {
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/${var.github_repo}"
 }
+
+# -----------------------------------------------------------
+# Cloud Run public access (allUsers as invoker)
+# Service itself is created by GitHub Actions deploy, but
+# binding the invoker role here keeps it idempotent.
+# -----------------------------------------------------------
+resource "google_cloud_run_v2_service_iam_member" "public_invoker" {
+  project  = var.project_id
+  location = var.region
+  name     = var.cloud_run_service_name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+
+  depends_on = [google_project_service.apis["run.googleapis.com"]]
+}

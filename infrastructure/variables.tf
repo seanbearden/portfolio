@@ -26,3 +26,9 @@ variable "domain" {
   type        = string
   default     = "seanbearden.com"
 }
+
+variable "cloud_run_service_name" {
+  description = "Name of the Cloud Run service (created by GitHub Actions deploy)"
+  type        = string
+  default     = "portfolio-frontend"
+}
