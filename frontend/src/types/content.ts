@@ -54,4 +54,6 @@ export interface HomeData {
   awards: string[];
   skills: Record<string, string[]>;
   about: string;
+  bio: string[];
+  interests: string[];
 }
