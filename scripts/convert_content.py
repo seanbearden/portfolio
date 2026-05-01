@@ -77,6 +77,11 @@ def convert_blog_posts():
     blog_dir.mkdir(parents=True, exist_ok=True)
 
     written = 0
+
+    # Pre-compute metadata mappings for O(1) exact and O(M) fuzzy lookups
+    exact_meta_map = {m["title"].lower()[:30]: m for m in posts_meta}
+    fuzzy_meta_map = [(set(m["title"].lower().split()[:4]), m) for m in posts_meta]
+
     for section in sections:
         section = section.strip()
         if not section or section.startswith("# Blog Posts"):
@@ -89,16 +94,12 @@ def convert_blog_posts():
         title = title_match.group(1).strip()
 
         # Find matching metadata from sitemap
-        meta = None
-        for m in posts_meta:
-            if m["title"].lower()[:30] == title.lower()[:30]:
-                meta = m
-                break
+        meta = exact_meta_map.get(title.lower()[:30])
+
         if not meta:
             # Fuzzy match
-            for m in posts_meta:
-                title_words = set(title.lower().split()[:4])
-                meta_words = set(m["title"].lower().split()[:4])
+            title_words = set(title.lower().split()[:4])
+            for meta_words, m in fuzzy_meta_map:
                 if len(title_words & meta_words) >= 3:
                     meta = m
                     break
