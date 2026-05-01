@@ -25,6 +25,15 @@ const blogModules = import.meta.glob<RawMarkdown>("../../../content/blog/*.md", 
   import: "default",
 });
 
+
+function safeJsonParse<T>(str: string): { success: true; data: T } | { success: false; error: unknown } {
+  try {
+    return { success: true, data: JSON.parse(str) };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+
 function parseFrontmatter(raw: string): { meta: Record<string, string | string[]>; body: string } {
   const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
   if (!match) return { meta: {}, body: raw };
@@ -41,10 +50,11 @@ function parseFrontmatter(raw: string): { meta: Record<string, string | string[]
     }
     // Parse JSON arrays
     if (val.startsWith("[")) {
-      try {
-        meta[key] = JSON.parse(val);
+      const parsed = safeJsonParse<string[]>(val);
+      if (parsed.success) {
+        meta[key] = parsed.data;
         continue;
-      } catch { /* fall through */ }
+      }
     }
     meta[key] = val;
   }
