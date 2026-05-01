@@ -41,6 +41,14 @@ export function HomePage() {
               >
                 Resume
               </a>
+              <a
+                href={pdfUrl("Bearden_CV.pdf")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(buttonVariants({ variant: "outline" }))}
+              >
+                CV
+              </a>
               <Link to="/contact" className={cn(buttonVariants({ variant: "outline" }))}>
                 <Mail className="mr-2 h-4 w-4" /> Contact
               </Link>
