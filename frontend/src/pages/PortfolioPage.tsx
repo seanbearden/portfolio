@@ -41,7 +41,7 @@ export function PortfolioPage() {
               </div>
               {project.link && (
                 <a
-                  href={project.link.startsWith("/") ? project.link : project.link}
+                  href={project.link}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-3 inline-flex items-center gap-1 text-sm font-medium hover:underline"
