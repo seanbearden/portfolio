@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { ArrowRight, Mail } from "lucide-react";
+import { ArrowRight, Mail, ExternalLink } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +40,14 @@ export function HomePage() {
                 className={cn(buttonVariants({ variant: "outline" }))}
               >
                 Resume
+              </a>
+              <a
+                href="https://bearden-resume-chatbot.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(buttonVariants({ variant: "outline" }))}
+              >
+                <ExternalLink className="mr-2 h-4 w-4" /> Chat with My Resume
               </a>
               <Link to="/contact" className={cn(buttonVariants({ variant: "outline" }))}>
                 <Mail className="mr-2 h-4 w-4" /> Contact
