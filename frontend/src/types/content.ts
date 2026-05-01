@@ -15,7 +15,6 @@ export interface PortfolioProject {
   order: number;
   skills: string[];
   link?: string;
-  relatedPublication?: string;
   image?: string;
   body: string;
 }

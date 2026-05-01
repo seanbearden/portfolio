@@ -193,7 +193,6 @@ def convert_portfolio():
         description = ""
         skills = ""
         link = ""
-        related_pub = ""
         body_lines = []
 
         for line in lines:
@@ -205,8 +204,6 @@ def convert_portfolio():
                 skills = line.replace("**Skills:**", "").strip()
             elif line.startswith("**Link:**"):
                 link = line.replace("**Link:**", "").strip()
-            elif line.startswith("**Related Publication:**"):
-                related_pub = line.replace("**Related Publication:**", "").strip()
             elif not line.startswith("**Image:**"):
                 body_lines.append(line)
 
@@ -231,8 +228,6 @@ def convert_portfolio():
         ]
         if link:
             fm_lines.append(f'link: "{link}"')
-        if related_pub:
-            fm_lines.append(f'relatedPublication: "{related_pub}"')
         if image:
             fm_lines.append(f"image: {image}")
         fm_lines.append("---")
