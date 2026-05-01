@@ -42,6 +42,13 @@ export interface Education {
   year: string;
 }
 
+export interface Press {
+  title: string;
+  source: string;
+  url: string;
+  date: string;
+}
+
 export interface HomeData {
   hero: {
     name: string;
@@ -54,4 +61,5 @@ export interface HomeData {
   awards: string[];
   skills: Record<string, string[]>;
   about: string;
+  press: Press[];
 }
