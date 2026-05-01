@@ -123,7 +123,9 @@ export function HomePage() {
       {/* About Preview */}
       <section className="py-12">
         <h2 className="text-2xl font-semibold mb-4">About</h2>
-        <p className="text-muted-foreground leading-relaxed">{home.about}</p>
+        <p className="text-muted-foreground leading-relaxed">
+          {home.about.split("\n\n")[0]}
+        </p>
         <Link to="/about" className={cn(buttonVariants({ variant: "link" }), "mt-2 px-0")}>
           Read more about my background <ArrowRight className="ml-1 h-4 w-4" />
         </Link>

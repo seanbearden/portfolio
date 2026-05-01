@@ -42,6 +42,11 @@ export interface Education {
   year: string;
 }
 
+export interface Interest {
+  name: string;
+  description: string;
+}
+
 export interface HomeData {
   hero: {
     name: string;
@@ -54,4 +59,5 @@ export interface HomeData {
   awards: string[];
   skills: Record<string, string[]>;
   about: string;
+  interests: Interest[];
 }

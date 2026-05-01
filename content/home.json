@@ -102,5 +102,19 @@
       "Computational Physics"
     ]
   },
-  "about": "Sean Bearden earned his Ph.D. in Physics from UC San Diego as a member of Dr. Massimiliano Di Ventra's research group, focusing on constraint satisfaction problems using digital memcomputing machines. A nontraditional learner who began his academic journey while incarcerated, he went from a GED to a Ph.D. He is committed to lifelong learning, creative projects with Arduino and Raspberry Pi, and practices Brazilian Jiu-Jitsu in San Diego."
+  "about": "Originally from Buffalo, NY, Sean Bearden's path to academia was anything but conventional. He began his academic journey while incarcerated, progressing from earning his GED to eventually obtaining a Ph.D. in Physics from UC San Diego. As a member of Dr. Massimiliano Di Ventra's research group, his doctoral work focused on solving complex constraint satisfaction problems using digital memcomputing machines.\n\nSean is a passionate advocate for nontraditional paths in education and has shared his 'redemption-road' narrative on the Story Collider podcast. He believes that his unique background provides a valuable perspective on perseverance and problem-solving in both scientific research and industry.\n\nOutside of his professional work, Sean is an active practitioner of Brazilian Jiu-Jitsu at P5 Academy in San Diego. He enjoys tinkering with electronics, with past projects including a voice-activated Arduino Deadpool head and various Raspberry Pi applications. Having grown up in Buffalo, he is also a self-proclaimed connoisseur of chicken wings.",
+  "interests": [
+    {
+      "name": "Brazilian Jiu-Jitsu",
+      "description": "Active practitioner at P5 Academy in San Diego, finding parallels between the 'gentle art' and complex problem-solving."
+    },
+    {
+      "name": "Creative Engineering",
+      "description": "Tinkering with Arduino and Raspberry Pi, including a voice-activated Deadpool head project."
+    },
+    {
+      "name": "Buffalo Native",
+      "description": "A proud Buffalo, NY native and a discerning connoisseur of authentic chicken wings."
+    }
+  ]
 }

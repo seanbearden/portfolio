@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { buttonVariants } from "@/components/ui/button";
 import { getHomeData, pdfUrl } from "@/utils/content";
-import { Award, Briefcase, GraduationCap, Download } from "lucide-react";
+import { Award, Briefcase, GraduationCap, Download, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function AboutPage() {
@@ -12,9 +12,13 @@ export function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-3xl font-bold tracking-tight">About</h1>
-      <p className="mt-4 text-muted-foreground leading-relaxed">{home.about}</p>
+      <div className="mt-4 space-y-4 text-muted-foreground leading-relaxed">
+        {home.about.split("\n\n").map((paragraph, i) => (
+          <p key={i}>{paragraph}</p>
+        ))}
+      </div>
 
-      <div className="mt-4 flex gap-3">
+      <div className="mt-6 flex gap-3">
         <a
           href={pdfUrl("Bearden_Resume_Online.pdf")}
           target="_blank"
@@ -111,6 +115,25 @@ export function AboutPage() {
                   <Badge key={skill} variant="secondary">{skill}</Badge>
                 ))}
               </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <Separator className="my-10" />
+
+      {/* Personal */}
+      <section>
+        <h2 className="flex items-center gap-2 text-2xl font-semibold mb-6">
+          <Heart className="h-5 w-5" /> Personal
+        </h2>
+        <div className="grid gap-6 sm:grid-cols-1">
+          {home.interests.map((interest) => (
+            <div key={interest.name}>
+              <h3 className="font-medium text-foreground">{interest.name}</h3>
+              <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
+                {interest.description}
+              </p>
             </div>
           ))}
         </div>
