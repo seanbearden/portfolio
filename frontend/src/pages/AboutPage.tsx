@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { buttonVariants } from "@/components/ui/button";
 import { getHomeData, pdfUrl } from "@/utils/content";
-import { Award, Briefcase, GraduationCap, Download } from "lucide-react";
+import { Award, Briefcase, GraduationCap, Download, ExternalLink, Newspaper } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function AboutPage() {
@@ -110,6 +110,35 @@ export function AboutPage() {
                 {items.map((skill) => (
                   <Badge key={skill} variant="secondary">{skill}</Badge>
                 ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <Separator className="my-10" />
+
+      {/* Press */}
+      <section>
+        <h2 className="flex items-center gap-2 text-2xl font-semibold mb-6">
+          <Newspaper className="h-5 w-5" /> Press & Media
+        </h2>
+        <div className="space-y-4">
+          {home.press.map((item) => (
+            <div key={item.url} className="group flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium hover:text-primary transition-colors flex items-center gap-1.5 group-hover:underline underline-offset-4"
+              >
+                {item.title}
+                <ExternalLink className="h-3 w-3 opacity-50 group-hover:opacity-100 transition-opacity" />
+              </a>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
+                <span>{item.source}</span>
+                <span>&middot;</span>
+                <span>{item.date}</span>
               </div>
             </div>
           ))}

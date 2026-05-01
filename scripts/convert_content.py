@@ -395,6 +395,50 @@ def convert_home():
             ],
         },
         "about": "Sean Bearden earned his Ph.D. in Physics from UC San Diego as a member of Dr. Massimiliano Di Ventra's research group, focusing on constraint satisfaction problems using digital memcomputing machines. A nontraditional learner who began his academic journey while incarcerated, he went from a GED to a Ph.D. He is committed to lifelong learning, creative projects with Arduino and Raspberry Pi, and practices Brazilian Jiu-Jitsu in San Diego.",
+        "press": [
+            {
+                "title": "Q&A: Sean Bearden on pursuing a PhD after prison",
+                "source": "Physics Today",
+                "url": "https://physicstoday.scitation.org/doi/10.1063/PT.3.4471",
+                "date": "2020-05-06"
+            },
+            {
+                "title": "Sean Bearden's redemption road",
+                "source": "Buffalo News",
+                "url": "https://buffalonews.com/news/local/sean-beardens-redemption-road-from-prison-to-a-ph-d-in-physics/article_f1c2b5b8-936e-11ea-9c0e-0b0c0a0c0a0c.html",
+                "date": "2020-05-11"
+            },
+            {
+                "title": "Sean Bearden: From Prison to Ph.D.",
+                "source": "Buffalo.edu",
+                "url": "https://www.buffalo.edu/news/releases/2014/04/007.html",
+                "date": "2014-04-03"
+            },
+            {
+                "title": "Leading through education",
+                "source": "Ohio Today",
+                "url": "https://ohio.edu/news/2020/05/sean-bearden-leading-through-education",
+                "date": "2020-05-20"
+            },
+            {
+                "title": "UB Spectrum honors article",
+                "source": "UB Spectrum",
+                "url": "https://www.ubspectrum.com",
+                "date": "2014"
+            },
+            {
+                "title": "UB Goldwater Scholarship announcement",
+                "source": "University at Buffalo",
+                "url": "https://www.buffalo.edu/news/releases/2014/04/004.html",
+                "date": "2014-04-01"
+            },
+            {
+                "title": "A Whole New World",
+                "source": "Story Collider",
+                "url": "https://www.storycollider.org/stories/2020/2/18/a-whole-new-world-stories-about-having-to-take-on-the-challenge-of-a-whole-new-existence",
+                "date": "2020-02-18"
+            }
+        ]
     }
 
     out = CONTENT / "home.json"
