@@ -114,5 +114,49 @@
     "Buffalo, NY native — and yes, a connoisseur of chicken wings",
     "Storytelling and public speaking, including a Story Collider appearance",
     "Lifelong learner — currently into LLM agent architectures and Kaggle competitions"
+  ],
+  "press": [
+    {
+      "title": "Q&A: Sean Bearden on his journey from prison to a Ph.D. in physics",
+      "source": "Physics Today",
+      "date": "2020-05",
+      "url": "https://physicstoday.scitation.org/do/10.1063/PT.6.4.20200501a/full/"
+    },
+    {
+      "title": "A Whole New World — Stories About Taking On the Challenge of a Whole New Existence",
+      "source": "The Story Collider",
+      "date": "2020-02",
+      "url": "https://www.storycollider.org/stories/2020/2/18/a-whole-new-world-stories-about-having-to-take-on-the-challenge-of-a-whole-new-existence"
+    },
+    {
+      "title": "Leading through education",
+      "source": "Ohio Today",
+      "date": "2016",
+      "url": "https://ohiotoday.org/spring-2016/leading-through-education/"
+    },
+    {
+      "title": "Sean Bearden's redemption road",
+      "source": "UB Reporter",
+      "date": "2015-06",
+      "url": "https://www.buffalo.edu/fellowships/start/our-scholars.host.html/content/shared/university/news/ub-reporter-articles/stories/2015/06/bearden_nsf_grad_fellowship.detail.html"
+    },
+    {
+      "title": "Prison adds up to physics career for math whiz Sean Bearden",
+      "source": "The Buffalo News",
+      "date": "2015-06",
+      "url": "https://buffalonews.com/2015/06/21/prison-adds-up-to-physics-career-for-math-whiz-sean-bearden/"
+    },
+    {
+      "title": "UB's outstanding seniors receive awards from the College of Arts and Sciences",
+      "source": "The Spectrum",
+      "date": "2015-05",
+      "url": "https://www.ubspectrum.com/article/2015/05/ubs-outstanding-seniors-receive-awards-from-the-college-of-arts-and-sciences"
+    },
+    {
+      "title": "UB students named Goldwater Scholars",
+      "source": "UB News",
+      "date": "2014-03",
+      "url": "https://www.buffalo.edu/fellowships/start/scholars.host.html/content/shared/university/news/news-center-releases/2014/03/048.detail.html"
+    }
   ]
 }
