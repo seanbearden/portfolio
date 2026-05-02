@@ -17,9 +17,20 @@ vi.mock("../../../content/publications.json", () => ({
 
 vi.mock("../../../content/home.json", () => ({
   default: {
-    name: "Test",
-    title: "Tester",
+    hero: {
+      name: "Test",
+      headline: "Tester",
+      email: "test@example.com",
+    },
     social: { github: "https://github.com/x" },
+    experience: [],
+    education: [],
+    awards: [],
+    skills: {},
+    about: "Test about",
+    bio: ["Test bio"],
+    interests: [],
+    press: [],
   },
 }));
 
@@ -130,6 +141,6 @@ describe('getPublications', () => {
 describe('getHomeData', () => {
   it('should return the home data JSON', () => {
     const homeData = getHomeData();
-    expect(homeData.name).toBe('Test');
+    expect(homeData.hero.name).toBe('Test');
   });
 });
