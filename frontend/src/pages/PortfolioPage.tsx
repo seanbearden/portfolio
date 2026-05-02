@@ -2,12 +2,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getProjects, assetUrl } from "@/utils/content";
 import { ExternalLink } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 const MotionCard = motion.create(Card);
 
 export function PortfolioPage() {
   const projects = getProjects();
+  const shouldReduce = useReducedMotion();
 
   return (
     <div className="relative mx-auto max-w-5xl px-4 py-16 overflow-hidden">
@@ -17,11 +18,11 @@ export function PortfolioPage() {
       </div>
 
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={shouldReduce ? { opacity: 0 } : { opacity: 0, y: -20 }}
+        animate={shouldReduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/70">Portfolio</h1>
+        <h1 className="text-4xl font-bold tracking-tight text-foreground">Portfolio</h1>
         <p className="mt-3 text-lg text-muted-foreground/90">
           Selected projects spanning data science, physics research, and AI applications.
         </p>
@@ -31,12 +32,12 @@ export function PortfolioPage() {
         {projects.map((project, i) => (
           <MotionCard
             key={project.slug}
-            className="overflow-hidden flex flex-col border-border/50 bg-card/50 backdrop-blur-sm"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            className="overflow-hidden flex flex-col border-border bg-card/50 backdrop-blur-sm transition-all"
+            initial={shouldReduce ? { opacity: 0 } : { opacity: 0, y: 30 }}
+            whileInView={shouldReduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, delay: i * 0.1 }}
-            whileHover={{ y: -5, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)", borderColor: "var(--color-border)" }}
+            transition={{ duration: 0.5, delay: shouldReduce ? 0 : i * 0.1 }}
+            whileHover={shouldReduce ? undefined : { y: -5, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}
           >
             {project.image && (
               <div className="aspect-video bg-muted overflow-hidden shrink-0">
@@ -45,7 +46,7 @@ export function PortfolioPage() {
                   alt={project.title}
                   className="h-full w-full object-cover"
                   loading="lazy"
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={shouldReduce ? undefined : { scale: 1.05 }}
                   transition={{ duration: 0.4 }}
                 />
               </div>

@@ -5,26 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getHomeData, getProjects, getBlogPosts, assetUrl, pdfUrl } from "@/utils/content";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: { type: "spring" as const, stiffness: 100, damping: 15 },
-  },
-};
+import { motion, useReducedMotion } from "framer-motion";
 
 const MotionCard = motion.create(Card);
 
@@ -32,6 +13,28 @@ export function HomePage() {
   const home = getHomeData();
   const projects = getProjects().slice(0, 3);
   const recentPosts = getBlogPosts().slice(0, 3);
+  const shouldReduce = useReducedMotion();
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = shouldReduce
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1 } }
+    : {
+        hidden: { y: 20, opacity: 0 },
+        visible: {
+          y: 0,
+          opacity: 1,
+          transition: { type: "spring" as const, stiffness: 100, damping: 15 },
+        },
+      };
 
   return (
     <div className="relative mx-auto max-w-5xl px-4 overflow-hidden">
@@ -55,11 +58,11 @@ export function HomePage() {
             alt="Sean Bearden"
             className="h-40 w-40 shrink-0 rounded-full object-cover ring-4 ring-border shadow-xl md:h-56 md:w-56"
             loading="eager"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring" as const, stiffness: 300, damping: 20 }}
+            whileHover={shouldReduce ? undefined : { scale: 1.05 }}
+            transition={shouldReduce ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 20 }}
           />
           <div className="text-center md:text-left">
-            <motion.h1 variants={itemVariants} className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/70">
+            <motion.h1 variants={itemVariants} className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-foreground">
               {home.hero.name}
             </motion.h1>
             <motion.p variants={itemVariants} className="mt-4 text-xl text-muted-foreground/90 font-medium">
@@ -104,8 +107,8 @@ export function HomePage() {
       {/* Featured Projects */}
       <section className="py-12">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={shouldReduce ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={shouldReduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5 }}
         >
@@ -119,12 +122,12 @@ export function HomePage() {
             {projects.map((project, i) => (
               <MotionCard
                 key={project.slug}
-                className="overflow-hidden flex flex-col border-border/50 bg-card/50 backdrop-blur-sm"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                className="overflow-hidden flex flex-col border-border bg-card/50 backdrop-blur-sm transition-all"
+                initial={shouldReduce ? { opacity: 0 } : { opacity: 0, y: 30 }}
+                whileInView={shouldReduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                whileHover={{ y: -5, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)", borderColor: "var(--color-border)" }}
+                transition={{ duration: 0.5, delay: shouldReduce ? 0 : i * 0.1 }}
+                whileHover={shouldReduce ? undefined : { y: -5, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}
               >
                 {project.image && (
                   <div className="aspect-video bg-muted shrink-0 overflow-hidden">
@@ -133,7 +136,7 @@ export function HomePage() {
                       alt={project.title}
                       className="h-full w-full object-cover"
                       loading="lazy"
-                      whileHover={{ scale: 1.05 }}
+                      whileHover={shouldReduce ? undefined : { scale: 1.05 }}
                       transition={{ duration: 0.4 }}
                     />
                   </div>
@@ -174,8 +177,8 @@ export function HomePage() {
       {/* Recent Posts */}
       <section className="py-12">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={shouldReduce ? { opacity: 0 } : { opacity: 0, y: 20 }}
+          whileInView={shouldReduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5 }}
         >
@@ -189,14 +192,14 @@ export function HomePage() {
             {recentPosts.map((post, i) => (
               <motion.div
                 key={post.slug}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={shouldReduce ? { opacity: 0 } : { opacity: 0, x: -20 }}
+                whileInView={shouldReduce ? { opacity: 1 } : { opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
+                transition={{ duration: 0.4, delay: shouldReduce ? 0 : i * 0.1 }}
               >
                 <Link
                   to={`/blog/${post.slug}`}
-                  className="group block rounded-xl border border-border/50 bg-card/30 p-5 transition-all duration-300 hover:bg-muted/50 hover:border-border hover:shadow-md"
+                  className="group block rounded-xl border border-border bg-card/30 p-5 transition-all duration-300 hover:bg-muted/50 hover:shadow-md"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div>
@@ -223,11 +226,11 @@ export function HomePage() {
       {/* About Preview */}
       <section className="py-16">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={shouldReduce ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
+          whileInView={shouldReduce ? { opacity: 1 } : { opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="rounded-2xl border border-border/50 bg-card/30 p-8 md:p-12 text-center backdrop-blur-sm"
+          className="rounded-2xl border border-border bg-card/30 p-8 md:p-12 text-center backdrop-blur-sm"
         >
           <h2 className="text-3xl font-bold tracking-tight mb-6">About Me</h2>
           <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
