@@ -1,6 +1,22 @@
 import type { BlogPost, PortfolioProject, Publication, HomeData } from "@/types/content";
 import { parseFrontmatter } from "./parseFrontmatter.ts";
 
+
+function getString(value: unknown, fallback = ""): string {
+  return typeof value === "string" ? value : fallback;
+}
+
+function getOptionalString(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
+function getStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string");
+  }
+  return [];
+}
+
 const ASSETS_BASE = import.meta.env.VITE_ASSETS_BASE_URL ?? "";
 
 export function assetUrl(filename: string): string {
@@ -21,19 +37,18 @@ const blogModules = import.meta.glob<string>("../../../content/blog/*.md", {
   import: "default",
 });
 
-export function parseAndSortBlogPosts(modules: Record<string, unknown>): BlogPost[] {
+export function parseAndSortBlogPosts(modules: Record<string, string>): BlogPost[] {
   const posts: BlogPost[] = [];
   for (const [, raw] of Object.entries(modules)) {
-    const content = typeof raw === "string" ? raw : "";
-    const { meta, body } = parseFrontmatter(content);
+    const { meta, body } = parseFrontmatter(raw);
     posts.push({
-      title: (meta.title as string) ?? "",
-      date: (meta.date as string) ?? "",
-      slug: (meta.slug as string) ?? "",
-      oldUrl: meta.oldUrl as string | undefined,
-      categories: (meta.categories as string[]) ?? [],
-      tags: (meta.tags as string[]) ?? [],
-      image: meta.image as string | undefined,
+      title: getString(meta.title),
+      date: getString(meta.date),
+      slug: getString(meta.slug),
+      oldUrl: getOptionalString(meta.oldUrl),
+      categories: getStringArray(meta.categories),
+      tags: getStringArray(meta.tags),
+      image: getOptionalString(meta.image),
       body,
     });
   }
@@ -70,17 +85,16 @@ export function getProjects(): PortfolioProject[] {
 
   const projects: PortfolioProject[] = [];
   for (const [, raw] of Object.entries(portfolioModules)) {
-    const content = typeof raw === "string" ? raw : "";
-    const { meta, body } = parseFrontmatter(content);
+    const { meta, body } = parseFrontmatter(raw);
     projects.push({
-      title: (meta.title as string) ?? "",
-      subtitle: meta.subtitle as string | undefined,
-      slug: (meta.slug as string) ?? "",
+      title: getString(meta.title),
+      subtitle: getOptionalString(meta.subtitle),
+      slug: getString(meta.slug),
       order: Number(meta.order) || 0,
-      skills: (meta.skills as string[]) ?? [],
-      link: meta.link as string | undefined,
-      cta: meta.cta as string | undefined,
-      image: meta.image as string | undefined,
+      skills: getStringArray(meta.skills),
+      link: getOptionalString(meta.link),
+      cta: getOptionalString(meta.cta),
+      image: getOptionalString(meta.image),
       body,
     });
   }
