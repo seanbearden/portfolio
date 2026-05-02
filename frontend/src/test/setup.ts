@@ -1,5 +1,10 @@
 import "@testing-library/jest-dom/vitest";
-import { vi } from "vitest";
+import { cleanup } from "@testing-library/react";
+import { afterEach, vi } from "vitest";
+
+afterEach(() => {
+  cleanup();
+});
 
 // jsdom doesn't implement these browser APIs that framer-motion (and others)
 // use at mount time. Stub them so component renders don't crash.
