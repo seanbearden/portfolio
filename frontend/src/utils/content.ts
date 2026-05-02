@@ -14,12 +14,7 @@ export function pdfUrl(filename: string): string {
 
 // --- Blog posts ---
 
-interface RawMarkdown {
-  default: string;
-  frontmatter: Record<string, unknown>;
-}
-
-const blogModules = import.meta.glob<RawMarkdown>("../../../content/blog/*.md", {
+const blogModules = import.meta.glob<string>("../../../content/blog/*.md", {
   eager: true,
   query: "?raw",
   import: "default",
