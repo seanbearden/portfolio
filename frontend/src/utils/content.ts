@@ -1,4 +1,5 @@
 import type { BlogPost, PortfolioProject, Publication, HomeData } from "@/types/content";
+import { parseFrontmatter } from "./parseFrontmatter.ts";
 
 const ASSETS_BASE = import.meta.env.VITE_ASSETS_BASE_URL ?? "";
 
@@ -14,12 +15,7 @@ export function pdfUrl(filename: string): string {
 
 // --- Blog posts ---
 
-interface RawMarkdown {
-  default: string;
-  frontmatter: Record<string, unknown>;
-}
-
-const blogModules = import.meta.glob<RawMarkdown>("../../../content/blog/*.md", {
+const blogModules = import.meta.glob<string>("../../../content/blog/*.md", {
   eager: true,
   query: "?raw",
   import: "default",
@@ -110,10 +106,12 @@ export function getProjects(): PortfolioProject[] {
     const { meta, body } = parseFrontmatter(content);
     projects.push({
       title: (meta.title as string) ?? "",
+      subtitle: meta.subtitle as string | undefined,
       slug: (meta.slug as string) ?? "",
       order: Number(meta.order) || 0,
       skills: (meta.skills as string[]) ?? [],
       link: meta.link as string | undefined,
+      cta: meta.cta as string | undefined,
       relatedPublication: meta.relatedPublication as string | undefined,
       image: meta.image as string | undefined,
       body,
