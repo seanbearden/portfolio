@@ -45,7 +45,7 @@ export function parseAndSortBlogPosts(modules: Record<string, string>): BlogPost
       title: getString(meta.title),
       date: getString(meta.date),
       slug: getString(meta.slug),
-      oldUrl: getString(meta.oldUrl),
+      oldUrl: getOptionalString(meta.oldUrl),
       categories: getStringArray(meta.categories),
       tags: getStringArray(meta.tags),
       image: getOptionalString(meta.image),
