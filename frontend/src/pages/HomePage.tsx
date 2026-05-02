@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { ArrowRight, Mail } from "lucide-react";
+import { ArrowRight, Mail, MessageSquare } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,15 @@ export function HomePage() {
               {home.hero.headline}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
-              <Link to="/portfolio" className={cn(buttonVariants())}>
+              <a
+                href="https://bearden-resume-chatbot.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(buttonVariants())}
+              >
+                <MessageSquare className="mr-2 h-4 w-4" /> Chat with My Resume
+              </a>
+              <Link to="/portfolio" className={cn(buttonVariants({ variant: "outline" }))}>
                 View Portfolio
               </Link>
               <a
