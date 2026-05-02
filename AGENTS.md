@@ -131,6 +131,39 @@ Managed by Terraform in `infrastructure/`. Project: `bearden-portfolio`, region:
 | `infrastructure/main.tf` | All GCP resources |
 | `infrastructure/outputs.tf` | GitHub Actions variables (set via `gh variable set`) |
 
+## ZAP scan triage policy — `.zap/rules.tsv`
+
+`.zap/rules.tsv` overrides the default action for [ZAP baseline](https://www.zaproxy.org/docs/docker/baseline-scan/) findings. It's tempting to silence noisy alerts; **don't, by default**. Suppression hides regressions.
+
+### Rules of the road
+
+1. **Default is to *not* silence**. The baseline scan is non-failing (`fail_action: false` in `zap-baseline.yml`). A recurring warning in the report is documentation, not a problem. Add suppression only when leaving the warning visible has zero security value.
+2. **Verify every finding against the actual artifact before silencing**. Don't trust the alert text. For findings on `/assets/*`, build locally (`cd frontend && npm run build`) and grep `dist/assets/` to confirm what ZAP is matching. Justifications like \"bundled dep\" must be evidenced in the PR body.
+3. **Know what a rule ID covers**. Many ZAP rule IDs bundle multiple sub-checks under one number. Rule **10055 (CSP)** covers 13 sub-alerts including `script-src 'unsafe-inline'` and `script-src 'unsafe-eval'`. Suppressing 10055 to silence one sub-alert blinds you to the other twelve. **Check [`zaproxy.org/docs/alerts/<id>`](https://www.zaproxy.org/docs/alerts/) before suppressing.**
+4. **Prefer `OUTOFSCOPE` over `IGNORE`** when the noise is path-specific. The rules.tsv parser in [`zap_common.py`](https://github.com/zaproxy/zaproxy/blob/main/docker/zap_common.py) treats column 3 as a comment for `IGNORE`/`WARN`/`FAIL`, but as a **regex URL pattern** for `OUTOFSCOPE`. Use it.
+5. **Document the rationale where the choice lives**, not in the rules file. For accepted policy trade-offs (e.g. CSP `style-src 'unsafe-inline'` for `framer-motion`), put the explanation as a comment in `frontend/nginx.conf.template` and let the warning keep firing. Don't IGNORE the rule.
+
+### When each action is appropriate
+
+| Action | When to use | Example |
+|---|---|---|
+| `IGNORE` (site-wide) | Genuine **scanner artifacts** that will fire on every URL forever, regardless of server config. | `90005 IGNORE  Sec-Fetch-* are browser request headers; ZAP doesn't send them.` |
+| `IGNORE` (site-wide) | Purely **informational** rules with no actionable content. | `10109 IGNORE  Modern Web Application — confirms this is an SPA.` |
+| `OUTOFSCOPE  .*/assets/.*` | Bundle-only noise from a verified dependency. The same rule still fires on non-bundled URLs. | Dependency strings matching dangerous-JS regex |
+| (no entry, leave as default `WARN`) | Accepted policy trade-offs where the warning is itself the audit trail. | `style-src 'unsafe-inline'` for animation libraries |
+| `FAIL` | Anything we'd want to **break the scan** on. Reserved for the future when we want hard gates. | — |
+
+### Required PR checklist when modifying `.zap/rules.tsv`
+
+A PR that adds or changes a rule entry must include:
+
+- [ ] Link to the [`zaproxy.org/docs/alerts/<rule-id>`](https://www.zaproxy.org/docs/alerts/) page in the PR body, with a list of all sub-alerts the rule covers.
+- [ ] Evidence of verification (grep output, build inspection, or a screenshot from the ZAP report) showing what ZAP actually matched.
+- [ ] Justification for `IGNORE` vs `OUTOFSCOPE` vs no-change.
+- [ ] If `IGNORE`: explicit acknowledgement of which sub-alerts get silenced and why that's acceptable.
+
+PRs that add `IGNORE` without these get rejected and re-opened with the right scope.
+
 ## PR conventions
 
 - Branch off `main`. Don't edit `main` directly.
