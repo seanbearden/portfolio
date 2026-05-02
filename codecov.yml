@@ -1,0 +1,43 @@
+codecov:
+  require_ci_to_pass: true
+  notify:
+    wait_for_ci: true
+
+coverage:
+  precision: 2
+  round: down
+  range: "60...90"
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        informational: true
+    patch:
+      default:
+        target: 80%
+        threshold: 1%
+        informational: true
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
+
+flags:
+  frontend:
+    paths:
+      - frontend/src/
+    carryforward: false
+
+ignore:
+  - "infrastructure/**"
+  - "scripts/**"
+  - "content/**"
+  - "**/*.config.{ts,js,mjs,cjs}"
+  - "**/*.test.{ts,tsx}"
+  - "**/*.spec.{ts,tsx}"
+  - "**/__mocks__/**"
+  - "frontend/dist/**"
+  - "frontend/src/main.tsx"
+  - "frontend/src/vite-env.d.ts"

@@ -17,7 +17,6 @@ export interface PortfolioProject {
   skills: string[];
   link?: string;
   cta?: string;
-  relatedPublication?: string;
   image?: string;
   body: string;
 }

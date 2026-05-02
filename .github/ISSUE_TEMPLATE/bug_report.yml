@@ -1,0 +1,39 @@
+name: Bug report
+description: Something is broken on the deployed site or in the codebase
+labels: ["bug"]
+body:
+  - type: input
+    id: where
+    attributes:
+      label: Where did this happen?
+      description: URL, page, component, or file path
+      placeholder: e.g. https://seanbearden.com/blog/some-post
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, including steps to reproduce
+      placeholder: |
+        1. Open the page
+        2. Click X
+        3. See Y
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: false
+
+  - type: input
+    id: env
+    attributes:
+      label: Browser / OS
+      placeholder: e.g. Firefox 137 on macOS
+    validations:
+      required: false

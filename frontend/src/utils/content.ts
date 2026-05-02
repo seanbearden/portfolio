@@ -21,11 +21,7 @@ const blogModules = import.meta.glob<string>("../../../content/blog/*.md", {
   import: "default",
 });
 
-let _blogPosts: BlogPost[] | null = null;
-
-export function getBlogPosts(): BlogPost[] {
-  if (_blogPosts) return _blogPosts;
-
+export function parseAndSortBlogPosts(modules: Record<string, unknown>): BlogPost[] {
   const posts: BlogPost[] = [];
   for (const [, raw] of Object.entries(blogModules)) {
     const content = typeof raw === "string" ? raw : (raw as { default: string })?.default || "";
@@ -43,6 +39,14 @@ export function getBlogPosts(): BlogPost[] {
   }
 
   posts.sort((a, b) => b.date.localeCompare(a.date));
+  return posts;
+}
+
+let _blogPosts: BlogPost[] | null = null;
+
+export function getBlogPosts(): BlogPost[] {
+  if (_blogPosts) return _blogPosts;
+  const posts = parseAndSortBlogPosts(blogModules);
   _blogPosts = posts;
   return posts;
 }
@@ -76,7 +80,6 @@ export function getProjects(): PortfolioProject[] {
       skills: (meta.skills as string[]) ?? [],
       link: meta.link as string | undefined,
       cta: meta.cta as string | undefined,
-      relatedPublication: meta.relatedPublication as string | undefined,
       image: meta.image as string | undefined,
       body,
     });
