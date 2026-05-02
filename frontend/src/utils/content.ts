@@ -21,11 +21,10 @@ const blogModules = import.meta.glob<string>("../../../content/blog/*.md", {
   import: "default",
 });
 
-export function parseAndSortBlogPosts(modules: Record<string, unknown>): BlogPost[] {
+export function parseAndSortBlogPosts(modules: Record<string, string>): BlogPost[] {
   const posts: BlogPost[] = [];
   for (const [, raw] of Object.entries(modules)) {
-    const content = typeof raw === "string" ? raw : "";
-    const { meta, body } = parseFrontmatter(content);
+    const { meta, body } = parseFrontmatter(raw);
     posts.push({
       title: (meta.title as string) ?? "",
       date: (meta.date as string) ?? "",
@@ -70,8 +69,7 @@ export function getProjects(): PortfolioProject[] {
 
   const projects: PortfolioProject[] = [];
   for (const [, raw] of Object.entries(portfolioModules)) {
-    const content = typeof raw === "string" ? raw : "";
-    const { meta, body } = parseFrontmatter(content);
+    const { meta, body } = parseFrontmatter(raw);
     projects.push({
       title: (meta.title as string) ?? "",
       subtitle: meta.subtitle as string | undefined,
