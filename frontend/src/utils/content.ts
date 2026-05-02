@@ -23,7 +23,7 @@ const blogModules = import.meta.glob<string>("../../../content/blog/*.md", {
 
 export function parseAndSortBlogPosts(modules: Record<string, unknown>): BlogPost[] {
   const posts: BlogPost[] = [];
-  for (const [, raw] of Object.entries(blogModules)) {
+  for (const [, raw] of Object.entries(modules)) {
     const content = typeof raw === "string" ? raw : (raw as { default: string })?.default || "";
     const { meta, body } = parseFrontmatter(content);
     posts.push({
