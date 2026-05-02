@@ -32,20 +32,6 @@ describe('parseAndSortBlogPosts', () => {
     expect(posts[0].title).toBe('With Date');
     expect(posts[1].title).toBe('No Date');
   });
-
-  it('should handle invalid string types in raw content gracefully', () => {
-    const mockModules = {
-      'valid.md': '---\ntitle: Valid\ndate: 2023-01-01\n---\nBody',
-      'invalid.md': null as unknown as string, // Simulating an edge case if import.meta.glob returns non-string
-    };
-
-    const posts = parseAndSortBlogPosts(mockModules);
-
-    expect(posts).toHaveLength(2);
-    expect(posts[0].title).toBe('Valid');
-    // The invalid one parses as empty string, so it will have empty date and go to the end
-    expect(posts[1].date).toBe('');
-  });
 });
 
 describe('getBlogPosts', () => {
