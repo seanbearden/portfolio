@@ -76,7 +76,6 @@ export function getProjects(): PortfolioProject[] {
       skills: (meta.skills as string[]) ?? [],
       link: meta.link as string | undefined,
       cta: meta.cta as string | undefined,
-      relatedPublication: meta.relatedPublication as string | undefined,
       image: meta.image as string | undefined,
       body,
     });
