@@ -55,7 +55,8 @@ def resolve_image(image_line: str, post_index: int) -> str | None:
         return None
     for key, val in IMAGE_MAP.items():
         if key.lower() in image_line.lower():
-            return val
+            if val is not None:
+                return val
     # Fallback mapping by post index for "Program screenshot" entries
     fallback = {
         20: "mini_mba.webp",    # Mini MBA
