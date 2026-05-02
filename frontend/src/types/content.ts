@@ -2,7 +2,7 @@ export interface BlogPost {
   title: string;
   date: string;
   slug: string;
-  oldUrl: string;
+  oldUrl?: string;
   categories: string[];
   tags: string[];
   image?: string;

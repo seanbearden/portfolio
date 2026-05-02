@@ -30,7 +30,7 @@ export function parseAndSortBlogPosts(modules: Record<string, unknown>): BlogPos
       title: (meta.title as string) ?? "",
       date: (meta.date as string) ?? "",
       slug: (meta.slug as string) ?? "",
-      oldUrl: (meta.oldUrl as string) ?? "",
+      oldUrl: meta.oldUrl as string | undefined,
       categories: (meta.categories as string[]) ?? [],
       tags: (meta.tags as string[]) ?? [],
       image: meta.image as string | undefined,
