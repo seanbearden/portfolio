@@ -1,12 +1,18 @@
 # ZAP Baseline rule overrides
-# Format: RULE_ID<TAB>IGNORE|WARN|FAIL<TAB>comment
+# Format: RULE_ID<TAB>IGNORE|WARN|FAIL|OUTOFSCOPE<TAB>regex<TAB>comment
 # Docs: https://www.zaproxy.org/docs/docker/baseline-scan/#configuration-file
 #
 # Add entries below as findings are triaged. Each IGNORE must include
 # a short comment explaining why the rule is acceptable for this site.
 
+# Scoped exclusions (OUTOFSCOPE) for the JS/CSS bundle:
+# 10094: False positive likely due to content hashes or sourcemaps in the bundle.
+# 10027: Bundled third-party JS commonly contains "TODO"/"FIXME" comments from upstream.
+# 10110: False positive match on string literals in the bundle (not actual dangerous calls).
+10094	OUTOFSCOPE	.*/assets/.*
+10027	OUTOFSCOPE	.*/assets/.*
+10110	OUTOFSCOPE	.*/assets/.*
+
+# Global IGNOREs:
 90005	IGNORE		Sec-Fetch-* are request headers; not response-controllable.
-10109	IGNORE		Informational; this is an SPA.
-10094	IGNORE		Vite inlines small assets as base64; expected.
-10027	IGNORE		Bundled dep comments; not our source.
-10110	IGNORE		Bundled dep code; our source uses no dangerous JS.
+10109	IGNORE		Informational alert noting that the site is an SPA.
