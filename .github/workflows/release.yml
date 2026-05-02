@@ -38,9 +38,13 @@ jobs:
       # The changesets/action `published` output is only set when the publish
       # command is detected as an npm publish. We use it for git tagging via
       # tag-version.js, so the output stays false. Detect a release run by
-      # checking whether tag-version.js created a local tag, then push it and
-      # dispatch Deploy explicitly (tag pushes via GITHUB_TOKEN don't trigger
-      # downstream workflows on their own).
+      # checking whether tag-version.js created a local tag that's NOT yet on
+      # the remote, then push it and dispatch Deploy explicitly (tag pushes
+      # via GITHUB_TOKEN don't trigger downstream workflows on their own).
+      #
+      # tag-version.js runs on every release invocation when no changesets are
+      # pending — including subsequent main pushes after the version PR has
+      # already been published. The remote-existence check makes those runs no-ops.
       - name: Push release tag and dispatch Deploy
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,10 +52,17 @@ jobs:
           set -euo pipefail
           VERSION=$(node -p "require('./package.json').version")
           TAG="v$VERSION"
-          if git rev-parse --verify --quiet "refs/tags/$TAG" > /dev/null; then
-            echo "Pushing $TAG and dispatching Deploy"
-            git push origin "$TAG"
-            gh workflow run deploy.yml --ref "$TAG"
-          else
+
+          if ! git rev-parse --verify --quiet "refs/tags/$TAG" > /dev/null; then
             echo "No release tag this run (version PR opened/updated, or nothing to release)"
+            exit 0
           fi
+
+          if git ls-remote --tags --exit-code origin "refs/tags/$TAG" > /dev/null 2>&1; then
+            echo "Remote already has $TAG; nothing to publish"
+            exit 0
+          fi
+
+          echo "Pushing $TAG and dispatching Deploy"
+          git push origin "$TAG"
+          gh workflow run deploy.yml --ref "$TAG"
