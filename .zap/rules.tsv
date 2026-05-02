@@ -4,3 +4,9 @@
 #
 # Add entries below as findings are triaged. Each IGNORE must include
 # a short comment explaining why the rule is acceptable for this site.
+
+90005	IGNORE		Sec-Fetch-* are request headers; not response-controllable.
+10109	IGNORE		Informational; this is an SPA.
+10094	IGNORE		Vite inlines small assets as base64; expected.
+10027	IGNORE		Bundled dep comments; not our source.
+10110	IGNORE		Bundled dep code; our source uses no dangerous JS.
