@@ -40,6 +40,9 @@ IMAGE_MAP = {
     "APS March Meeting calendar": "aps_2018.webp",
 }
 
+# Pre-computed lowercase keys for faster substring searches
+IMAGE_MAP_LOWER = [(k.lower(), v) for k, v in IMAGE_MAP.items()]
+
 
 def slugify(title: str) -> str:
     slug = title.lower()
@@ -53,8 +56,9 @@ def resolve_image(image_line: str, post_index: int) -> str | None:
     """Try to match an image reference to a downloaded filename."""
     if not image_line:
         return None
-    for key, val in IMAGE_MAP.items():
-        if key.lower() in image_line.lower():
+    line_lower = image_line.lower()
+    for key_lower, val in IMAGE_MAP_LOWER:
+        if key_lower in line_lower:
             if val is not None:
                 return val
     # Fallback mapping by post index for "Program screenshot" entries
