@@ -1,10 +1,18 @@
 # Sean Bearden — Portfolio Website
 
+[![codecov](https://codecov.io/gh/seanbearden/portfolio/graph/badge.svg?token=JgoqNrfl9G)](https://codecov.io/gh/seanbearden/portfolio)
+
 Personal portfolio website for Sean Bearden, Ph.D. — self-hosted on Google Cloud, migrated from Squarespace.
 
 ## Architecture
 
 ![Architecture](sean_bearden_website_outline.svg)
+
+## Coverage
+
+[![Sunburst](https://codecov.io/gh/seanbearden/portfolio/graphs/sunburst.svg?token=JgoqNrfl9G)](https://codecov.io/gh/seanbearden/portfolio)
+
+The inner ring is `frontend/`; outer rings are subdirectories and files. Color = covered (green) vs uncovered (red).
 
 **Stack:** React 19 + Vite + TypeScript + Shadcn/ui + Tailwind CSS, served by nginx on Cloud Run.
 
