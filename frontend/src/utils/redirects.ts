@@ -1,4 +1,4 @@
-import { getBlogPosts } from "./content";
+import { getBlogPosts } from "./content.ts";
 
 let _oldUrlMap: Map<string, string> | null = null;
 
