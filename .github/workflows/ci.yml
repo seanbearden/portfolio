@@ -29,5 +29,14 @@ jobs:
 
       - run: npm ci
       - run: npx tsc -b
-      - run: npm test
+      - run: npm run test:coverage
       - run: npm run build
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: frontend/coverage/lcov.info
+          flags: frontend
+          fail_ci_if_error: false
+          verbose: true
