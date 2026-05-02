@@ -1,0 +1,43 @@
+name: ZAP Full Scan
+
+# Active-attack scan. Sends real attack payloads (SQLi, XSS, command injection,
+# directory traversal, etc.) to discover vulnerabilities the passive baseline
+# can't catch. Runs ~30–60 min vs ~2–3 min for the baseline.
+#
+# Manual + monthly only — too slow to gate every deploy on, and the noise level
+# from a static SPA doesn't justify weekly. Shares .zap/rules.tsv with the
+# baseline so triage carries across both.
+
+on:
+  schedule:
+    - cron: "0 7 1 * *"  # 1st of each month, 07:00 UTC
+  workflow_dispatch:
+    inputs:
+      target:
+        # TODO: flip default to https://seanbearden.com after Squarespace DNS cutover
+        description: "URL to scan (default = Cloud Run revision; pre-cutover seanbearden.com still serves Squarespace)"
+        required: false
+        default: "https://portfolio-frontend-pr4cby3raa-uc.a.run.app"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  full-scan:
+    name: ZAP full active scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run ZAP full scan
+        uses: zaproxy/action-full-scan@bee4e5be916301228d2b1b2dcad73aab6fa6a25b # v0.13.0
+        with:
+          target: ${{ github.event.inputs.target || 'https://portfolio-frontend-pr4cby3raa-uc.a.run.app' }}
+          docker_name: "ghcr.io/zaproxy/zaproxy:stable"
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-a"
+          fail_action: false
+          allow_issue_writing: true
+          artifact_name: "zap-full-scan-report"
