@@ -1,0 +1,39 @@
+name: Auto-label ZAP issues
+
+# When the ZAP baseline or full-scan workflow auto-creates a findings issue
+# (allow_issue_writing: true), this workflow tags it with the `jules` and
+# `security` labels so it shows up in Jules's queue and the security label feed.
+#
+# Triggers on issues.opened (any issue created in the repo). Filters to issues
+# authored by github-actions[bot] with "ZAP Scan" in the title — this matches
+# both "ZAP Scan Baseline Report" and "ZAP Scan Full Report" without catching
+# unrelated bot-authored issues (e.g. dependabot).
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  label:
+    name: Apply ZAP triage labels
+    if: |
+      github.event.issue.user.login == 'github-actions[bot]' &&
+      contains(github.event.issue.title, 'ZAP Scan')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add labels
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          echo "Labeling issue #${ISSUE_NUMBER}"
+          gh issue edit "${ISSUE_NUMBER}" \
+            --repo "${REPO}" \
+            --add-label "jules" \
+            --add-label "security"
