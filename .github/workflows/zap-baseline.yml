@@ -9,9 +9,10 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: "URL to scan"
+        # TODO: flip default to https://seanbearden.com after Squarespace DNS cutover
+        description: "URL to scan (default = Cloud Run revision; pre-cutover seanbearden.com still serves Squarespace)"
         required: false
-        default: "https://seanbearden.com"
+        default: "https://portfolio-frontend-pr4cby3raa-uc.a.run.app"
 
 permissions:
   contents: read
@@ -29,7 +30,7 @@ jobs:
       - name: Run ZAP baseline scan
         uses: zaproxy/action-baseline@de8ad967d3548d44ef623df22cf95c3b0baf8b25 # v0.15.0
         with:
-          target: ${{ github.event.inputs.target || 'https://seanbearden.com' }}
+          target: ${{ github.event.inputs.target || 'https://portfolio-frontend-pr4cby3raa-uc.a.run.app' }}
           docker_name: "ghcr.io/zaproxy/zaproxy:stable"
           rules_file_name: ".zap/rules.tsv"
           cmd_options: "-a"
