@@ -102,7 +102,12 @@
       "Computational Physics"
     ]
   },
-  "about": "Originally from Buffalo, NY, Sean Bearden's path to academia was anything but conventional. He began his academic journey while incarcerated, progressing from earning his GED to eventually obtaining a Ph.D. in Physics from UC San Diego. As a member of Dr. Massimiliano Di Ventra's research group, his doctoral work focused on solving complex constraint satisfaction problems using digital memcomputing machines.\n\nSean is a passionate advocate for nontraditional paths in education and has shared his 'redemption-road' narrative on the Story Collider podcast. He believes that his unique background provides a valuable perspective on perseverance and problem-solving in both scientific research and industry.\n\nOutside of his professional work, Sean is an active practitioner of Brazilian Jiu-Jitsu at P5 Academy in San Diego. He enjoys tinkering with electronics, with past projects including a voice-activated Arduino Deadpool head and various Raspberry Pi applications. Having grown up in Buffalo, he is also a self-proclaimed connoisseur of chicken wings.",
+  "about": "Originally from Buffalo, NY, Sean Bearden's path to academia was anything but conventional. He began his academic journey while incarcerated, progressing from earning his GED to eventually obtaining a Ph.D. in Physics from UC San Diego. As a member of Dr. Massimiliano Di Ventra's research group, his doctoral work focused on solving complex constraint satisfaction problems using digital memcomputing machines.",
+  "bio": [
+    "Originally from Buffalo, NY, Sean Bearden's path to academia was anything but conventional. He began his academic journey while incarcerated, progressing from earning his GED to eventually obtaining a Ph.D. in Physics from UC San Diego. As a member of Dr. Massimiliano Di Ventra's research group, his doctoral work focused on solving complex constraint satisfaction problems using digital memcomputing machines.",
+    "Sean is a passionate advocate for nontraditional paths in education and has shared his 'redemption-road' narrative on the Story Collider podcast. He believes that his unique background provides a valuable perspective on perseverance and problem-solving in both scientific research and industry.",
+    "Today he works as a data scientist applying his research mindset to financial services, AI assistants, and platform engineering. His work spans ETL pipelines, RAG systems, conversational AI, and forecasting — building things that actually run in production."
+  ],
   "interests": [
     {
       "name": "Brazilian Jiu-Jitsu",
@@ -115,6 +120,50 @@
     {
       "name": "Buffalo Native",
       "description": "A proud Buffalo, NY native and a discerning connoisseur of authentic chicken wings."
+    }
+  ],
+  "press": [
+    {
+      "title": "Q&A: Sean Bearden on his journey from prison to a Ph.D. in physics",
+      "source": "Physics Today",
+      "date": "2020-05",
+      "url": "https://physicstoday.scitation.org/do/10.1063/PT.6.4.20200501a/full/"
+    },
+    {
+      "title": "A Whole New World — Stories About Taking On the Challenge of a Whole New Existence",
+      "source": "The Story Collider",
+      "date": "2020-02",
+      "url": "https://www.storycollider.org/stories/2020/2/18/a-whole-new-world-stories-about-having-to-take-on-the-challenge-of-a-whole-new-existence"
+    },
+    {
+      "title": "Leading through education",
+      "source": "Ohio Today",
+      "date": "2016",
+      "url": "https://ohiotoday.org/spring-2016/leading-through-education/"
+    },
+    {
+      "title": "Sean Bearden's redemption road",
+      "source": "UB Reporter",
+      "date": "2015-06",
+      "url": "https://www.buffalo.edu/fellowships/start/our-scholars.host.html/content/shared/university/news/ub-reporter-articles/stories/2015/06/bearden_nsf_grad_fellowship.detail.html"
+    },
+    {
+      "title": "Prison adds up to physics career for math whiz Sean Bearden",
+      "source": "The Buffalo News",
+      "date": "2015-06",
+      "url": "https://buffalonews.com/2015/06/21/prison-adds-up-to-physics-career-for-math-whiz-sean-bearden/"
+    },
+    {
+      "title": "UB's outstanding seniors receive awards from the College of Arts and Sciences",
+      "source": "The Spectrum",
+      "date": "2015-05",
+      "url": "https://www.ubspectrum.com/article/2015/05/ubs-outstanding-seniors-receive-awards-from-the-college-of-arts-and-sciences"
+    },
+    {
+      "title": "UB students named Goldwater Scholars",
+      "source": "UB News",
+      "date": "2014-03",
+      "url": "https://www.buffalo.edu/fellowships/start/scholars.host.html/content/shared/university/news/news-center-releases/2014/03/048.detail.html"
     }
   ]
 }

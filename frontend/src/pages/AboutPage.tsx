@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { buttonVariants } from "@/components/ui/button";
 import { getHomeData, pdfUrl } from "@/utils/content";
-import { Award, Briefcase, GraduationCap, Download, Heart } from "lucide-react";
+import { Award, Briefcase, GraduationCap, Download, Heart, Newspaper, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function AboutPage() {
@@ -13,8 +13,8 @@ export function AboutPage() {
     <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-3xl font-bold tracking-tight">About</h1>
       <div className="mt-4 space-y-4 text-muted-foreground leading-relaxed">
-        {home.about.split("\n\n").map((paragraph, i) => (
-          <p key={i}>{paragraph}</p>
+        {home.bio.map((paragraph, idx) => (
+          <p key={idx}>{paragraph}</p>
         ))}
       </div>
 
@@ -26,6 +26,14 @@ export function AboutPage() {
           className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
         >
           <Download className="mr-2 h-4 w-4" /> Resume
+        </a>
+        <a
+          href={pdfUrl("Bearden_CV.pdf")}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+        >
+          <Download className="mr-2 h-4 w-4" /> CV
         </a>
         <a
           href={pdfUrl("DissertationSynopsis.pdf")}
@@ -95,6 +103,35 @@ export function AboutPage() {
         <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
           {home.awards.map((a) => (
             <li key={a}>{a}</li>
+          ))}
+        </ul>
+      </section>
+
+      <Separator className="my-10" />
+
+      {/* Press & Media */}
+      <section>
+        <h2 className="flex items-center gap-2 text-2xl font-semibold mb-6">
+          <Newspaper className="h-5 w-5" /> Press & Media
+        </h2>
+        <ul className="space-y-3">
+          {home.press.map((item) => (
+            <li key={item.url}>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-start justify-between gap-3 rounded-md border p-3 transition-colors hover:bg-muted/50"
+              >
+                <div className="min-w-0">
+                  <p className="font-medium leading-snug">{item.title}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {item.source} &middot; {item.date}
+                  </p>
+                </div>
+                <ExternalLink className="h-4 w-4 shrink-0 mt-1 text-muted-foreground transition-colors group-hover:text-foreground" />
+              </a>
+            </li>
           ))}
         </ul>
       </section>
