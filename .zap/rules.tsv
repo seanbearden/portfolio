@@ -1,0 +1,6 @@
+# ZAP Baseline rule overrides
+# Format: RULE_ID<TAB>IGNORE|WARN|FAIL<TAB>comment
+# Docs: https://www.zaproxy.org/docs/docker/baseline-scan/#configuration-file
+#
+# Add entries below as findings are triaged. Each IGNORE must include
+# a short comment explaining why the rule is acceptable for this site.
