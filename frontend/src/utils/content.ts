@@ -1,6 +1,22 @@
 import type { BlogPost, PortfolioProject, Publication, HomeData } from "@/types/content";
 import { parseFrontmatter } from "./parseFrontmatter.ts";
 
+
+function getString(value: unknown, fallback = ""): string {
+  return typeof value === "string" ? value : fallback;
+}
+
+function getOptionalString(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
+function getStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string");
+  }
+  return [];
+}
+
 const ASSETS_BASE = import.meta.env.VITE_ASSETS_BASE_URL ?? "";
 
 export function assetUrl(filename: string): string {
@@ -27,13 +43,13 @@ export function parseAndSortBlogPosts(modules: Record<string, unknown>): BlogPos
     const content = typeof raw === "string" ? raw : "";
     const { meta, body } = parseFrontmatter(content);
     posts.push({
-      title: (meta.title as string) ?? "",
-      date: (meta.date as string) ?? "",
-      slug: (meta.slug as string) ?? "",
-      oldUrl: (meta.oldUrl as string) ?? "",
-      categories: (meta.categories as string[]) ?? [],
-      tags: (meta.tags as string[]) ?? [],
-      image: meta.image as string | undefined,
+      title: getString(meta.title),
+      date: getString(meta.date),
+      slug: getString(meta.slug),
+      oldUrl: getString(meta.oldUrl),
+      categories: getStringArray(meta.categories),
+      tags: getStringArray(meta.tags),
+      image: getOptionalString(meta.image),
       body,
     });
   }
@@ -73,14 +89,14 @@ export function getProjects(): PortfolioProject[] {
     const content = typeof raw === "string" ? raw : "";
     const { meta, body } = parseFrontmatter(content);
     projects.push({
-      title: (meta.title as string) ?? "",
-      subtitle: meta.subtitle as string | undefined,
-      slug: (meta.slug as string) ?? "",
+      title: getString(meta.title),
+      subtitle: getOptionalString(meta.subtitle),
+      slug: getString(meta.slug),
       order: Number(meta.order) || 0,
-      skills: (meta.skills as string[]) ?? [],
-      link: meta.link as string | undefined,
-      cta: meta.cta as string | undefined,
-      image: meta.image as string | undefined,
+      skills: getStringArray(meta.skills),
+      link: getOptionalString(meta.link),
+      cta: getOptionalString(meta.cta),
+      image: getOptionalString(meta.image),
       body,
     });
   }
