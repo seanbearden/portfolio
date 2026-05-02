@@ -95,10 +95,12 @@ export function getProjects(): PortfolioProject[] {
     const { meta, body } = parseFrontmatter(content);
     projects.push({
       title: (meta.title as string) ?? "",
+      subtitle: meta.subtitle as string | undefined,
       slug: (meta.slug as string) ?? "",
       order: Number(meta.order) || 0,
       skills: (meta.skills as string[]) ?? [],
       link: meta.link as string | undefined,
+      cta: meta.cta as string | undefined,
       relatedPublication: meta.relatedPublication as string | undefined,
       image: meta.image as string | undefined,
       body,
