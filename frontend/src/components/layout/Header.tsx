@@ -1,5 +1,7 @@
 import { Link, NavLink } from "react-router";
 import { GitHubIcon, LinkedInIcon, XTwitterIcon } from "@/components/common/SocialIcons";
+import { getHomeData } from "@/utils/content";
+import type { SVGProps, ReactNode } from "react";
 
 const navItems = [
   { to: "/", label: "Home" },
@@ -10,7 +12,21 @@ const navItems = [
   { to: "/contact", label: "Contact" },
 ];
 
+const socialIcons: Record<string, (props: SVGProps<SVGSVGElement>) => ReactNode> = {
+  github: GitHubIcon,
+  linkedin: LinkedInIcon,
+  twitter: XTwitterIcon,
+};
+
+const ariaLabels: Record<string, string> = {
+  github: "GitHub",
+  linkedin: "LinkedIn",
+  twitter: "Twitter",
+};
+
 export function Header() {
+  const home = getHomeData();
+
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
@@ -36,15 +52,21 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <a href="https://github.com/seanbearden" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-            <GitHubIcon className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
-          </a>
-          <a href="https://www.linkedin.com/in/sean-bearden-730aa189/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-            <LinkedInIcon className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
-          </a>
-          <a href="https://twitter.com/Dr_Bearden" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-            <XTwitterIcon className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
-          </a>
+          {Object.entries(home.social).map(([platform, url]) => {
+            const Icon = socialIcons[platform];
+            if (!Icon) return null;
+            return (
+              <a
+                key={platform}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={ariaLabels[platform] || platform}
+              >
+                <Icon className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+              </a>
+            );
+          })}
         </div>
       </div>
     </header>

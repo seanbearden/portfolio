@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { ArrowRight, Mail, ExternalLink } from "lucide-react";
+import { ArrowRight, Mail, MessageSquare } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,15 @@ export function HomePage() {
               {home.hero.headline}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
-              <Link to="/portfolio" className={cn(buttonVariants())}>
+              <a
+                href="https://bearden-resume-chatbot.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(buttonVariants())}
+              >
+                <MessageSquare className="mr-2 h-4 w-4" /> Chat with My Resume
+              </a>
+              <Link to="/portfolio" className={cn(buttonVariants({ variant: "outline" }))}>
                 View Portfolio
               </Link>
               <a
@@ -42,12 +50,12 @@ export function HomePage() {
                 Resume
               </a>
               <a
-                href="https://bearden-resume-chatbot.com"
+                href={pdfUrl("Bearden_CV.pdf")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(buttonVariants({ variant: "outline" }))}
               >
-                <ExternalLink className="mr-2 h-4 w-4" /> Chat with My Resume
+                CV
               </a>
               <Link to="/contact" className={cn(buttonVariants({ variant: "outline" }))}>
                 <Mail className="mr-2 h-4 w-4" /> Contact
@@ -67,9 +75,9 @@ export function HomePage() {
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           {projects.map((project) => (
-            <Card key={project.slug} className="overflow-hidden">
+            <Card key={project.slug} className="overflow-hidden flex flex-col">
               {project.image && (
-                <div className="aspect-video bg-muted">
+                <div className="aspect-video bg-muted shrink-0">
                   <img
                     src={assetUrl(project.image)}
                     alt={project.title}
@@ -78,15 +86,32 @@ export function HomePage() {
                   />
                 </div>
               )}
-              <CardContent className="p-4">
-                <h3 className="font-medium leading-snug">{project.title}</h3>
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {project.skills.slice(0, 3).map((skill) => (
-                    <Badge key={skill} variant="secondary" className="text-xs">
+              <CardContent className="p-4 flex flex-col flex-grow">
+                <h3 className="font-semibold leading-snug">{project.title}</h3>
+                {project.subtitle && (
+                  <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
+                    {project.subtitle}
+                  </p>
+                )}
+                <div className="mt-3 flex flex-wrap gap-1">
+                  {project.skills.map((skill) => (
+                    <Badge key={skill} variant="secondary" className="text-[10px] px-1.5 py-0">
                       {skill}
                     </Badge>
                   ))}
                 </div>
+                {project.link && project.cta && (
+                  <div className="mt-auto pt-4">
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-medium text-primary hover:underline flex items-center gap-1"
+                    >
+                      {project.cta} <ArrowRight className="h-3 w-3" />
+                    </a>
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}

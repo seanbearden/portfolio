@@ -1,4 +1,5 @@
 import type { BlogPost, PortfolioProject, Publication, HomeData } from "@/types/content";
+import { parseFrontmatter } from "./parseFrontmatter.ts";
 
 const ASSETS_BASE = import.meta.env.VITE_ASSETS_BASE_URL ?? "";
 
@@ -14,42 +15,11 @@ export function pdfUrl(filename: string): string {
 
 // --- Blog posts ---
 
-interface RawMarkdown {
-  default: string;
-  frontmatter: Record<string, unknown>;
-}
-
-const blogModules = import.meta.glob<RawMarkdown>("../../../content/blog/*.md", {
+const blogModules = import.meta.glob<string>("../../../content/blog/*.md", {
   eager: true,
   query: "?raw",
   import: "default",
 });
-
-function parseFrontmatter(raw: string): { meta: Record<string, string | string[]>; body: string } {
-  const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-  if (!match) return { meta: {}, body: raw };
-
-  const meta: Record<string, string | string[]> = {};
-  for (const line of match[1].split("\n")) {
-    const idx = line.indexOf(":");
-    if (idx === -1) continue;
-    const key = line.slice(0, idx).trim();
-    let val = line.slice(idx + 1).trim();
-    // Remove surrounding quotes
-    if (val.startsWith('"') && val.endsWith('"')) {
-      val = val.slice(1, -1);
-    }
-    // Parse JSON arrays
-    if (val.startsWith("[")) {
-      try {
-        meta[key] = JSON.parse(val);
-        continue;
-      } catch { /* fall through */ }
-    }
-    meta[key] = val;
-  }
-  return { meta, body: match[2].trim() };
-}
 
 let _blogPosts: BlogPost[] | null = null;
 
@@ -100,10 +70,12 @@ export function getProjects(): PortfolioProject[] {
     const { meta, body } = parseFrontmatter(content);
     projects.push({
       title: (meta.title as string) ?? "",
+      subtitle: meta.subtitle as string | undefined,
       slug: (meta.slug as string) ?? "",
       order: Number(meta.order) || 0,
       skills: (meta.skills as string[]) ?? [],
       link: meta.link as string | undefined,
+      cta: meta.cta as string | undefined,
       relatedPublication: meta.relatedPublication as string | undefined,
       image: meta.image as string | undefined,
       body,
