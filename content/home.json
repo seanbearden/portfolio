@@ -102,5 +102,17 @@
       "Computational Physics"
     ]
   },
-  "about": "Sean Bearden earned his Ph.D. in Physics from UC San Diego as a member of Dr. Massimiliano Di Ventra's research group, focusing on constraint satisfaction problems using digital memcomputing machines. A nontraditional learner who began his academic journey while incarcerated, he went from a GED to a Ph.D. He is committed to lifelong learning, creative projects with Arduino and Raspberry Pi, and practices Brazilian Jiu-Jitsu in San Diego."
+  "about": "Physicist turned data scientist. Ph.D. from UC San Diego in memcomputing — a non-quantum alternative computing paradigm. Now applying that research mindset to financial services, AI assistants, and platform engineering.",
+  "bio": [
+    "I earned my Ph.D. in Physics from UC San Diego under Dr. Massimiliano Di Ventra, designing dynamical-systems algorithms for constraint satisfaction problems. The work was published in Nature Scientific Reports, Communications Physics, and Physical Review Applied, and built an independent memcomputing implementation separate from MemComputing, Inc.",
+    "My path here wasn't linear. I started with a GED while incarcerated, transferred from Ohio University to SUNY Buffalo for a B.S. in Physics and Applied Mathematics, then to UCSD for graduate work. The Story Collider podcast captured part of that story. I've talked about it more openly because the path I took shouldn't be unusual — it should be possible.",
+    "Today I work as a data scientist across two companies under common ownership: Bayview Solutions LLC (debt portfolio management, COGS modeling, BigQuery analytics) and Cash Lane Holdings (consumer lending, LangGraph-powered AI assistants on Google Cloud). I'm also Product Owner for an enterprise platform migration at BV-Tech-Solutions. The work spans ETL pipelines, RAG systems, conversational AI, and forecasting — building things that actually run in production."
+  ],
+  "interests": [
+    "Brazilian Jiu-Jitsu at P5 Academy in San Diego",
+    "Arduino and Raspberry Pi projects (the talking Deadpool head was a personal favorite)",
+    "Buffalo, NY native — and yes, a connoisseur of chicken wings",
+    "Storytelling and public speaking, including a Story Collider appearance",
+    "Lifelong learner — currently into LLM agent architectures and Kaggle competitions"
+  ]
 }
