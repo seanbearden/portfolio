@@ -3,6 +3,12 @@ codecov:
   notify:
     wait_for_ci: true
 
+# vitest runs from frontend/ and emits lcov paths like "src/App.tsx".
+# Rewrite to "frontend/src/App.tsx" so component_management.paths and
+# flags.frontend.paths match against the repo-relative layout.
+fixes:
+  - "src/::frontend/src/"
+
 coverage:
   precision: 2
   round: down
@@ -43,19 +49,19 @@ component_management:
     - component_id: pages
       name: Pages
       paths:
-        - frontend/src/pages/**
+        - "frontend/src/pages/**"
     - component_id: components
       name: Components
       paths:
-        - frontend/src/components/**
+        - "frontend/src/components/**"
     - component_id: utils
       name: Utils
       paths:
-        - frontend/src/utils/**
+        - "frontend/src/utils/**"
     - component_id: lib
       name: Lib
       paths:
-        - frontend/src/lib/**
+        - "frontend/src/lib/**"
 
 ignore:
   - "infrastructure/**"
