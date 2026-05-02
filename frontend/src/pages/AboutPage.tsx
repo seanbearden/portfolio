@@ -24,6 +24,14 @@ export function AboutPage() {
           <Download className="mr-2 h-4 w-4" /> Resume
         </a>
         <a
+          href={pdfUrl("Bearden_CV.pdf")}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+        >
+          <Download className="mr-2 h-4 w-4" /> CV
+        </a>
+        <a
           href={pdfUrl("DissertationSynopsis.pdf")}
           target="_blank"
           rel="noopener noreferrer"
