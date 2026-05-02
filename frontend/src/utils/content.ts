@@ -28,7 +28,7 @@ export function getBlogPosts(): BlogPost[] {
 
   const posts: BlogPost[] = [];
   for (const [, raw] of Object.entries(blogModules)) {
-    const content = typeof raw === "string" ? raw : "";
+    const content = typeof raw === "string" ? raw : (raw as { default: string })?.default || "";
     const { meta, body } = parseFrontmatter(content);
     posts.push({
       title: (meta.title as string) ?? "",
@@ -66,7 +66,7 @@ export function getProjects(): PortfolioProject[] {
 
   const projects: PortfolioProject[] = [];
   for (const [, raw] of Object.entries(portfolioModules)) {
-    const content = typeof raw === "string" ? raw : "";
+    const content = typeof raw === "string" ? raw : (raw as { default: string })?.default || "";
     const { meta, body } = parseFrontmatter(content);
     projects.push({
       title: (meta.title as string) ?? "",
