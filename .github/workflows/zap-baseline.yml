@@ -3,15 +3,9 @@ name: ZAP Baseline
 on:
   schedule:
     - cron: "0 6 * * 1"  # Mondays 06:00 UTC
-  pull_request:
-    branches: [main]
-    types: [opened, synchronize, reopened, ready_for_review]
-    paths:
-      - "frontend/**"
-      - "nginx.conf.template"
-      - "Dockerfile"
-      - ".zap/**"
-      - ".github/workflows/zap-baseline.yml"
+  workflow_run:
+    workflows: ["Deploy"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       target:
@@ -26,7 +20,7 @@ permissions:
 jobs:
   baseline:
     name: ZAP baseline scan
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
