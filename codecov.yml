@@ -20,15 +20,42 @@ coverage:
         informational: true
 
 comment:
-  layout: "reach, diff, flags, files"
+  layout: "newheader, diff, flags, components, files, condensed_footer"
   behavior: default
   require_changes: false
+  hide_comment_details: true
+  show_carryforward_flags: false
 
 flags:
   frontend:
     paths:
       - frontend/src/
     carryforward: false
+
+component_management:
+  default_rules:
+    statuses:
+      - type: project
+        target: auto
+        threshold: 1%
+        informational: true
+  individual_components:
+    - component_id: pages
+      name: Pages
+      paths:
+        - frontend/src/pages/**
+    - component_id: components
+      name: Components
+      paths:
+        - frontend/src/components/**
+    - component_id: utils
+      name: Utils
+      paths:
+        - frontend/src/utils/**
+    - component_id: lib
+      name: Lib
+      paths:
+        - frontend/src/lib/**
 
 ignore:
   - "infrastructure/**"
