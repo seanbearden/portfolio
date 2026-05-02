@@ -2,55 +2,86 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getProjects, assetUrl } from "@/utils/content";
 import { ExternalLink } from "lucide-react";
+import { motion } from "framer-motion";
+
+const MotionCard = motion.create(Card);
 
 export function PortfolioPage() {
   const projects = getProjects();
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-12">
-      <h1 className="text-3xl font-bold tracking-tight">Portfolio</h1>
-      <p className="mt-2 text-muted-foreground">
-        Selected projects spanning data science, physics research, and AI applications.
-      </p>
+    <div className="relative mx-auto max-w-5xl px-4 py-16 overflow-hidden">
+      {/* Subtle Background Glow */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-[0%] right-[10%] w-[30%] h-[30%] rounded-full bg-primary/10 blur-[120px] mix-blend-screen" />
+      </div>
 
-      <div className="mt-8 grid gap-6 md:grid-cols-2">
-        {projects.map((project) => (
-          <Card key={project.slug} className="overflow-hidden flex flex-col">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h1 className="text-4xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/70">Portfolio</h1>
+        <p className="mt-3 text-lg text-muted-foreground/90">
+          Selected projects spanning data science, physics research, and AI applications.
+        </p>
+      </motion.div>
+
+      <div className="mt-12 grid gap-8 md:grid-cols-2">
+        {projects.map((project, i) => (
+          <MotionCard
+            key={project.slug}
+            className="overflow-hidden flex flex-col border-border/50 bg-card/50 backdrop-blur-sm"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.5, delay: i * 0.1 }}
+            whileHover={{ y: -5, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)", borderColor: "var(--color-border)" }}
+          >
             {project.image && (
-              <div className="aspect-video bg-muted">
-                <img
+              <div className="aspect-video bg-muted overflow-hidden shrink-0">
+                <motion.img
                   src={assetUrl(project.image)}
                   alt={project.title}
                   className="h-full w-full object-cover"
                   loading="lazy"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.4 }}
                 />
               </div>
             )}
-            <CardContent className="flex flex-1 flex-col p-5">
-              <h2 className="text-lg font-semibold leading-snug">{project.title}</h2>
-              <p className="mt-2 text-sm text-muted-foreground flex-1">
+            <CardContent className="flex flex-1 flex-col p-6">
+              <h2 className="text-xl font-semibold leading-snug">{project.title}</h2>
+              {project.subtitle && (
+                <p className="mt-2 text-sm text-primary font-medium">
+                  {project.subtitle}
+                </p>
+              )}
+              <p className="mt-4 text-sm text-muted-foreground flex-1 leading-relaxed">
                 {project.body.slice(0, 200)}
                 {project.body.length > 200 ? "..." : ""}
               </p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
+              <div className="mt-5 flex flex-wrap gap-1.5">
                 {project.skills.map((skill) => (
-                  <Badge key={skill} variant="secondary" className="text-xs">
+                  <Badge key={skill} variant="secondary" className="text-xs bg-secondary/50 hover:bg-secondary transition-colors">
                     {skill}
                   </Badge>
                 ))}
               </div>
               {project.link && (
-                <a
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 inline-flex items-center gap-1 text-sm font-medium hover:underline"
-                >
-                  View Project <ExternalLink className="h-3.5 w-3.5" />
-                </a>
+                <div className="mt-auto pt-6">
+                  <a
+                    href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 group transition-colors"
+                  >
+                    {project.cta || "View Project"} <ExternalLink className="h-4 w-4 transform group-hover:scale-110 transition-transform" />
+                  </a>
+                </div>
               )}
             </CardContent>
-          </Card>
+          </MotionCard>
         ))}
       </div>
     </div>
