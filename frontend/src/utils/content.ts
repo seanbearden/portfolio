@@ -1,6 +1,7 @@
 import type { BlogPost, PortfolioProject, Publication, HomeData } from "@/types/content";
+import { parseFrontmatter } from "./parse-frontmatter";
 
-const ASSETS_BASE = typeof import.meta.env !== 'undefined' ? import.meta.env.VITE_ASSETS_BASE_URL : "";
+const ASSETS_BASE = import.meta.env.VITE_ASSETS_BASE_URL ?? "";
 
 export function assetUrl(filename: string): string {
   if (!filename) return "";
@@ -19,37 +20,12 @@ interface RawMarkdown {
   frontmatter: Record<string, unknown>;
 }
 
-const blogModules = typeof import.meta.glob !== 'undefined' ? import.meta.glob<RawMarkdown>("../../../content/blog/*.md", {
+const blogModules = import.meta.glob<RawMarkdown>("../../../content/blog/*.md", {
   eager: true,
   query: "?raw",
   import: "default",
-}) : {};
+});
 
-export function parseFrontmatter(raw: string): { meta: Record<string, string | string[]>; body: string } {
-  const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-  if (!match) return { meta: {}, body: raw };
-
-  const meta: Record<string, string | string[]> = {};
-  for (const line of match[1].split("\n")) {
-    const idx = line.indexOf(":");
-    if (idx === -1) continue;
-    const key = line.slice(0, idx).trim();
-    let val = line.slice(idx + 1).trim();
-    // Remove surrounding quotes
-    if (val.startsWith('"') && val.endsWith('"')) {
-      val = val.slice(1, -1);
-    }
-    // Parse JSON arrays
-    if (val.startsWith("[")) {
-      try {
-        meta[key] = JSON.parse(val);
-        continue;
-      } catch { /* fall through */ }
-    }
-    meta[key] = val;
-  }
-  return { meta, body: match[2].trim() };
-}
 
 let _blogPosts: BlogPost[] | null = null;
 
@@ -83,11 +59,11 @@ export function getBlogPost(slug: string): BlogPost | undefined {
 
 // --- Portfolio projects ---
 
-const portfolioModules = typeof import.meta.glob !== 'undefined' ? import.meta.glob<string>("../../../content/portfolio/*.md", {
+const portfolioModules = import.meta.glob<string>("../../../content/portfolio/*.md", {
   eager: true,
   query: "?raw",
   import: "default",
-}) : {};
+});
 
 let _projects: PortfolioProject[] | null = null;
 
@@ -117,7 +93,7 @@ export function getProjects(): PortfolioProject[] {
 
 // --- Publications ---
 
-import publicationsJson from "../../../content/publications.json" with { type: "json" };
+import publicationsJson from "../../../content/publications.json";
 
 export function getPublications(): Publication[] {
   return publicationsJson as Publication[];
@@ -125,7 +101,7 @@ export function getPublications(): Publication[] {
 
 // --- Home data ---
 
-import homeJson from "../../../content/home.json" with { type: "json" };
+import homeJson from "../../../content/home.json";
 
 export function getHomeData(): HomeData {
   return homeJson as HomeData;

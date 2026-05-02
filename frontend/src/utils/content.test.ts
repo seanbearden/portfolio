@@ -1,13 +1,7 @@
+/// <reference types="node" />
 import test from 'node:test';
 import assert from 'node:assert';
-
-// Mock import.meta for content.ts (this needs to be done BEFORE importing content.ts if possible)
-// But we can't easily mock import.meta for a module we are about to import in Node.js ESM without loaders.
-// However, we can try to use a trick if content.ts was using globalThis or if we use a loader.
-// Since we are using node --test, we can try to provide a mock via globalThis if the code was designed for it,
-// but it's using import.meta.env directly.
-
-import { parseFrontmatter } from './content.ts';
+import { parseFrontmatter } from './parse-frontmatter.ts';
 
 test('parseFrontmatter handles valid frontmatter', () => {
   const input = `---
