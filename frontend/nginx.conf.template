@@ -6,7 +6,7 @@ server {
 
     # --- Security headers ---
     # nginx add_header does not inherit when a child block uses add_header,
-    # so server-level headers are also redeclared in the static-asset location below.
+    # so server-level headers are also redeclared in the location blocks below.
     add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-Frame-Options "DENY" always;
@@ -26,14 +26,10 @@ server {
     #     proxy_set_header X-Forwarded-Proto $scheme;
     # }
 
-    # SPA fallback
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Cache static assets
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff2?|webp)$ {
-        expires 1y;
+    # 1. HTML — no-cache so deploys are picked up immediately
+    location = /index.html {
+        add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+        # security headers
         add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
         add_header X-Content-Type-Options "nosniff" always;
         add_header X-Frame-Options "DENY" always;
@@ -43,6 +39,53 @@ server {
         add_header Cross-Origin-Opener-Policy "same-origin" always;
         add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
         add_header Cross-Origin-Resource-Policy "same-origin" always;
-        add_header Cache-Control "public, immutable" always;
+    }
+
+    # Default for SPA routes (also serves index.html via try_files)
+    location / {
+        try_files $uri $uri/ /index.html;
+        add_header Cache-Control "no-cache" always;
+        # security headers
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://storage.googleapis.com; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" always;
+        add_header Cross-Origin-Opener-Policy "same-origin" always;
+        add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
+        add_header Cross-Origin-Resource-Policy "same-origin" always;
+    }
+
+    # 2. Hashed assets — immutable, 1-year cache
+    location ~* ^/assets/.+\.(js|css|woff2?|png|jpg|jpeg|svg|webp|avif)$ {
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        # security headers
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://storage.googleapis.com; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" always;
+        add_header Cross-Origin-Opener-Policy "same-origin" always;
+        add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
+        add_header Cross-Origin-Resource-Policy "same-origin" always;
+    }
+
+    # 3. Non-hashed static files (favicon.svg, robots.txt, sitemap.xml)
+    location ~* \.(ico|svg|txt|xml)$ {
+        expires 1h;
+        add_header Cache-Control "public, max-age=3600" always;
+        # security headers
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://storage.googleapis.com; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" always;
+        add_header Cross-Origin-Opener-Policy "same-origin" always;
+        add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
+        add_header Cross-Origin-Resource-Policy "same-origin" always;
     }
 }
