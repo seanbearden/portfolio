@@ -1,28 +1,27 @@
-import test from "node:test";
-import assert from "node:assert";
+import { test, expect } from "vitest";
 import { parseFrontmatter } from "./parseFrontmatter.ts";
 
 test("parseFrontmatter: empty input edge cases", () => {
   // Test completely empty string
-  assert.deepStrictEqual(parseFrontmatter(""), {
+  expect(parseFrontmatter("")).toEqual({
     meta: {},
     body: "",
   });
 
   // Test string with no frontmatter
-  assert.deepStrictEqual(parseFrontmatter("Just some content"), {
+  expect(parseFrontmatter("Just some content")).toEqual({
     meta: {},
     body: "Just some content",
   });
 
   // Test string with empty frontmatter
-  assert.deepStrictEqual(parseFrontmatter("---\n\n---\nbody content"), {
+  expect(parseFrontmatter("---\n\n---\nbody content")).toEqual({
     meta: {},
     body: "body content",
   });
 
   // Test string with single empty frontmatter delimiter (should treat as body)
-  assert.deepStrictEqual(parseFrontmatter("---\nbody content"), {
+  expect(parseFrontmatter("---\nbody content")).toEqual({
     meta: {},
     body: "---\nbody content",
   });
@@ -30,19 +29,19 @@ test("parseFrontmatter: empty input edge cases", () => {
 
 test("parseFrontmatter: valid frontmatter edge cases", () => {
   // Test valid frontmatter with extra spaces
-  assert.deepStrictEqual(parseFrontmatter("---\n  title  :  My Title  \n---\nbody"), {
+  expect(parseFrontmatter("---\n  title  :  My Title  \n---\nbody")).toEqual({
     meta: { title: "My Title" },
     body: "body",
   });
 
   // Test valid frontmatter with JSON arrays
-  assert.deepStrictEqual(parseFrontmatter("---\ntags: [\"a\", \"b\"]\n---\nbody"), {
+  expect(parseFrontmatter("---\ntags: [\"a\", \"b\"]\n---\nbody")).toEqual({
     meta: { tags: ["a", "b"] },
     body: "body",
   });
 
   // Test valid frontmatter with quotes
-  assert.deepStrictEqual(parseFrontmatter("---\ntitle: \"Quoted Title\"\n---\nbody"), {
+  expect(parseFrontmatter("---\ntitle: \"Quoted Title\"\n---\nbody")).toEqual({
     meta: { title: "Quoted Title" },
     body: "body",
   });

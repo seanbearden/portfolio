@@ -21,13 +21,9 @@ const blogModules = import.meta.glob<string>("../../../content/blog/*.md", {
   import: "default",
 });
 
-let _blogPosts: BlogPost[] | null = null;
-
-export function getBlogPosts(): BlogPost[] {
-  if (_blogPosts) return _blogPosts;
-
+export function parseAndSortBlogPosts(modules: Record<string, unknown>): BlogPost[] {
   const posts: BlogPost[] = [];
-  for (const [, raw] of Object.entries(blogModules)) {
+  for (const [, raw] of Object.entries(modules)) {
     const content = typeof raw === "string" ? raw : "";
     const { meta, body } = parseFrontmatter(content);
     posts.push({
@@ -43,6 +39,14 @@ export function getBlogPosts(): BlogPost[] {
   }
 
   posts.sort((a, b) => b.date.localeCompare(a.date));
+  return posts;
+}
+
+let _blogPosts: BlogPost[] | null = null;
+
+export function getBlogPosts(): BlogPost[] {
+  if (_blogPosts) return _blogPosts;
+  const posts = parseAndSortBlogPosts(blogModules);
   _blogPosts = posts;
   return posts;
 }
