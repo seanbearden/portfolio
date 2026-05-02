@@ -12,6 +12,10 @@ export default defineConfig({
     },
   },
   test: {
+    reporters: process.env.CI
+      ? ['default', ['junit', { suiteName: 'portfolio-frontend' }]]
+      : ['default'],
+    outputFile: { junit: './test-report.junit.xml' },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'json-summary'],
