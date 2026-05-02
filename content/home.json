@@ -103,6 +103,17 @@
     ]
   },
   "about": "Sean Bearden earned his Ph.D. in Physics from UC San Diego as a member of Dr. Massimiliano Di Ventra's research group, focusing on constraint satisfaction problems using digital memcomputing machines. A nontraditional learner who began his academic journey while incarcerated, he went from a GED to a Ph.D. He is committed to lifelong learning, creative projects with Arduino and Raspberry Pi, and practices Brazilian Jiu-Jitsu in San Diego.",
+  "bio": [
+    "Sean Bearden earned his Ph.D. in Physics from UC San Diego as a member of Dr. Massimiliano Di Ventra's research group, focusing on constraint satisfaction problems using digital memcomputing machines.",
+    "A nontraditional learner who began his academic journey while incarcerated, he went from a GED to a Ph.D. in Physics.",
+    "He is committed to lifelong learning, creative projects with Arduino and Raspberry Pi, and practices Brazilian Jiu-Jitsu in San Diego."
+  ],
+  "interests": [
+    "Lifelong learning and mentorship",
+    "Brazilian Jiu-Jitsu (P5 Academy, San Diego)",
+    "Creative projects with Arduino and Raspberry Pi",
+    "Nontraditional education pathways"
+  ],
   "press": [
     {
       "title": "Q&A: Sean Bearden on pursuing a PhD after prison",

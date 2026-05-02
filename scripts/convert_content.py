@@ -71,6 +71,12 @@ def convert_blog_posts():
     posts_meta = sitemap["blog_posts"]
     raw = (SITE_DATA / "blog-posts.md").read_text()
 
+    # Pre-compute sets of words for fuzzy matching to improve performance
+    fuzzy_meta = [
+        (m, set(m["title"].lower().split()[:4]))
+        for m in posts_meta
+    ]
+
     # Split on --- separators between posts
     sections = re.split(r"\n---\n", raw)
     blog_dir = CONTENT / "blog"
@@ -87,18 +93,19 @@ def convert_blog_posts():
         if not title_match:
             continue
         title = title_match.group(1).strip()
+        title_lower = title.lower()
 
         # Find matching metadata from sitemap
         meta = None
+        title_exact = title_lower[:30]
         for m in posts_meta:
-            if m["title"].lower()[:30] == title.lower()[:30]:
+            if m["title"].lower()[:30] == title_exact:
                 meta = m
                 break
         if not meta:
             # Fuzzy match
-            for m in posts_meta:
-                title_words = set(title.lower().split()[:4])
-                meta_words = set(m["title"].lower().split()[:4])
+            title_words = set(title_lower.split()[:4])
+            for m, meta_words in fuzzy_meta:
                 if len(title_words & meta_words) >= 3:
                     meta = m
                     break
@@ -395,6 +402,17 @@ def convert_home():
             ],
         },
         "about": "Sean Bearden earned his Ph.D. in Physics from UC San Diego as a member of Dr. Massimiliano Di Ventra's research group, focusing on constraint satisfaction problems using digital memcomputing machines. A nontraditional learner who began his academic journey while incarcerated, he went from a GED to a Ph.D. He is committed to lifelong learning, creative projects with Arduino and Raspberry Pi, and practices Brazilian Jiu-Jitsu in San Diego.",
+        "bio": [
+            "Sean Bearden earned his Ph.D. in Physics from UC San Diego as a member of Dr. Massimiliano Di Ventra's research group, focusing on constraint satisfaction problems using digital memcomputing machines.",
+            "A nontraditional learner who began his academic journey while incarcerated, he went from a GED to a Ph.D. in Physics.",
+            "He is committed to lifelong learning, creative projects with Arduino and Raspberry Pi, and practices Brazilian Jiu-Jitsu in San Diego."
+        ],
+        "interests": [
+            "Lifelong learning and mentorship",
+            "Brazilian Jiu-Jitsu (P5 Academy, San Diego)",
+            "Creative projects with Arduino and Raspberry Pi",
+            "Nontraditional education pathways"
+        ],
         "press": [
             {
                 "title": "Q&A: Sean Bearden on pursuing a PhD after prison",

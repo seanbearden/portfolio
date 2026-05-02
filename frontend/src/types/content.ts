@@ -11,10 +11,12 @@ export interface BlogPost {
 
 export interface PortfolioProject {
   title: string;
+  subtitle?: string;
   slug: string;
   order: number;
   skills: string[];
   link?: string;
+  cta?: string;
   relatedPublication?: string;
   image?: string;
   body: string;
@@ -42,11 +44,11 @@ export interface Education {
   year: string;
 }
 
-export interface Press {
+export interface PressItem {
   title: string;
   source: string;
-  url: string;
   date: string;
+  url: string;
 }
 
 export interface HomeData {
@@ -61,5 +63,7 @@ export interface HomeData {
   awards: string[];
   skills: Record<string, string[]>;
   about: string;
-  press: Press[];
+  bio: string[];
+  interests: string[];
+  press: PressItem[];
 }
