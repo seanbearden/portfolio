@@ -17,7 +17,7 @@ ARG VITE_ASSETS_BASE_URL
 RUN cd frontend && npm run build
 
 # ---- Serve stage ----
-FROM nginx:1.27-alpine AS production
+FROM nginx:1.29-alpine AS production
 
 COPY --from=build /app/frontend/dist /usr/share/nginx/html
 COPY frontend/nginx.conf.template /etc/nginx/templates/default.conf.template
