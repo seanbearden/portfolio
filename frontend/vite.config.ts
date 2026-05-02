@@ -16,6 +16,7 @@ export default defineConfig({
       ? ['default', ['junit', { suiteName: 'portfolio-frontend' }]]
       : ['default'],
     outputFile: { junit: './test-report.junit.xml' },
+    setupFiles: ['./src/test/setup.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'json-summary'],
