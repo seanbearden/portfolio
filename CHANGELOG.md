@@ -1,5 +1,13 @@
 # portfolio
 
+## 0.3.1
+
+### Patch Changes
+
+- [#109](https://github.com/seanbearden/portfolio/pull/109) [`c41d760`](https://github.com/seanbearden/portfolio/commit/c41d7609de3b4b29947f7521a6adcce9b06133d0) Thanks [@seanbearden](https://github.com/seanbearden)! - Cache HTML as no-cache and hashed assets as immutable.
+
+- [#110](https://github.com/seanbearden/portfolio/pull/110) [`a044d92`](https://github.com/seanbearden/portfolio/commit/a044d928d2cd9ac102aefeb64559c02cd164cb23) Thanks [@seanbearden](https://github.com/seanbearden)! - Add cross-origin isolation response headers (COOP/CORP).
+
 ## 0.3.0
 
 ### Minor Changes
