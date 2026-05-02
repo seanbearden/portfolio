@@ -43,10 +43,9 @@ jobs:
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: frontend/test-report.junit.xml
-          report-type: test_results
           flags: frontend
           fail_ci_if_error: false
