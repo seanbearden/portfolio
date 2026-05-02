@@ -1,34 +1,52 @@
-function safeJsonParse<T>(str: string): { success: true; data: T } | { success: false; error: unknown } {
-  try {
-    return { success: true, data: JSON.parse(str) };
-  } catch (error) {
-    return { success: false, error };
-  }
-}
+import matter from "gray-matter";
 
 export function parseFrontmatter(raw: string): { meta: Record<string, string | string[]>; body: string } {
-  const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-  if (!match) return { meta: {}, body: raw };
+  try {
+    const parsed = matter(raw);
 
-  const meta: Record<string, string | string[]> = {};
-  for (const line of match[1].split("\n")) {
-    const idx = line.indexOf(":");
-    if (idx === -1) continue;
-    const key = line.slice(0, idx).trim();
-    let val = line.slice(idx + 1).trim();
-    // Remove surrounding quotes
-    if (val.startsWith('"') && val.endsWith('"')) {
-      val = val.slice(1, -1);
+    if (typeof parsed.data === "string") {
+      return { meta: {}, body: raw };
     }
-    // Parse JSON arrays
-    if (val.startsWith("[")) {
-      const parsed = safeJsonParse<string[]>(val);
-      if (parsed.success) {
-        meta[key] = parsed.data;
-        continue;
+
+    if ((parsed as any).isEmpty && raw.match(/^---\n\s*\n---/)) {
+       const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+       if (match) {
+         return { meta: {}, body: match[2].trim() };
+       }
+    }
+
+    // Normalize data types
+    const meta: Record<string, string | string[]> = {};
+    if (parsed.data && typeof parsed.data === "object") {
+      for (const [key, value] of Object.entries(parsed.data)) {
+        if (value instanceof Date) {
+          // Keep YYYY-MM-DD format if time is exactly midnight UTC
+          const iso = value.toISOString();
+          meta[key] = iso.endsWith("T00:00:00.000Z") ? iso.split("T")[0] : iso;
+        } else if (Array.isArray(value)) {
+          meta[key] = value.map(String);
+        } else {
+          meta[key] = String(value);
+        }
       }
     }
-    meta[key] = val;
+
+    return {
+      meta,
+      body: parsed.content.trim(),
+    };
+  } catch (error) {
+    const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+    if (!match) return { meta: {}, body: raw };
+
+    const meta: Record<string, string | string[]> = {};
+    for (const line of match[1].split("\n")) {
+      const idx = line.indexOf(":");
+      if (idx === -1) continue;
+      const key = line.slice(0, idx).trim();
+      let val = line.slice(idx + 1).trim();
+      meta[key] = val;
+    }
+    return { meta, body: match[2].trim() };
   }
-  return { meta, body: match[2].trim() };
 }

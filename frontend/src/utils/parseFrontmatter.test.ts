@@ -41,7 +41,7 @@ describe("parseFrontmatter", () => {
     });
   });
 
-  it("falls back to raw string when JSON array is malformed", () => {
+  it("falls back to raw string when YAML array is malformed", () => {
     expect(parseFrontmatter("---\ntags: [not valid json\n---\nbody")).toEqual({
       meta: { tags: "[not valid json" },
       body: "body",
