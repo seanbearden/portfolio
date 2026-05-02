@@ -78,13 +78,9 @@ const portfolioModules = import.meta.glob<string>("../../../content/portfolio/*.
   import: "default",
 });
 
-let _projects: PortfolioProject[] | null = null;
-
-export function getProjects(): PortfolioProject[] {
-  if (_projects) return _projects;
-
+export function parseAndSortProjects(modules: Record<string, string>): PortfolioProject[] {
   const projects: PortfolioProject[] = [];
-  for (const [, raw] of Object.entries(portfolioModules)) {
+  for (const [, raw] of Object.entries(modules)) {
     const { meta, body } = parseFrontmatter(raw);
     projects.push({
       title: getString(meta.title),
@@ -100,6 +96,14 @@ export function getProjects(): PortfolioProject[] {
   }
 
   projects.sort((a, b) => a.order - b.order);
+  return projects;
+}
+
+let _projects: PortfolioProject[] | null = null;
+
+export function getProjects(): PortfolioProject[] {
+  if (_projects) return _projects;
+  const projects = parseAndSortProjects(portfolioModules);
   _projects = projects;
   return projects;
 }
