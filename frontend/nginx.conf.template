@@ -12,6 +12,9 @@ server {
     add_header X-Frame-Options "DENY" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
     add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" always;
+    # style-src 'unsafe-inline' is maintained to support framer-motion animations/transforms.
+    # While ZAP flags this (Rule 10055), we intentionally keep the alert active in our
+    # security pipeline to avoid masking other unsafe CSP configurations.
     add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://storage.googleapis.com; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" always;
 
     # Phase 2: uncomment to proxy chatbot API
@@ -36,6 +39,9 @@ server {
         add_header X-Frame-Options "DENY" always;
         add_header Referrer-Policy "strict-origin-when-cross-origin" always;
         add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" always;
+        # style-src 'unsafe-inline' is maintained to support framer-motion animations/transforms.
+        # While ZAP flags this (Rule 10055), we intentionally keep the alert active in our
+        # security pipeline to avoid masking other unsafe CSP configurations.
         add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://storage.googleapis.com; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" always;
         add_header Cache-Control "public, immutable" always;
     }
