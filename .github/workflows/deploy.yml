@@ -24,7 +24,7 @@ jobs:
       REGION: us-central1
       GAR_REPO: us-central1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/portfolio
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.inputs.ref || github.ref }}
 
