@@ -1,7 +1,6 @@
 import { Link, NavLink } from "react-router";
-import { GitHubIcon, LinkedInIcon, XTwitterIcon } from "@/components/common/SocialIcons";
+import { SocialIcon, hasSocialIcon } from "@/components/common/SocialIcons";
 import { getHomeData } from "@/utils/content";
-import type { SVGProps, ReactNode } from "react";
 
 const navItems = [
   { to: "/", label: "Home" },
@@ -11,12 +10,6 @@ const navItems = [
   { to: "/publications", label: "Publications" },
   { to: "/contact", label: "Contact" },
 ];
-
-const socialIcons: Record<string, (props: SVGProps<SVGSVGElement>) => ReactNode> = {
-  github: GitHubIcon,
-  linkedin: LinkedInIcon,
-  twitter: XTwitterIcon,
-};
 
 const ariaLabels: Record<string, string> = {
   github: "GitHub",
@@ -53,8 +46,7 @@ export function Header() {
 
         <div className="flex items-center gap-3">
           {Object.entries(home.social).map(([platform, url]) => {
-            const Icon = socialIcons[platform];
-            if (!Icon) return null;
+            if (!hasSocialIcon(platform)) return null;
             return (
               <a
                 key={platform}
@@ -63,7 +55,7 @@ export function Header() {
                 rel="noopener noreferrer"
                 aria-label={ariaLabels[platform] || platform}
               >
-                <Icon className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                <SocialIcon platform={platform} className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
               </a>
             );
           })}
