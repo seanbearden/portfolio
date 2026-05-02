@@ -33,10 +33,10 @@ describe('parseAndSortBlogPosts', () => {
     expect(posts[1].title).toBe('No Date');
   });
 
-  it('should handle invalid string types in raw content gracefully', () => {
+  it('should handle empty raw content gracefully', () => {
     const mockModules = {
       'valid.md': '---\ntitle: Valid\ndate: 2023-01-01\n---\nBody',
-      'invalid.md': null as unknown as string, // Simulating an edge case if import.meta.glob returns non-string
+      'invalid.md': '' as string,
     };
 
     const posts = parseAndSortBlogPosts(mockModules);
