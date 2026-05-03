@@ -1,5 +1,11 @@
 # portfolio
 
+## 0.3.3
+
+### Patch Changes
+
+- [#145](https://github.com/seanbearden/portfolio/pull/145) [`4446a5e`](https://github.com/seanbearden/portfolio/commit/4446a5e2e95dbfabfe052795ab01da27d346590c) Thanks [@seanbearden](https://github.com/seanbearden)! - Add explicit thumbnail image for the "PhD Research / King Turing" portfolio card so it shows a video preview on the Home page Featured Projects section without relying on YouTube auto-thumbnails.
+
 ## 0.3.2
 
 ### Patch Changes
