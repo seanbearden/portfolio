@@ -74,7 +74,7 @@ content/publications.json  → direct JSON import → Publication[]
 content/home.json          → direct JSON import → HomeData
 ```
 
-All glob imports are **eager** — content is bundled into the JS, not lazy-loaded. The frontmatter parser lives in `frontend/src/utils/parseFrontmatter.ts` (custom regex-based, not `gray-matter`).
+All glob imports are **eager** — content is bundled into the JS, not lazy-loaded. The frontmatter parser lives in `frontend/src/utils/parseFrontmatter.ts`. As of PR #80 it's a thin wrapper around `gray-matter` (proper YAML parsing, including quote stripping); a regex fallback in the catch block handles cases where gray-matter throws. Don't add per-key string transforms in the wrapper — gray-matter does it correctly.
 
 Images and PDFs are **not** bundled. They live in a GCS bucket (`seanbearden-assets`). Content references assets by filename only; `assetUrl()` and `pdfUrl()` in `content.ts` prepend the `VITE_ASSETS_BASE_URL` env var.
 
@@ -106,7 +106,7 @@ Managed by Terraform in `infrastructure/`. Project: `bearden-portfolio`, region:
 - **Cloud Storage** (`seanbearden-assets`): public bucket for images and PDFs
 - **Artifact Registry** (`portfolio`): Docker images, keeps 5 recent
 - **Workload Identity Federation**: GitHub Actions authenticates to GCP via OIDC (no static keys)
-- **Domain mapping** not in Terraform — configured via `gcloud run domain-mappings create`
+- **Domain mappings** not in Terraform — created out-of-band via `gcloud beta run domain-mappings create`. Three mappings live: `seanbearden.com` (apex, A/AAAA records), `www.seanbearden.com` (CNAME → `ghs.googlehosted.com`), and `beta.seanbearden.com` (CNAME, used as a staging URL during the Squarespace cutover and kept for future dry-runs). All use Google Trust Services certs.
 
 ### Old URL Redirects
 
@@ -114,8 +114,8 @@ Managed by Terraform in `infrastructure/`. Project: `bearden-portfolio`, region:
 
 ### Phases
 
-- **Phase 1** (current): Static portfolio site on Cloud Run
-- **Phase 2** (planned): AI resume chatbot — Python FastAPI on second Cloud Run service, proxied via nginx `/api/` block (already stubbed in `nginx.conf.template`)
+- **Phase 1** (live, as of 2026-05-03): Static portfolio site on Cloud Run, served at `seanbearden.com` and `www.seanbearden.com`
+- **Phase 2** (planned): AI resume chatbot — Python FastAPI on second Cloud Run service, proxied via nginx `/api/` block (already stubbed in `nginx.conf.template`). Currently lives at `bearden-resume-chatbot.com` on Heroku.
 - **Phase 3** (planned): Interactive data playground
 
 ## Key Files
@@ -178,3 +178,5 @@ PRs that add `IGNORE` without these get rejected and re-opened with the right sc
 - **Duplicate work**: Before starting, check open PRs for the same task. PRs #16, #21, #25, #26, #27 were all closed as duplicates of already-merged work. Cross-reference issue numbers and recent merges.
 - **Stale refactors**: If you edit a function, verify it still lives in the file your branch targets. `parseFrontmatter` was extracted to `frontend/src/utils/parseFrontmatter.ts` in #30 — branches editing the old `content.ts` location won't merge.
 - **Missing changesets**: PRs #15, #17, #18, #20, #22, #28, #29, #30, #33 all merged without changesets and had to be backfilled in #34. Don't repeat this — the changeset belongs in the same PR as the code.
+- **Apex domain cert provisioning is slow vs CNAME**: Cloud Run domain mapping cert provisioning typically takes ~10-20 min for CNAME-based subdomains (`www`, `beta` → `ghs.googlehosted.com`) but can take **up to several hours** for the apex (A/AAAA records → Google's anycast IPs). Validation goes through a different path. If the apex is stuck in `CertificatePending` with "challenge data was not visible through the public internet": **don't recreate repeatedly** — that doesn't help and may worsen things by burning retry attempts. Wait through the full DNS-cache TTL window from any prior records (4 hours in the Squarespace case). Re-creates *can* clear genuinely wedged state but only after waiting a reasonable interval first.
+- **Long DNS TTLs make cutovers slow**: When migrating from another provider, the **old TTL** dictates worst-case propagation, not the new one. Squarespace's preset records had 4-hour TTL we couldn't lower in advance; cutover took ~3 hours for global propagation. Future migrations: lower TTL on the old records *first*, wait the old TTL window to expire, *then* change records.

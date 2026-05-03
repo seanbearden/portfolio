@@ -2,6 +2,8 @@
 
 [![codecov](https://codecov.io/gh/seanbearden/portfolio/graph/badge.svg?token=JgoqNrfl9G)](https://codecov.io/gh/seanbearden/portfolio)
 
+Live at **[seanbearden.com](https://seanbearden.com)** — also serving on `www.seanbearden.com`.
+
 Personal portfolio website for Sean Bearden, Ph.D. — self-hosted on Google Cloud, migrated from Squarespace.
 
 ## Architecture
@@ -22,7 +24,7 @@ The inner ring is `frontend/`; outer rings are subdirectories and files. Color =
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| **1. Portfolio Site** | Static site with blog, portfolio, publications, about | In progress |
+| **1. Portfolio Site** | Static site with blog, portfolio, publications, about | Live |
 | **2. Resume Chatbot** | "Talk to my resume" powered by Claude/Gemini | Planned |
 | **3. Data Playground** | Upload data → instant analysis, dashboards, ML demos | Planned |
 
@@ -67,5 +69,6 @@ site-data/                # Original Squarespace extraction (reference)
 
 ## Migration Notes
 
-- Resume chatbot (bearden-resume-chatbot.com) migrating to this app in Phase 2
-- Old Squarespace URLs redirect automatically via React Router
+- DNS cutover from Squarespace to Cloud Run completed 2026-05-03. Apex (`seanbearden.com`), `www`, and a `beta` staging subdomain all serve from the same Cloud Run service via Google-managed certs.
+- Resume chatbot (`bearden-resume-chatbot.com`, on Heroku) migrating to this app in Phase 2.
+- Old Squarespace URLs redirect automatically via React Router (`frontend/src/utils/redirects.ts`).
