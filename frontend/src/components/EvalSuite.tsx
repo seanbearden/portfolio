@@ -5,6 +5,18 @@ import type { EvalResult, EvalMetrics } from "@/types/evals";
 import { Sparkline } from "@/components/ui/sparkline";
 import { ExternalLink, Info } from "lucide-react";
 
+// Static config — hoisted out of the component body so it's allocated
+// once per module load instead of on every render.
+const METRICS: { key: keyof EvalMetrics; label: string; format: (v: number) => string; inverse?: boolean }[] = [
+  { key: "hallucination_rate", label: "Hallucination Rate", format: (v) => `${(v * 100).toFixed(1)}%`, inverse: true },
+  { key: "retrieval_precision", label: "Retrieval Precision@5", format: (v) => `${(v * 100).toFixed(1)}%` },
+  { key: "refusal_correctness", label: "Refusal Correctness", format: (v) => `${(v * 100).toFixed(1)}%` },
+  { key: "citation_validity", label: "Citation Validity", format: (v) => `${(v * 100).toFixed(1)}%` },
+  { key: "latency_p50", label: "Latency (p50)", format: (v) => `${v.toFixed(2)}s`, inverse: true },
+  { key: "latency_p95", label: "Latency (p95)", format: (v) => `${v.toFixed(2)}s`, inverse: true },
+  { key: "avg_cost", label: "Cost / Query", format: (v) => `$${v.toFixed(4)}`, inverse: true },
+];
+
 export function EvalSuite() {
   const [latest, setLatest] = useState<EvalResult | null>(null);
   const [history, setHistory] = useState<EvalResult[]>([]);
@@ -23,16 +35,6 @@ export function EvalSuite() {
   if (loading) return <div className="animate-pulse h-48 bg-muted rounded-lg" />;
   if (!latest) return null;
 
-  const metrics: { key: keyof EvalMetrics; label: string; format: (v: number) => string; inverse?: boolean }[] = [
-    { key: "hallucination_rate", label: "Hallucination Rate", format: (v) => `${(v * 100).toFixed(1)}%`, inverse: true },
-    { key: "retrieval_precision", label: "Retrieval Precision@5", format: (v) => `${(v * 100).toFixed(1)}%` },
-    { key: "refusal_correctness", label: "Refusal Correctness", format: (v) => `${(v * 100).toFixed(1)}%` },
-    { key: "citation_validity", label: "Citation Validity", format: (v) => `${(v * 100).toFixed(1)}%` },
-    { key: "latency_p50", label: "Latency (p50)", format: (v) => `${v.toFixed(2)}s`, inverse: true },
-    { key: "latency_p95", label: "Latency (p95)", format: (v) => `${v.toFixed(2)}s`, inverse: true },
-    { key: "avg_cost", label: "Cost / Query", format: (v) => `$${v.toFixed(4)}`, inverse: true },
-  ];
-
   return (
     <section className="mt-12">
       <div className="flex items-center gap-2 mb-6">
@@ -46,7 +48,7 @@ export function EvalSuite() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {metrics.map((m) => {
+        {METRICS.map((m) => {
           const historyData = history.map((h) => h.metrics[m.key]).filter((v) => v !== undefined);
           const currentVal = latest.metrics[m.key];
 

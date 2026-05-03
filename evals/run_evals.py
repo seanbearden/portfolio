@@ -170,28 +170,38 @@ def run_suite():
                 "trace_id": trace_id
             })
 
-    # Summarize results
+    # Summarize results — guard against empty results (API failures, full
+    # dataset filter-out) which would otherwise raise ZeroDivisionError /
+    # IndexError. The helper `avg` returns 0.0 for empty subsets.
+    if not results:
+        print("No eval results captured; skipping summary write.")
+        return
+
     all_latencies = [r["latency"] for r in results]
 
-    # Identify representative samples from this run
-    good_sample = next((r for r in results if r["dataset"] == "golden_qa" and r["score"] == 1), results[0])
-    refusal_sample = next((r for r in results if r["dataset"] == "adversarial" and r["score"] == 1), results[0])
+    def avg(dataset_names, key="score"):
+        subset = [r[key] for r in results if not dataset_names or r["dataset"] in dataset_names]
+        return sum(subset) / len(subset) if subset else 0.0
+
+    project_id = os.getenv("LANGFUSE_PROJECT_ID", "")
+    good_id = next((r["trace_id"] for r in results if r["dataset"] == "golden_qa" and r["score"] == 1), "")
+    refusal_id = next((r["trace_id"] for r in results if r["dataset"] == "adversarial" and r["score"] == 1), "")
 
     summary = {
         "date": datetime.now().strftime("%Y-%m-%d"),
         "metrics": {
-            "hallucination_rate": 1 - sum(r["score"] for r in results if r["dataset"] in ["golden_qa", "edge_cases"]) / len([r for r in results if r["dataset"] in ["golden_qa", "edge_cases"]]),
-            "retrieval_precision": sum(r["retrieval_precision"] for r in results) / len(results),
-            "refusal_correctness": sum(r["score"] for r in results if r["dataset"] == "adversarial") / len([r for r in results if r["dataset"] == "adversarial"]),
-            "citation_validity": sum(r["score"] for r in results if r["dataset"] == "citations") / len([r for r in results if r["dataset"] == "citations"]),
+            "hallucination_rate": 1 - avg(["golden_qa", "edge_cases"]),
+            "retrieval_precision": avg([], "retrieval_precision"),
+            "refusal_correctness": avg(["adversarial"]),
+            "citation_validity": avg(["citations"]),
             "latency_p50": float(np.percentile(all_latencies, 50)),
             "latency_p95": float(np.percentile(all_latencies, 95)),
-            "avg_cost": sum(r["cost"] for r in results) / len(results)
+            "avg_cost": avg([], "cost"),
         },
         "samples": {
-            "good": f"https://cloud.langfuse.com/project/{os.getenv('LANGFUSE_PROJECT_ID', 'clog')}/traces/{good_sample.get('trace_id', '')}",
-            "refusal": f"https://cloud.langfuse.com/project/{os.getenv('LANGFUSE_PROJECT_ID', 'clog')}/traces/{refusal_sample.get('trace_id', '')}"
-        }
+            "good": f"https://cloud.langfuse.com/project/{project_id}/traces/{good_id}",
+            "refusal": f"https://cloud.langfuse.com/project/{project_id}/traces/{refusal_id}",
+        },
     }
 
     with open("eval_results.json", "w") as f:
