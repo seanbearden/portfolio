@@ -25,6 +25,8 @@ locals {
     "iam.googleapis.com",
     "iamcredentials.googleapis.com",
     "cloudresourcemanager.googleapis.com",
+    "sqladmin.googleapis.com",
+    "aiplatform.googleapis.com",
   ]
 }
 
@@ -97,6 +99,8 @@ locals {
     "roles/artifactregistry.writer",
     "roles/iam.serviceAccountUser",
     "roles/storage.admin",
+    "roles/cloudsql.client",
+    "roles/aiplatform.user",
   ]
 }
 
@@ -154,4 +158,35 @@ resource "google_cloud_run_v2_service_iam_member" "public_invoker" {
   member   = "allUsers"
 
   depends_on = [google_project_service.apis["run.googleapis.com"]]
+}
+
+# -----------------------------------------------------------
+# Cloud SQL (PostgreSQL with pgvector)
+# -----------------------------------------------------------
+resource "google_sql_database_instance" "vector_db" {
+  name             = "portfolio-vector-db"
+  database_version = "POSTGRES_15"
+  region           = var.region
+
+  settings {
+    tier = "db-f1-micro" # Smallest tier for cost efficiency
+
+    # Enable the pgvector extension via flags is not strictly required in TF
+    # for Postgres 15+ as it is included, but we need to ensure the DB exists.
+  }
+
+  deletion_protection = false # Set to true for production, but false for ease of initial setup
+
+  depends_on = [google_project_service.apis["sqladmin.googleapis.com"]]
+}
+
+resource "google_sql_database" "portfolio" {
+  name     = "portfolio"
+  instance = google_sql_database_instance.vector_db.name
+}
+
+resource "google_sql_user" "ingest" {
+  name     = "ingest-user"
+  instance = google_sql_database_instance.vector_db.name
+  password = var.db_password
 }

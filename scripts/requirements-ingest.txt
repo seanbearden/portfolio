@@ -1,0 +1,6 @@
+google-cloud-aiplatform
+psycopg2-binary
+pgvector
+markdown
+beautifulsoup4
+python-frontmatter

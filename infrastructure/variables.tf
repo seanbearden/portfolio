@@ -32,3 +32,9 @@ variable "cloud_run_service_name" {
   type        = string
   default     = "portfolio-frontend"
 }
+
+variable "db_password" {
+  description = "Password for the database ingest user"
+  type        = string
+  sensitive   = true
+}

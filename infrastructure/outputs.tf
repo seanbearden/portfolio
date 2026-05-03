@@ -29,6 +29,7 @@ output "github_actions_vars" {
     WIF_POOL            = google_iam_workload_identity_pool.github.workload_identity_pool_id
     WIF_PROVIDER        = google_iam_workload_identity_pool_provider.github_oidc.workload_identity_pool_provider_id
     ASSETS_BUCKET_URL   = "https://storage.googleapis.com/${google_storage_bucket.assets.name}"
+    DB_INSTANCE_CONNECTION_NAME = google_sql_database_instance.vector_db.connection_name
   }
 }
 
