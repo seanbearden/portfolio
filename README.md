@@ -13,7 +13,11 @@ Personal portfolio website for Sean Bearden, Ph.D. — self-hosted on Google Clo
 
 ## Architecture
 
+The website uses a hybrid architecture, shipping the same LangGraph-powered resume chatbot to two different backends: **Cloud Run** and **Vertex AI Agent Engine (Reasoning Engine)**. This demonstrates both "self-hosted" and "managed agent runtime" patterns common in enterprise AI.
+
 ![Architecture](sean_bearden_website_outline.svg)
+
+For a detailed analysis of the deployment targets, see [Agent Deployment Comparison](claudedocs/agent-deployment-comparison.md).
 
 ## Coverage
 

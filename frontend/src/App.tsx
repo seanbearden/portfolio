@@ -7,6 +7,7 @@ import { BlogPage } from "@/pages/BlogPage";
 import { BlogPostPage } from "@/pages/BlogPostPage";
 import { PublicationsPage } from "@/pages/PublicationsPage";
 import { ContactPage } from "@/pages/ContactPage";
+import { ChatPage } from "@/pages/ChatPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 
 export function AppRoutes() {
@@ -20,6 +21,7 @@ export function AppRoutes() {
         <Route path="blog/:slug" element={<BlogPostPage />} />
         <Route path="publications" element={<PublicationsPage />} />
         <Route path="contact" element={<ContactPage />} />
+        <Route path="chat" element={<ChatPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

@@ -7,26 +7,14 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  server: {
+    proxy: {
+      '/api': 'http://localhost:8081'
+    }
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-    },
-  },
-  build: {
-    rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, "index.html"),
-        embed: path.resolve(__dirname, "embed.html"),
-        "embed-loader": path.resolve(__dirname, "src/embed/loader.ts"),
-      },
-      output: {
-        entryFileNames: (chunkInfo) => {
-          if (chunkInfo.name === "embed-loader") {
-            return "embed.js";
-          }
-          return "assets/[name]-[hash].js";
-        },
-      },
     },
   },
   test: {

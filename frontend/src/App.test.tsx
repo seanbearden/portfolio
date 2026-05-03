@@ -67,8 +67,6 @@ vi.mock("@/utils/content", () => ({
   ],
   assetUrl: (f: string) => `https://cdn.example.com/${f}`,
   pdfUrl: (f: string) => `https://cdn.example.com/pdfs/${f}`,
-  fetchLatestEval: async () => null,
-  fetchEvalHistory: async () => [],
 }));
 
 describe("App Route Table", () => {

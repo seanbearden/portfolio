@@ -1,11 +1,7 @@
+langgraph
+langchain-google-vertexai
+langchain-core
 fastapi
 uvicorn
-langgraph
-langchain
-langchain-google-genai
-langchain-anthropic
-google-cloud-firestore
 pydantic
-python-frontmatter
-langchain-community
-numpy
+python-dotenv
