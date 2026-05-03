@@ -49,8 +49,9 @@ jobs:
             echo "tag=sha-${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build and push image
+      - name: Build and push images
         run: |
+          # Frontend
           docker build \
             --build-arg VITE_ASSETS_BASE_URL=${{ vars.ASSETS_BUCKET_URL }} \
             -t ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }} \
@@ -59,13 +60,33 @@ jobs:
           docker push ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }}
           docker push ${{ env.GAR_REPO }}/frontend:latest
 
-      - name: Deploy to Cloud Run
+          # Portfolio Agent (MCP)
+          # We need content/ directory context for the agent build
+          cp -r content portfolio-agent/content
+          docker build \
+            -t ${{ env.GAR_REPO }}/portfolio-agent:${{ steps.version.outputs.tag }} \
+            -t ${{ env.GAR_REPO }}/portfolio-agent:latest \
+            portfolio-agent/
+          docker push ${{ env.GAR_REPO }}/portfolio-agent:${{ steps.version.outputs.tag }}
+          docker push ${{ env.GAR_REPO }}/portfolio-agent:latest
+
+      - name: Deploy Agent to Cloud Run
+        id: deploy-agent
+        uses: google-github-actions/deploy-cloudrun@2028e2d7d30a78c6910e0632e48dd561b064884d # v3
+        with:
+          service: portfolio-agent
+          region: us-central1
+          image: ${{ env.GAR_REPO }}/portfolio-agent:${{ steps.version.outputs.tag }}
+
+      - name: Deploy Frontend to Cloud Run
         id: deploy
         uses: google-github-actions/deploy-cloudrun@2028e2d7d30a78c6910e0632e48dd561b064884d # v3
         with:
           service: portfolio-frontend
           region: us-central1
           image: ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }}
+          env_vars: |
+            MCP_SERVER_URL=${{ steps.deploy-agent.outputs.url }}
 
       - name: Deployment summary
         run: |

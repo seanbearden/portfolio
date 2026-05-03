@@ -39,6 +39,9 @@ server {
     add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
     add_header Cross-Origin-Resource-Policy "same-origin" always;
 
+    # Rate limiting for API/MCP
+    limit_req_zone $binary_remote_addr zone=api_limit:10m rate=5r/s;
+
     # Phase 2: uncomment to proxy chatbot API
     # location /api/ {
     #     proxy_pass ${CHATBOT_API_URL}/api/;
@@ -47,6 +50,23 @@ server {
     #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     #     proxy_set_header X-Forwarded-Proto $scheme;
     # }
+
+    # MCP Server Proxy
+    location /mcp/ {
+        limit_req zone=api_limit burst=10 nodelay;
+        proxy_pass ${MCP_SERVER_URL}/;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # SSE Support
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_cache_off;
+        proxy_buffering off;
+        proxy_read_timeout 3600s;
+    }
 
     # 1. HTML — no-cache so deploys are picked up immediately
     location = /index.html {

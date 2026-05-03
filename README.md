@@ -72,6 +72,41 @@ site-data/                # Original Squarespace extraction (reference)
 - **6** peer-reviewed publications (Nature, Europhysics Letters, Physical Review Applied, Applied Physics Letters)
 - **37** images + **5** PDFs hosted on Cloud Storage
 
+## MCP Server
+
+Expose the portfolio data as an [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server to query it from Claude Desktop, Cursor, or any MCP-compatible client.
+
+**Endpoint:** `https://seanbearden.com/mcp` (SSE transport)
+
+### Connect via Claude Desktop
+
+Add this to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "bearden-portfolio": {
+      "url": "https://seanbearden.com/mcp/sse"
+    }
+  }
+}
+```
+
+### Connect via Cursor
+
+1. Go to **Settings** → **Features** → **MCP**.
+2. Add a new MCP server:
+   - **Name:** Bearden Portfolio
+   - **Type:** `sse`
+   - **URL:** `https://seanbearden.com/mcp/sse`
+
+### Available Tools
+- `bearden_portfolio.get_about`: Get information about Sean Bearden.
+- `bearden_portfolio.get_resume`: Get professional experience, education, and skills.
+- `bearden_portfolio.list_projects`: List portfolio projects.
+- `bearden_portfolio.search_blog`: Search blog posts.
+- `bearden_portfolio.search_publications`: Search academic publications.
+
 ## Migration Notes
 
 - DNS cutover from Squarespace to Cloud Run completed 2026-05-03. Apex (`seanbearden.com`), `www`, and a `beta` staging subdomain all serve from the same Cloud Run service via Google-managed certs.

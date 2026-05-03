@@ -155,3 +155,16 @@ resource "google_cloud_run_v2_service_iam_member" "public_invoker" {
 
   depends_on = [google_project_service.apis["run.googleapis.com"]]
 }
+
+# -----------------------------------------------------------
+# portfolio-agent Cloud Run public access
+# -----------------------------------------------------------
+resource "google_cloud_run_v2_service_iam_member" "agent_public_invoker" {
+  project  = var.project_id
+  location = var.region
+  name     = "portfolio-agent"
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+
+  depends_on = [google_project_service.apis["run.googleapis.com"]]
+}
