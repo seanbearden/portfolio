@@ -1,0 +1,6 @@
+psycopg2-binary==2.9.9
+google-cloud-aiplatform==1.48.0
+google-cloud-sql-connector[psycopg2]==1.7.1
+python-frontmatter==1.1.0
+langchain-text-splitters==0.0.1
+pgvector==0.2.5

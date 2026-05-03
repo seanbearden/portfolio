@@ -38,6 +38,7 @@ vi.mock("@/utils/content", () => ({
     interests: ["BJJ", "Reading"],
   }),
   pdfUrl: (f: string) => `https://cdn.example.com/pdfs/${f}`,
+  assetUrl: (f: string) => `https://cdn.example.com/images/${f}`,
 }));
 
 describe("AboutPage", () => {
