@@ -61,10 +61,14 @@ jobs:
 
       - name: Build and push agent image
         run: |
+          # Build from repo root so the Dockerfile can COPY content/ for the
+          # agent's RAG corpus. backend/Dockerfile is the canonical agent
+          # build; the former agent/ stub was deleted in this PR's cleanup.
           docker build \
+            -f backend/Dockerfile \
             -t ${{ env.GAR_REPO }}/agent:${{ steps.version.outputs.tag }} \
             -t ${{ env.GAR_REPO }}/agent:latest \
-            agent/
+            .
           docker push ${{ env.GAR_REPO }}/agent:${{ steps.version.outputs.tag }}
           docker push ${{ env.GAR_REPO }}/agent:latest
 
