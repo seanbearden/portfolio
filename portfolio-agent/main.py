@@ -1,9 +1,7 @@
-import functools
 import json
 import os
 from pathlib import Path
-from typing import Dict, List, Optional
-
+from typing import List, Optional
 import frontmatter
 from mcp.server.fastmcp import FastMCP
 
@@ -17,14 +15,10 @@ def load_json(filename: str):
     path = CONTENT_DIR / filename
     if not path.exists():
         return None
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, "r") as f:
         return json.load(f)
 
-@functools.lru_cache(maxsize=8)
 def load_markdown_files(directory: str) -> List[dict]:
-    """Load and parse every .md in a content subdirectory. Cached for the
-    process lifetime — content is bundled at image build time and doesn't
-    change at runtime."""
     path = CONTENT_DIR / directory
     if not path.exists():
         return []
@@ -37,14 +31,6 @@ def load_markdown_files(directory: str) -> List[dict]:
         data["slug"] = data.get("slug") or file_path.stem
         files.append(data)
     return files
-
-@functools.lru_cache(maxsize=8)
-def slug_index(directory: str) -> Dict[str, dict]:
-    """slug → parsed-post map for O(1) lookup. Cached. Filenames don't
-    always equal slugs (e.g., `03-understanding-...md` has frontmatter
-    slug `understanding-my-phd-research-...`), so this index is built
-    from frontmatter, not from the filename."""
-    return {entry["slug"]: entry for entry in load_markdown_files(directory)}
 
 @mcp.tool(name="bearden_portfolio.get_about")
 def get_about() -> str:
@@ -152,26 +138,25 @@ def search_publications(query: Optional[str] = None) -> str:
 
 @mcp.resource("mcp://blog/{slug}")
 def get_blog_post(slug: str) -> str:
-    """Retrieve the full content of a blog post by its slug. O(1) via cached
-    slug index; the index is built from frontmatter, since filenames don't
-    always match slugs."""
-    p = slug_index("blog").get(slug)
-    if not p:
-        return f"Blog post with slug '{slug}' not found."
-    return f"# {p['title']}\nDate: {p.get('date')}\n\n{p['body']}"
+    """Retrieve the full content of a blog post by its slug."""
+    posts = load_markdown_files("blog")
+    for p in posts:
+        if p["slug"] == slug:
+            return f"# {p['title']}\nDate: {p.get('date')}\n\n{p['body']}"
+    return f"Blog post with slug '{slug}' not found."
 
 @mcp.resource("mcp://projects/{slug}")
 def get_project(slug: str) -> str:
-    """Retrieve the full content of a portfolio project by its slug. O(1) via
-    cached slug index."""
-    p = slug_index("portfolio").get(slug)
-    if not p:
-        return f"Project with slug '{slug}' not found."
-    output = f"# {p['title']}\n"
-    if p.get("subtitle"):
-        output += f"## {p['subtitle']}\n"
-    output += f"\n{p['body']}"
-    return output
+    """Retrieve the full content of a portfolio project by its slug."""
+    projects = load_markdown_files("portfolio")
+    for p in projects:
+        if p["slug"] == slug:
+            output = f"# {p['title']}\n"
+            if p.get("subtitle"):
+                output += f"## {p['subtitle']}\n"
+            output += f"\n{p['body']}"
+            return output
+    return f"Project with slug '{slug}' not found."
 
 if __name__ == "__main__":
     # MCP server configuration for Cloud Run
