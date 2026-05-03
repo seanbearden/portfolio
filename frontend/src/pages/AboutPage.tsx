@@ -6,6 +6,7 @@ import { AboutSynthesisIllustration } from "@/components/illustrations/AboutSynt
 import { getHomeData, pdfUrl } from "@/utils/content";
 import { Award, Briefcase, GraduationCap, Download, Heart, Newspaper, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { EvalSuite } from "@/components/EvalSuite";
 
 export function AboutPage() {
   const home = getHomeData();
@@ -52,6 +53,11 @@ export function AboutPage() {
           <Download className="mr-2 h-4 w-4" /> Dissertation Synopsis
         </a>
       </div>
+
+      <SectionDivider variant="lines" className="my-4 opacity-50" />
+
+      {/* LLM Evaluation Suite */}
+      <EvalSuite />
 
       <SectionDivider variant="lines" className="my-4 opacity-50" />
 
