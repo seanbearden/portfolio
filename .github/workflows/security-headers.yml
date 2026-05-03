@@ -6,10 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       host:
-        # TODO: flip default to seanbearden.com after Squarespace DNS cutover
-        description: "Hostname (no scheme; default = Cloud Run revision; pre-cutover seanbearden.com still serves Squarespace)"
+        description: "Hostname (no scheme; default = production seanbearden.com; pass a Cloud Run revision host on dispatch to scan that instead)"
         required: false
-        default: "portfolio-frontend-pr4cby3raa-uc.a.run.app"
+        default: "seanbearden.com"
       min_grade:
         description: "Minimum acceptable Mozilla Observatory grade"
         required: false
@@ -24,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
-      HOST: ${{ github.event.inputs.host || 'portfolio-frontend-pr4cby3raa-uc.a.run.app' }}
+      HOST: ${{ github.event.inputs.host || 'seanbearden.com' }}
       MIN_GRADE: ${{ github.event.inputs.min_grade || 'B' }}
     steps:
       - name: Trigger and read scan
