@@ -25,6 +25,7 @@ locals {
     "iam.googleapis.com",
     "iamcredentials.googleapis.com",
     "cloudresourcemanager.googleapis.com",
+    "aiplatform.googleapis.com",
   ]
 }
 
@@ -97,6 +98,7 @@ locals {
     "roles/artifactregistry.writer",
     "roles/iam.serviceAccountUser",
     "roles/storage.admin",
+    "roles/aiplatform.admin",
   ]
 }
 
@@ -154,4 +156,43 @@ resource "google_cloud_run_v2_service_iam_member" "public_invoker" {
   member   = "allUsers"
 
   depends_on = [google_project_service.apis["run.googleapis.com"]]
+}
+
+# -----------------------------------------------------------
+# Chatbot Service Account & IAM
+# -----------------------------------------------------------
+resource "google_service_account" "chatbot" {
+  account_id   = "portfolio-chatbot"
+  display_name = "Portfolio Chatbot"
+  description  = "Runtime identity for the resume chatbot"
+}
+
+resource "google_project_iam_member" "chatbot_ai" {
+  project = var.project_id
+  role    = "roles/aiplatform.user"
+  member  = "serviceAccount:${google_service_account.chatbot.email}"
+}
+
+# -----------------------------------------------------------
+# Cloud Run: Chatbot Backend
+# Note: Initial deployment handled by GH Actions, but IAM here.
+# -----------------------------------------------------------
+resource "google_cloud_run_v2_service_iam_member" "chatbot_invoker" {
+  project  = var.project_id
+  location = var.region
+  name     = "portfolio-chatbot"
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+
+  depends_on = [google_project_service.apis["run.googleapis.com"]]
+}
+
+# -----------------------------------------------------------
+# Vertex AI Reasoning Engine (Agent Engine)
+# Resource itself is managed via SDK/gcloud, but IAM here.
+# -----------------------------------------------------------
+resource "google_project_iam_member" "deploy_ae" {
+  project = var.project_id
+  role    = "roles/aiplatform.admin"
+  member  = "serviceAccount:${google_service_account.deploy.email}"
 }

@@ -77,14 +77,12 @@ export function HomePage() {
               {home.hero.headline}
             </motion.p>
             <motion.div variants={itemVariants} className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
-              <a
-                href="https://bearden-resume-chatbot.com"
-                target="_blank"
-                rel="noopener noreferrer"
+            <Link
+              to="/chat"
                 className={cn(buttonVariants(), "shadow-lg hover:shadow-primary/20 transition-all duration-300")}
               >
                 <MessageSquare className="mr-2 h-4 w-4" /> Chat with My Resume
-              </a>
+            </Link>
               <Link to="/portfolio" className={cn(buttonVariants({ variant: "outline" }), "hover:bg-accent hover:text-accent-foreground transition-all duration-300")}>
                 View Portfolio
               </Link>

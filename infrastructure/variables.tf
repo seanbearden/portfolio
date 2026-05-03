@@ -32,3 +32,9 @@ variable "cloud_run_service_name" {
   type        = string
   default     = "portfolio-frontend"
 }
+
+variable "chatbot_service_name" {
+  description = "Name of the Cloud Run service for the chatbot"
+  type        = string
+  default     = "portfolio-chatbot"
+}
