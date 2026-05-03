@@ -39,13 +39,22 @@ server {
     add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
     add_header Cross-Origin-Resource-Policy "same-origin" always;
 
-    # Phase 2: proxy chatbot API
+    # Phase 2: proxy portfolio-agent API.
+    # SSE-aware config: streamed token-by-token responses break under nginx's
+    # default response buffering. Disable buffering and cache, force HTTP/1.1
+    # with empty Connection header for keepalive, and bump read timeout well
+    # past LLM generation times.
     location /api/ {
         proxy_pass ${CHATBOT_API_URL}/api/;
+        proxy_http_version 1.1;
         proxy_set_header Host $proxy_host;
+        proxy_set_header Connection "";
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 3600s;
     }
 
     # 1. HTML — no-cache so deploys are picked up immediately
