@@ -6,7 +6,9 @@
     "cta": {
       "text": "Chat with My Resume",
       "action": "chat"
-    }
+    },
+    "illustration": "hero_v1_bleed.svg",
+    "illustrationAlt": "Sean Bearden - Scientist, Builder, Leader. An abstract illustration showing neural connections, architectural blocks, and upward growth vectors."
   },
   "social": {
     "linkedin": "https://www.linkedin.com/in/sean-bearden-730aa189/",

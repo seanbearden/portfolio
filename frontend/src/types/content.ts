@@ -59,6 +59,8 @@ export interface HomeData {
       text: string;
       action: string;
     };
+    illustration?: string;
+    illustrationAlt?: string;
   };
   social: Record<string, string>;
   experience: Experience[];
