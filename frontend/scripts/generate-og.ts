@@ -40,7 +40,7 @@ async function generate() {
 
     if (foundFont) {
         fontData = fs.readFileSync(foundFont);
-        console.log(`Using font: ${foundFont}`);
+        console.log(`Using font: ${foundFont.replace(/\n|\r/g, "")}`);
     } else {
         // As a last resort, try to find ANY ttf in /usr/share/fonts
         const findTtf = (dir: string): string | null => {
@@ -61,7 +61,7 @@ async function generate() {
         const anyFont = findTtf("/usr/share/fonts");
         if (anyFont) {
             fontData = fs.readFileSync(anyFont);
-            console.log(`Using fallback font: ${anyFont}`);
+            console.log(`Using fallback font: ${anyFont.replace(/\n|\r/g, "")}`);
         } else {
             console.error("No font found for Satori. OG image generation failed.");
             return;
@@ -168,7 +168,7 @@ async function generate() {
     const pngBuffer = pngData.asPng();
 
     fs.writeFileSync(filename, pngBuffer);
-    console.log(`Generated OG image: ${path.basename(filename)}`);
+    console.log(`Generated OG image: ${path.basename(filename).replace(/\n|\r/g, "")}`);
   }
 
   // 1. Generate Main OG
@@ -195,7 +195,9 @@ async function generate() {
           slug: slugMatch ? slugMatch[1].trim() : file.replace(".md", ""),
         };
       }
-      const slug = data.slug || file.replace(".md", "");
+      const rawSlug = data.slug || file.replace(".md", "");
+      // Basic slug sanitization
+      const slug = rawSlug.replace(/[^a-z0-9-]/gi, "");
       const title = data.title || "Blog Post";
 
       await saveOg(

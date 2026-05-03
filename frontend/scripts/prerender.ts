@@ -22,12 +22,13 @@ const SEO_CONFIG = {
 };
 
 async function prerender() {
-  if (!fs.existsSync(INDEX_HTML)) {
-    console.error("dist/index.html not found. Run npm run build first.");
+  let template: string;
+  try {
+    template = fs.readFileSync(INDEX_HTML, "utf-8");
+  } catch (e) {
+    console.error("Could not read dist/index.html. Run npm run build first.");
     return;
   }
-
-  const template = fs.readFileSync(INDEX_HTML, "utf-8");
 
   function injectMeta(html: string, tags: Record<string, string>) {
     let head = html.split("</head>")[0];
@@ -70,7 +71,10 @@ async function prerender() {
         body = content.split("---").pop() || "";
       }
 
-      const slug = data.slug || file.replace(".md", "");
+      const rawSlug = data.slug || file.replace(".md", "");
+      // Basic slug sanitization to prevent path traversal
+      const slug = rawSlug.replace(/[^a-z0-9-]/gi, "");
+
       const title = `${data.title} | Sean Bearden, Ph.D.`;
       const description = sanitizeDescription(body);
       const image = `${siteUrl}/og/blog-${slug}.png`;
@@ -97,7 +101,7 @@ async function prerender() {
         fs.mkdirSync(outputDir, { recursive: true });
       }
       fs.writeFileSync(path.resolve(outputDir, "index.html"), html);
-      console.log(`Prerendered blog/${slug}`);
+      console.log(`Prerendered blog/${slug.replace(/\n|\r/g, "")}`);
     }
   }
 
