@@ -1,7 +1,6 @@
 import { Link } from "react-router";
 import { Badge } from "@/components/ui/badge";
 import { getBlogPosts, assetUrl } from "@/utils/content";
-import { SectionDivider } from "@/components/ui/section-divider";
 
 export function BlogPage() {
   const posts = getBlogPosts();
@@ -13,9 +12,7 @@ export function BlogPage() {
         Writing about data science, AI, cloud architecture, and the journey from physics to tech.
       </p>
 
-      <SectionDivider variant="lines" className="mt-4 opacity-50" />
-
-      <div className="mt-4 space-y-6">
+      <div className="mt-8 space-y-6">
         {posts.map((post) => (
           <Link
             key={post.slug}

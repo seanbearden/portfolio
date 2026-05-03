@@ -4,6 +4,8 @@ import remarkGfm from "remark-gfm";
 import { Badge } from "@/components/ui/badge";
 import { getBlogPost, assetUrl } from "@/utils/content";
 import { ArrowLeft } from "lucide-react";
+import { SEO } from "@/components/common/SEO";
+import { sanitizeDescription } from "@/utils/seo";
 
 export function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -15,6 +17,12 @@ export function BlogPostPage() {
 
   return (
     <article className="mx-auto max-w-3xl px-4 py-12">
+      <SEO
+        title={post.title}
+        description={sanitizeDescription(post.body)}
+        image={`/og/blog-${post.slug}.png`}
+        article
+      />
       <Link
         to="/blog"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6"
