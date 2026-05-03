@@ -73,7 +73,7 @@ export function ChatAgent({ embedded = false }: ChatAgentProps) {
     }, 1000);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       handleSend();
     }
@@ -128,12 +128,19 @@ export function ChatAgent({ embedded = false }: ChatAgentProps) {
         <input
           type="text"
           placeholder="Ask me anything..."
+          aria-label="Ask the portfolio agent a question"
           className="flex-1 bg-muted border-none rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
         />
-        <Button size="icon" className="rounded-full h-9 w-9" onClick={handleSend} disabled={!inputValue.trim()}>
+        <Button
+          size="icon"
+          className="rounded-full h-9 w-9"
+          onClick={handleSend}
+          disabled={!inputValue.trim()}
+          aria-label="Send message"
+        >
           <Send className="h-4 w-4" />
         </Button>
       </div>
