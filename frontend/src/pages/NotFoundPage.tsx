@@ -96,7 +96,7 @@ export function NotFoundPage() {
 
       <motion.h1
         className="text-7xl font-black tracking-tighter"
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: shouldReduce ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
@@ -116,7 +116,7 @@ export function NotFoundPage() {
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: shouldReduce ? 0 : 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2 }}
         className="mt-12"
