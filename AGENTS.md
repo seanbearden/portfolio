@@ -37,6 +37,9 @@ If a PR mixes shipped code with one of the above, still add a changeset for the 
 ## Commands
 
 ```bash
+# Retrieval layer (ingestion)
+python3 scripts/ingest_portfolio.py
+
 # Development (from frontend/)
 cd frontend
 npm run dev          # Vite dev server on localhost:5173
@@ -62,6 +65,19 @@ python3 scripts/convert_content.py    # site-data/ → content/
 ```
 
 ## Architecture
+
+### Retrieval Layer (Vector Store)
+
+The portfolio-agent queries a unified knowledge base hosted on **Cloud SQL (PostgreSQL)** with the `pgvector` extension.
+
+- **Database**: `portfolio_vector`
+- **Table**: `portfolio_chunks`
+- **Embedding Model**: `gemini-embedding-001` (768 dimensions)
+- **Ingestion**: Automated via `.github/workflows/reindex.yml` on pushes to `content/`.
+- **Chunking Strategy**:
+    - Blog/Portfolio: By markdown headings (`#`, `##`, `###`).
+    - Publications: Individual entries.
+    - Home: Logical sections (Bio, Experience, Education, Skills).
 
 ### Content Pipeline
 
@@ -128,6 +144,7 @@ Managed by Terraform in `infrastructure/`. Project: `bearden-portfolio`, region:
 
 | File | Purpose |
 |------|---------|
+| `scripts/ingest_portfolio.py` | Content ingestion to pgvector |
 | `frontend/src/utils/content.ts` | Content loading, asset URL builder |
 | `frontend/src/utils/parseFrontmatter.ts` | Custom YAML-ish frontmatter parser |
 | `frontend/src/utils/redirects.ts` | Old Squarespace URL → new route mapping |
