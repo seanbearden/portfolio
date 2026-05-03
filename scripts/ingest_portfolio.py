@@ -1,17 +1,63 @@
+import ast
 import json
+import logging
 import os
 import re
 from pathlib import Path
+from typing import Any, Dict
+
 import frontmatter
 from langchain_text_splitters import MarkdownHeaderTextSplitter
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT_DIR = ROOT / "content"
 
+logger = logging.getLogger(__name__)
+
+def parse_md_defensive(content: str) -> Dict[str, Any]:
+    """Manually parse frontmatter to handle unescaped quotes and JSON-like lists."""
+    fm_match = re.match(r'^---\s*\n(.*?)\n---\s*\n(.*)', content, re.DOTALL)
+    if not fm_match:
+        return {"content": content}
+
+    fm_text = fm_match.group(1)
+    body_text = fm_match.group(2)
+
+    metadata = {}
+    for line in fm_text.split('\n'):
+        if ':' in line:
+            key, val = line.split(':', 1)
+            key = key.strip()
+            val = val.strip()
+            # Handle quoted strings
+            if val.startswith('"') and val.endswith('"'):
+                val = val[1:-1]
+            # Handle lists like ["A", "B"] or ['A', 'B']. ast.literal_eval
+            # handles both quote styles natively and won't corrupt apostrophes
+            # inside strings the way val.replace("'", '"') does.
+            if val.startswith('[') and val.endswith(']'):
+                try:
+                    val = ast.literal_eval(val)
+                except (ValueError, SyntaxError):
+                    pass
+            metadata[key] = val
+
+    metadata["content"] = body_text
+    return metadata
+
 def chunk_markdown(file_path, content_type):
     """Parse MD file and split by headers."""
     with open(file_path, 'r', encoding='utf-8') as f:
-        post = frontmatter.load(f)
+        content = f.read()
+
+    try:
+        post = frontmatter.loads(content)
+        metadata = post.metadata
+        body = post.content
+    except Exception as exc:
+        logger.warning("Failed to parse frontmatter for %s: %s. Falling back to defensive parser.", file_path, exc)
+        metadata = parse_md_defensive(content)
+        body = metadata.pop("content", "")
 
     headers_to_split_on = [
         ("#", "Header 1"),
@@ -20,13 +66,13 @@ def chunk_markdown(file_path, content_type):
     ]
 
     markdown_splitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_to_split_on)
-    chunks = markdown_splitter.split_text(post.content)
+    chunks = markdown_splitter.split_text(body)
 
     results = []
     for i, chunk in enumerate(chunks):
         # Combine headers into a single title for context if needed
         header_context = " > ".join([v for k, v in chunk.metadata.items() if k.startswith("Header")])
-        title = post.get('title', file_path.stem)
+        title = metadata.get('title', file_path.stem)
         if header_context:
             chunk_title = f"{title}: {header_context}"
         else:
@@ -37,7 +83,7 @@ def chunk_markdown(file_path, content_type):
             "metadata": {
                 "source": str(file_path.relative_to(ROOT)),
                 "title": chunk_title,
-                "slug": post.get('slug', slugify(title)),
+                "slug": metadata.get('slug', slugify(title)),
                 "type": content_type,
                 "chunk_index": i
             }
