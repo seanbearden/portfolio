@@ -1,0 +1,54 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "Sean Bearden" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e7]:
+        - link "Home" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "About" [ref=e9] [cursor=pointer]:
+          - /url: /about
+        - link "Portfolio" [ref=e10] [cursor=pointer]:
+          - /url: /portfolio
+        - link "Blog" [ref=e11] [cursor=pointer]:
+          - /url: /blog
+          - text: Blog
+        - link "Publications" [ref=e13] [cursor=pointer]:
+          - /url: /publications
+        - link "Contact" [ref=e14] [cursor=pointer]:
+          - /url: /contact
+      - generic [ref=e15]:
+        - link "LinkedIn" [ref=e16] [cursor=pointer]:
+          - /url: https://www.linkedin.com/in/sean-bearden-730aa189/
+          - img [ref=e17]
+        - link "Twitter" [ref=e19] [cursor=pointer]:
+          - /url: https://twitter.com/Dr_Bearden
+          - img [ref=e20]
+        - link "GitHub" [ref=e22] [cursor=pointer]:
+          - /url: https://github.com/seanbearden
+          - img [ref=e23]
+  - main [ref=e25]:
+    - article [ref=e26]:
+      - link "Back to blog" [ref=e27] [cursor=pointer]:
+        - /url: /blog
+        - img [ref=e28]
+        - text: Back to blog
+      - generic [ref=e30]:
+        - time [ref=e31]: August 14, 2018
+        - heading "Rady School of Management, Micro-MBA Program" [level=1] [ref=e32]
+      - generic [ref=e33]:
+        - paragraph [ref=e34]:
+          - text: Micro-MBA from UCSD's Rady School -- "a great opportunity for graduate students and postdocs with technical backgrounds to be introduced to business concepts." Inspired by
+          - emphasis [ref=e35]: The Ten-Day MBA
+          - text: by Steven Silbiger.
+        - paragraph [ref=e36]: "Recognized ambitions beyond pure research -- combining scientific expertise with business acumen. Key transferable skill: \"my ability to simply explain difficult ideas.\" Employers will increasingly value employees who can translate technical complexity into accessible language."
+  - contentinfo [ref=e37]:
+    - generic [ref=e38]:
+      - paragraph [ref=e39]: © 2026 Sean Bearden, Ph.D.
+      - generic [ref=e40]:
+        - link "Resume" [ref=e41] [cursor=pointer]:
+          - /url: /pdfs/Bearden_Resume_Online.pdf
+          - text: Resume
+        - link "Contact" [ref=e42] [cursor=pointer]:
+          - /url: /contact
+          - text: Contact
