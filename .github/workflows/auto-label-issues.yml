@@ -1,0 +1,28 @@
+name: Auto-label new issues
+
+# Apply the `jules` label to every newly opened issue. Uses JULES_LABEL_PAT
+# (a user PAT with Issues: write) instead of GITHUB_TOKEN — Jules treats
+# labels applied by github-actions[bot] as unauthorized, so we route the
+# label-application through the user identity. See PR #190 for the original
+# decision to delete this workflow, and the follow-up that restored it.
+#
+# To opt out for a specific issue (e.g., review-only or self-task), remove
+# the `jules` label after creation; Jules won't re-add it.
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add jules label
+        env:
+          GH_TOKEN: ${{ secrets.JULES_LABEL_PAT }}
+          ISSUE: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: gh issue edit "$ISSUE" --add-label "jules" --repo "$REPO"
