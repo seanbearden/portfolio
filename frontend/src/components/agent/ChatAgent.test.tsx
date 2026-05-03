@@ -3,6 +3,19 @@ import { render, screen, fireEvent, waitFor, act } from "@testing-library/react"
 import { ChatAgent } from "./ChatAgent";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+// Mock framer-motion to avoid animation issues in tests
+vi.mock("framer-motion", async () => {
+  const actual = await vi.importActual("framer-motion");
+  return {
+    ...actual,
+    motion: {
+      ...actual.motion,
+      div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+    },
+    AnimatePresence: ({ children }: any) => <>{children}</>,
+  };
+});
+
 describe("ChatAgent", () => {
   beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
@@ -17,17 +30,23 @@ describe("ChatAgent", () => {
     expect(screen.queryByText("Portfolio Agent")).not.toBeInTheDocument();
   });
 
-  it("opens the chat window when the bubble is clicked", () => {
+  it("opens the chat window when the bubble is clicked", async () => {
     render(<ChatAgent />);
     const bubble = screen.getByRole("button");
     fireEvent.click(bubble);
-    expect(screen.getByText("Portfolio Agent")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("Portfolio Agent")).toBeInTheDocument();
+    });
     expect(screen.getByText(/Hi! I'm Sean's portfolio agent/)).toBeInTheDocument();
   });
 
   it("sends a message and receives a response", async () => {
     render(<ChatAgent />);
     fireEvent.click(screen.getByRole("button"));
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText("Ask me anything...")).toBeInTheDocument();
+    });
 
     const input = screen.getByPlaceholderText("Ask me anything...");
     fireEvent.change(input, { target: { value: "Hello" } });
@@ -51,7 +70,7 @@ describe("ChatAgent", () => {
     });
   });
 
-  it("renders in embedded mode for iframes", () => {
+  it("renders in embedded mode for iframes", async () => {
     render(<ChatAgent embedded />);
     // In embedded mode, it starts with a bubble if isOpen is false (default)
     expect(screen.queryByText("Portfolio Agent")).not.toBeInTheDocument();
@@ -59,6 +78,8 @@ describe("ChatAgent", () => {
     expect(bubble).toBeInTheDocument();
 
     fireEvent.click(bubble);
-    expect(screen.getByText("Portfolio Agent")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("Portfolio Agent")).toBeInTheDocument();
+    });
   });
 });
