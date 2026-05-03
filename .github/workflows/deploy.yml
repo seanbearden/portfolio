@@ -49,7 +49,7 @@ jobs:
             echo "tag=sha-${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build and push image
+      - name: Build and push frontend image
         run: |
           docker build \
             --build-arg VITE_ASSETS_BASE_URL=${{ vars.ASSETS_BUCKET_URL }} \
@@ -59,13 +59,32 @@ jobs:
           docker push ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }}
           docker push ${{ env.GAR_REPO }}/frontend:latest
 
-      - name: Deploy to Cloud Run
+      - name: Build and push agent image
+        run: |
+          docker build \
+            -t ${{ env.GAR_REPO }}/agent:${{ steps.version.outputs.tag }} \
+            -t ${{ env.GAR_REPO }}/agent:latest \
+            agent/
+          docker push ${{ env.GAR_REPO }}/agent:${{ steps.version.outputs.tag }}
+          docker push ${{ env.GAR_REPO }}/agent:latest
+
+      - name: Deploy Agent to Cloud Run
+        id: deploy-agent
+        uses: google-github-actions/deploy-cloudrun@2028e2d7d30a78c6910e0632e48dd561b064884d # v3
+        with:
+          service: portfolio-agent
+          region: us-central1
+          image: ${{ env.GAR_REPO }}/agent:${{ steps.version.outputs.tag }}
+
+      - name: Deploy Frontend to Cloud Run
         id: deploy
         uses: google-github-actions/deploy-cloudrun@2028e2d7d30a78c6910e0632e48dd561b064884d # v3
         with:
           service: portfolio-frontend
           region: us-central1
           image: ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }}
+          env_vars: |
+            CHATBOT_API_URL=${{ steps.deploy-agent.outputs.url }}
 
       - name: Deployment summary
         run: |
