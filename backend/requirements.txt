@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+slowapi
+presidio-analyzer
+presidio-anonymizer
+spacy
+transformers
+torch
+langfuse
+pytest
+httpx

@@ -115,7 +115,13 @@ Managed by Terraform in `infrastructure/`. Project: `bearden-portfolio`, region:
 ### Phases
 
 - **Phase 1** (live, as of 2026-05-03): Static portfolio site on Cloud Run, served at `seanbearden.com` and `www.seanbearden.com`
-- **Phase 2** (planned): AI resume chatbot — Python FastAPI on second Cloud Run service, proxied via nginx `/api/` block (already stubbed in `nginx.conf.template`). Currently lives at `bearden-resume-chatbot.com` on Heroku.
+- **Phase 2** (beta): AI resume chatbot — Python FastAPI on second Cloud Run service, proxied via nginx `/api/` block. Implements production safety guardrails:
+    - **Prompt Injection**: Classifier-based detection (`ProtectAI/deberta-v3-base-prompt-injection-v2`).
+    - **PII Leak Detection**: Presidio-based anonymization/detection.
+    - **Off-topic Filter**: Keyword and semantic filtering to keep conversations professional.
+    - **Rate Limiting**: Dual-layer (per-IP via `slowapi` and per-session).
+    - **Cost Ceiling**: Daily budget kill switch with graceful fallback to static assets.
+    - **Eval Integration**: Guardrail firings logged to Langfuse with `adversarial` tag for automated dataset expansion.
 - **Phase 3** (planned): Interactive data playground
 
 ## Key Files
