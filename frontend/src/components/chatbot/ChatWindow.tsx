@@ -24,7 +24,17 @@ export function ChatWindow() {
   const [error, setError] = React.useState<string | null>(null);
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
+  const abortControllerRef = React.useRef<AbortController | null>(null);
   const shouldReduce = useReducedMotion();
+
+  // Cancel any in-flight stream when the component unmounts. Without this,
+  // a long-running stream would keep updating state on a dead component
+  // (warning) and waste bandwidth.
+  React.useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
 
   const scrollToBottom = React.useCallback(() => {
     if (scrollRef.current) {
@@ -50,11 +60,26 @@ export function ChatWindow() {
     const userMessage = (retryMessage || input).trim();
     if (!userMessage || isLoading) return;
 
-    if (!retryMessage) {
+    // Cancel any prior in-flight stream before starting a new one.
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    // Determine the messages to send + the next render state. On retry, drop
+    // any partial assistant turn so we don't send malformed history.
+    let nextMessages: Message[];
+    if (retryMessage) {
+      const last = messages[messages.length - 1];
+      nextMessages =
+        last && last.role === "assistant" && !last.content
+          ? messages.slice(0, -1)
+          : messages;
+    } else {
       setInput("");
       setLastUserMessage(userMessage);
-      setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
+      nextMessages = [...messages, { role: "user", content: userMessage }];
     }
+    setMessages(nextMessages);
 
     setError(null);
     setIsLoading(true);
@@ -63,11 +88,8 @@ export function ChatWindow() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: retryMessage
-            ? messages // Already has the user message at the end
-            : [...messages, { role: "user", content: userMessage }],
-        }),
+        signal: controller.signal,
+        body: JSON.stringify({ messages: nextMessages }),
       });
 
       if (!response.ok) {
@@ -96,6 +118,11 @@ export function ChatWindow() {
         const lines = (partialLine + chunk).split("\n");
         partialLine = lines.pop() || "";
 
+        // Accumulate content from ALL lines in this chunk, then do one
+        // setMessages per chunk instead of per token. Prior code triggered
+        // a re-render for every parsed line, which is excessive on a busy
+        // stream.
+        let chunkContent = "";
         for (const line of lines) {
           const trimmedLine = line.trim();
           if (!trimmedLine || !trimmedLine.startsWith("data: ")) continue;
@@ -105,32 +132,37 @@ export function ChatWindow() {
 
           let content = data;
           try {
-            // Only try parsing if it looks like a JSON object
             if (data.startsWith("{") && data.endsWith("}")) {
               const parsed = JSON.parse(data);
               content = parsed.content || parsed.text || data;
             }
           } catch {
-            // Keep as is
+            // Keep raw
           }
+          chunkContent += content;
+        }
 
-          assistantContent += content;
+        if (chunkContent) {
+          assistantContent += chunkContent;
           setMessages((prev) => {
             const newMessages = [...prev];
             const lastMsg = newMessages[newMessages.length - 1];
             if (lastMsg && lastMsg.role === "assistant") {
-                newMessages[newMessages.length - 1] = {
-                  ...lastMsg,
-                  content: assistantContent,
-                };
+              newMessages[newMessages.length - 1] = {
+                ...lastMsg,
+                content: assistantContent,
+              };
             }
             return newMessages;
           });
         }
       }
     } catch (err) {
+      // AbortError is expected when we cancel a prior stream or when the
+      // component unmounts mid-stream. Don't show it to the user.
+      if (err instanceof Error && err.name === "AbortError") return;
       setError(err instanceof Error ? err.message : "An unexpected error occurred.");
-      // Remove empty assistant message if it was just added
+      // Remove empty assistant placeholder if it was added before the throw.
       setMessages((prev) => {
         if (prev.length > 0 && prev[prev.length - 1].role === "assistant" && !prev[prev.length - 1].content) {
           return prev.slice(0, -1);
