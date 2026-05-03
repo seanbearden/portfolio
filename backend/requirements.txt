@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+langgraph
+langchain
+langchain-google-genai
+langchain-anthropic
+google-cloud-firestore
+pydantic
+python-frontmatter
+langchain-community
+numpy
