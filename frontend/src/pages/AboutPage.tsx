@@ -7,6 +7,7 @@ import { getHomeData, pdfUrl } from "@/utils/content";
 import { Award, Briefcase, GraduationCap, Download, Heart, Newspaper, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { EvalSuite } from "@/components/EvalSuite";
+import { AgentObservability } from "@/components/AgentObservability";
 
 export function AboutPage() {
   const home = getHomeData();
@@ -58,6 +59,11 @@ export function AboutPage() {
 
       {/* LLM Evaluation Suite */}
       <EvalSuite />
+
+      <SectionDivider variant="lines" className="my-4 opacity-50" />
+
+      {/* Agent Observability — OpenTelemetry GenAI traces */}
+      <AgentObservability />
 
       <SectionDivider variant="lines" className="my-4 opacity-50" />
 
