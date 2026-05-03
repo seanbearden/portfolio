@@ -1,13 +1,20 @@
 /**
  * Sanitizes a string for use in a meta description.
- * Removes Markdown formatting characters like #, *, and `.
+ *
+ * Strips common markdown so social-card snippets are clean prose:
+ * - links `[text](url)` → just the text
+ * - headers / emphasis / inline code chars (#, *, `, _, ~) removed
+ * - whitespace collapsed
+ *
+ * Earlier version only removed `#*\`` which left link syntax in the
+ * description. See PR #208 review.
  */
 export function sanitizeDescription(text: string, length = 160): string {
   if (!text) return "";
 
-  // Basic markdown removal and whitespace normalization
   const plainText = text
-    .replace(/[#*`]/g, "")
+    .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1")
+    .replace(/[#*`_~]/g, "")
     .replace(/\s+/g, " ")
     .trim();
 

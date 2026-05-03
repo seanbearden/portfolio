@@ -1,0 +1,152 @@
+[
+  {
+    "question": "What is Sean Bearden's Ph.D. field?",
+    "expected": "Sean Bearden earned his Ph.D. in Physics from UC San Diego.",
+    "category": "education"
+  },
+  {
+    "question": "Who was Sean's Ph.D. advisor?",
+    "expected": "His Ph.D. advisor was Dr. Massimiliano Di Ventra.",
+    "category": "education"
+  },
+  {
+    "question": "Where did Sean work between 2020 and 2023?",
+    "expected": "Sean worked at Valmar Holdings LLC as a Data Scientist / Chief Analytics Officer from 2020 to 2023.",
+    "category": "experience"
+  },
+  {
+    "question": "What kind of projects does Sean do with Arduino?",
+    "expected": "He enjoys creative projects like the talking Deadpool head.",
+    "category": "interests"
+  },
+  {
+    "question": "What was Sean's dissertation research about?",
+    "expected": "His research focused on designing dynamical-systems algorithms for constraint satisfaction problems (memcomputing).",
+    "category": "research"
+  },
+  {
+    "question": "Name one of the fellowships Sean has received.",
+    "expected": "He received the NSF Graduate Research Fellowship, among others like the Goldwater Scholarship and the UC President's Dissertation Year Fellowship.",
+    "category": "awards"
+  },
+  {
+    "question": "Where is Sean originally from?",
+    "expected": "He is a native of Buffalo, NY.",
+    "category": "bio"
+  },
+  {
+    "question": "What sport does Sean practice in San Diego?",
+    "expected": "He practices Brazilian Jiu-Jitsu at P5 Academy.",
+    "category": "interests"
+  },
+  {
+    "question": "Which podcast featured Sean's story about his non-linear path?",
+    "expected": "The Story Collider podcast featured his story.",
+    "category": "press"
+  },
+  {
+    "question": "What are Sean's core programming skills?",
+    "expected": "Sean's programming skills include MATLAB, Python, and JavaScript.",
+    "category": "skills"
+  },
+  {
+    "question": "Has Sean published in Nature?",
+    "expected": "Yes, his work was published in journals such as Nature Scientific Reports and Communications Physics.",
+    "category": "publications"
+  },
+  {
+    "question": "What is Sean's current role at Bayview Solutions?",
+    "expected": "He works as a data scientist focusing on debt portfolio management, COGS modeling, and BigQuery analytics.",
+    "category": "experience"
+  },
+  {
+    "question": "What kind of AI assistants is Sean building at Cash Lane Holdings?",
+    "expected": "He builds LangGraph-powered AI assistants on Google Cloud.",
+    "category": "experience"
+  },
+  {
+    "question": "Where did Sean go for his undergraduate degree?",
+    "expected": "He attended Ohio University and then transferred to SUNY Buffalo for his B.S. in Physics and Applied Mathematics.",
+    "category": "education"
+  },
+  {
+    "question": "What year did Sean receive his Ph.D.?",
+    "expected": "He received his Ph.D. in 2020.",
+    "category": "education"
+  },
+  {
+    "question": "Does Sean have experience with Google Cloud Platform?",
+    "expected": "Yes, Google Cloud Platform is listed among his cloud skills.",
+    "category": "skills"
+  },
+  {
+    "question": "What are some of Sean's data science skills?",
+    "expected": "His skills include Machine Learning, LLMs, Forecasting, scikit-learn, and LangChain.",
+    "category": "skills"
+  },
+  {
+    "question": "What is Sean's email address?",
+    "expected": "His email is seanbearden@seanbearden.com.",
+    "category": "hero"
+  },
+  {
+    "question": "What is memcomputing?",
+    "expected": "Memcomputing is a non-quantum alternative computing paradigm that uses dynamical systems to solve constraint satisfaction problems.",
+    "category": "research"
+  },
+  {
+    "question": "What was Sean's role at Wyzant?",
+    "expected": "He was a Private Tutor for physics and mathematics from 2015 to 2019.",
+    "category": "experience"
+  },
+  {
+    "question": "Did Sean win a Goldwater Scholarship?",
+    "expected": "Yes, he was a Barry Goldwater Scholar.",
+    "category": "awards"
+  },
+  {
+    "question": "What is Sean's involvement with P5 Academy?",
+    "expected": "He practices Brazilian Jiu-Jitsu there.",
+    "category": "interests"
+  },
+  {
+    "question": "What is Sean's headline on his website?",
+    "expected": "Data Scientist and Researcher.",
+    "category": "hero"
+  },
+  {
+    "question": "What did Sean study at SUNY Buffalo?",
+    "expected": "He studied Physics and Applied Mathematics.",
+    "category": "education"
+  },
+  {
+    "question": "How many years was Sean at Valmar Holdings?",
+    "expected": "He was there for about 3 years, from 2020 to 2023.",
+    "category": "experience"
+  },
+  {
+    "question": "What are some research areas Sean has worked on?",
+    "expected": "Dynamical Systems, Optimization, and Computational Physics.",
+    "category": "skills"
+  },
+  {
+    "question": "What is Sean's Twitter handle?",
+    "expected": "@Dr_Bearden",
+    "category": "social"
+  },
+  {
+    "question": "What was Sean's role at SUNY Buffalo as a researcher?",
+    "expected": "He was a Student Researcher focusing on spin-laser simulation and nonlinear dynamical systems.",
+    "category": "experience"
+  },
+  {
+    "question": "Is Sean active on Kaggle?",
+    "expected": "Yes, he is into Kaggle competitions and his Kaggle profile is linked on his site.",
+    "category": "interests"
+  },
+  {
+    "question": "What did Sean do at Ohio University?",
+    "expected": "He earned an A.S. in Natural Sciences in 2011.",
+    "category": "education"
+  }
+]
