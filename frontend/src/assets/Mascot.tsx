@@ -31,11 +31,15 @@ export function Mascot({ state = "idle", className, size = 40, contrast = false 
           features: "text-destructive-foreground",
         };
       case "refusal":
+        // Amber is intentional here — distinct from `destructive` (error) and
+        // semantically "caution" rather than "broken". The theme has no
+        // `warning` token; if one is added later, swap these. Same amber
+        // appears on the AgentPopup refusal banner for consistency.
         return {
           core: "fill-amber-500",
           glow: "bg-amber-500/20",
           orbit: "stroke-amber-500/40",
-          features: "text-white",
+          features: "text-amber-50",
         };
       case "thinking":
         return {
@@ -104,7 +108,7 @@ export function Mascot({ state = "idle", className, size = 40, contrast = false 
               className={colors.orbit}
               animate={{ rotate: 360 }}
               transition={orbitTransition}
-              style={{ originX: "50px", originY: "50px" }}
+              style={{ transformOrigin: "50px 50px" }}
             />
             <motion.circle
               cx="50"
@@ -116,7 +120,7 @@ export function Mascot({ state = "idle", className, size = 40, contrast = false 
               className={colors.orbit}
               animate={{ rotate: -360 }}
               transition={{ ...orbitTransition, duration: orbitTransition.duration * 1.5 }}
-              style={{ originX: "50px", originY: "50px" }}
+              style={{ transformOrigin: "50px 50px" }}
             />
           </g>
         )}

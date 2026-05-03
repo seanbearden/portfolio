@@ -10,16 +10,26 @@ export function AgentPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const [state, setState] = useState<MascotState>("idle");
   const shouldReduce = useReducedMotion();
+  // Vite exposes `import.meta.env.DEV` (true on `npm run dev`, false in
+  // production builds). Used to gate the dev-only state-cycle handler.
+  const isDev = import.meta.env.DEV;
 
   const togglePopup = () => setIsOpen(!isOpen);
 
-  // For demonstration/testing purposes, cycle through states on mascot click
+  // Dev-only: cycle the mascot through states by clicking it. Stripped at
+  // production build time via the isDev gate below.
   const cycleState = (e: React.MouseEvent) => {
     e.stopPropagation();
     const states: MascotState[] = ["idle", "thinking", "error", "refusal"];
     const currentIndex = states.indexOf(state);
     setState(states[(currentIndex + 1) % states.length]);
   };
+
+  const statusLabel =
+    state === "thinking" ? "Thinking..."
+    : state === "error" ? "Error"
+    : state === "refusal" ? "Out of scope"
+    : "Online";
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4">
@@ -36,13 +46,17 @@ export function AgentPopup() {
               {/* Header */}
               <div className="flex items-center justify-between border-b p-4">
                 <div className="flex items-center gap-3">
-                  <div className="cursor-pointer" onClick={cycleState} title="Click to cycle states (Dev mode)">
+                  {isDev ? (
+                    <div className="cursor-pointer" onClick={cycleState} title="Click to cycle states (Dev mode)">
+                      <Mascot state={state} size={32} />
+                    </div>
+                  ) : (
                     <Mascot state={state} size={32} />
-                  </div>
+                  )}
                   <div>
                     <h3 className="text-sm font-semibold">Portfolio Agent</h3>
                     <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">
-                      {state === "thinking" ? "Thinking..." : "Online"}
+                      {statusLabel}
                     </p>
                   </div>
                 </div>
@@ -80,10 +94,16 @@ export function AgentPopup() {
                   <input
                     type="text"
                     placeholder="Ask a question..."
+                    aria-label="Ask the portfolio agent a question"
                     className="flex-1 rounded-md border bg-background px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                     disabled={state === "thinking"}
                   />
-                  <Button size="icon" className="h-8 w-8 shrink-0" disabled={state === "thinking"}>
+                  <Button
+                    size="icon"
+                    className="h-8 w-8 shrink-0"
+                    disabled={state === "thinking"}
+                    aria-label="Send message"
+                  >
                     <Send className="h-3 w-3" />
                   </Button>
                 </form>
