@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Install uv
-        uses: astral-sh/setup-uv@887a942a15af24a695919430a6c07d93054fd283 # v5
+        uses: astral-sh/setup-uv@f94ec6bedd8674c4426838e6b50417d36b6ab231 # v5.3.1
         with:
           enable-cache: true
           cache-dependency-path: chatbot/uv.lock
