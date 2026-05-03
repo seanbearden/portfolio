@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { buttonVariants } from "@/components/ui/button";
-import { getHomeData, pdfUrl } from "@/utils/content";
+import { getHomeData, pdfUrl, assetUrl } from "@/utils/content";
 import { Award, Briefcase, GraduationCap, Download, Heart, Newspaper, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -12,13 +12,24 @@ export function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-3xl font-bold tracking-tight">About</h1>
-      <div className="mt-4 space-y-4 text-muted-foreground leading-relaxed">
-        {home.bio.map((paragraph, idx) => (
-          <p key={idx}>{paragraph}</p>
-        ))}
+
+      <div className="mt-8 grid gap-8 md:grid-cols-[1fr_250px] items-start">
+        <div className="space-y-4 text-muted-foreground leading-relaxed">
+          {home.bio.map((paragraph, idx) => (
+            <p key={idx}>{paragraph}</p>
+          ))}
+        </div>
+
+        <div className="relative flex justify-center md:justify-end">
+          <img
+            src={assetUrl("about-synthesis.svg")}
+            alt="Isometric synthesis of physics wave equations, financial growth charts, and neural network nodes."
+            className="w-full max-w-[250px] text-primary"
+          />
+        </div>
       </div>
 
-      <div className="mt-6 flex gap-3">
+      <div className="mt-8 flex flex-wrap gap-3">
         <a
           href={pdfUrl("Bearden_Resume_Online.pdf")}
           target="_blank"
