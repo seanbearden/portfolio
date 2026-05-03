@@ -130,6 +130,11 @@ Managed by Terraform in `infrastructure/`. Project: `bearden-portfolio`, region:
 | `.changeset/config.json` | Changesets release config |
 | `infrastructure/main.tf` | All GCP resources |
 | `infrastructure/outputs.tf` | GitHub Actions variables (set via `gh variable set`) |
+| `docs/illustrations/style-guide.md` | Visual style guide for AI-generated illustrations |
+
+## Visual Identity & Illustrations
+
+All AI-generated illustrations must follow the [Visual Style Guide](docs/illustrations/style-guide.md). When generating assets with Nano Banana Pro (Gemini 3 Pro Image), ensure they adhere to the master prompt template and core pillars (Scientist + Builder + Leader) to maintain site-wide cohesion.
 
 ## ZAP scan triage policy — `.zap/rules.tsv`
 
