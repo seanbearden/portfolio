@@ -2,17 +2,22 @@
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { ChatAgent } from "./ChatAgent";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import React from "react";
 
 // Mock framer-motion to avoid animation issues in tests
 vi.mock("framer-motion", async () => {
-  const actual = await vi.importActual("framer-motion");
+  const actual: any = await vi.importActual("framer-motion");
   return {
     ...actual,
     motion: {
       ...actual.motion,
-      div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+      div: ({ children, ...props }: any) => {
+          const { whileHover, whileTap, initial, animate, exit, transition, ...rest } = props;
+          return React.createElement("div", rest, children);
+      },
     },
-    AnimatePresence: ({ children }: any) => <>{children}</>,
+    AnimatePresence: ({ children }: any) => React.createElement(React.Fragment, null, children),
+    useReducedMotion: () => true,
   };
 });
 
