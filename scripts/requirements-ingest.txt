@@ -7,5 +7,5 @@ google-cloud-aiplatform==1.48.0
 # in ingest_portfolio.py / query_test.py.
 cloud-sql-python-connector[psycopg2]==1.20.2
 python-frontmatter==1.1.0
-langchain-text-splitters==0.0.1
+langchain-text-splitters==1.1.2
 pgvector==0.2.5
