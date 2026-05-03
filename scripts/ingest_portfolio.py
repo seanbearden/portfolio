@@ -1,17 +1,64 @@
+import ast
 import json
+import logging
 import os
 import re
 from pathlib import Path
+from typing import Any, Dict
+
 import frontmatter
 from langchain_text_splitters import MarkdownHeaderTextSplitter
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT_DIR = ROOT / "content"
 
+logger = logging.getLogger(__name__)
+
+def parse_md_defensive(content: str) -> Dict[str, Any]:
+    """Manually parse frontmatter to handle unescaped quotes and JSON-like lists."""
+    fm_match = re.match(r'^---\s*\n(.*?)\n---\s*\n(.*)', content, re.DOTALL)
+    if not fm_match:
+        return {"content": content}
+
+    fm_text = fm_match.group(1)
+    body_text = fm_match.group(2)
+
+    metadata = {}
+    for line in fm_text.split('\n'):
+        if ':' in line:
+            key, val = line.split(':', 1)
+            key = key.strip()
+            val = val.strip()
+            # Use ast.literal_eval for both quoted scalars ("...", '...') and
+            # list literals (["A", "B"]). It correctly handles either quote
+            # style and won't corrupt apostrophes inside strings the way
+            # manual `val[1:-1]` slicing or `val.replace("'", '"')` would.
+            if (val.startswith('"') and val.endswith('"')) or \
+               (val.startswith("'") and val.endswith("'")) or \
+               (val.startswith('[') and val.endswith(']')):
+                try:
+                    val = ast.literal_eval(val)
+                except (ValueError, SyntaxError):
+                    pass
+            metadata[key] = val
+
+    metadata["content"] = body_text
+    return metadata
+
 def chunk_markdown(file_path, content_type):
     """Parse MD file and split by headers."""
+    file_path = Path(file_path).resolve()
     with open(file_path, 'r', encoding='utf-8') as f:
-        post = frontmatter.load(f)
+        content = f.read()
+
+    try:
+        post = frontmatter.loads(content)
+        metadata = post.metadata
+        body = post.content
+    except Exception as exc:
+        logger.warning("Failed to parse frontmatter for %s: %s. Falling back to defensive parser.", file_path, exc)
+        metadata = parse_md_defensive(content)
+        body = metadata.pop("content", "")
 
     headers_to_split_on = [
         ("#", "Header 1"),
@@ -20,13 +67,13 @@ def chunk_markdown(file_path, content_type):
     ]
 
     markdown_splitter = MarkdownHeaderTextSplitter(headers_to_split_on=headers_to_split_on)
-    chunks = markdown_splitter.split_text(post.content)
+    chunks = markdown_splitter.split_text(body)
 
     results = []
     for i, chunk in enumerate(chunks):
         # Combine headers into a single title for context if needed
         header_context = " > ".join([v for k, v in chunk.metadata.items() if k.startswith("Header")])
-        title = post.get('title', file_path.stem)
+        title = metadata.get('title', file_path.stem)
         if header_context:
             chunk_title = f"{title}: {header_context}"
         else:
@@ -37,7 +84,7 @@ def chunk_markdown(file_path, content_type):
             "metadata": {
                 "source": str(file_path.relative_to(ROOT)),
                 "title": chunk_title,
-                "slug": post.get('slug', slugify(title)),
+                "slug": metadata.get('slug', slugify(title)),
                 "type": content_type,
                 "chunk_index": i
             }
@@ -228,6 +275,10 @@ DB_USER = os.environ.get("GCP_SQL_USER") # Should be the SA email without .gserv
 
 def get_embeddings(texts):
     """Generate embeddings using gemini-embedding-001."""
+    if os.environ.get("SIMULATE"):
+        print(f"SIMULATE: Generating dummy embeddings for {len(texts)} texts.")
+        return [[0.0] * 768 for _ in texts]
+
     aiplatform.init(project=PROJECT_ID, location=REGION)
     model = TextEmbeddingModel.from_pretrained("gemini-embedding-001")
 
@@ -281,7 +332,7 @@ def upsert_chunks(conn, chunks, embeddings):
         conn.commit()
 
 def run_ingestion():
-    if not PROJECT_ID:
+    if not PROJECT_ID and not os.environ.get("SIMULATE"):
         print("GCP_PROJECT_ID not set. Skipping ingestion.")
         return
 
@@ -290,7 +341,19 @@ def run_ingestion():
     texts = [c['content'] for c in chunks]
 
     print(f"Generating embeddings for {len(chunks)} chunks...")
-    embeddings = get_embeddings(texts)
+    try:
+        embeddings = get_embeddings(texts)
+    except Exception as e:
+        print(f"Error generating embeddings: {e}")
+        if os.environ.get("SIMULATE") or not PROJECT_ID:
+            print("SIMULATE or Missing Project ID: Falling back to dummy embeddings.")
+            embeddings = [[0.0] * 768 for _ in chunks]
+        else:
+            raise
+
+    if os.environ.get("SIMULATE") or not PROJECT_ID:
+        print(f"SIMULATE or Missing Project ID: Successfully chunked {len(chunks)} items. Skipping Cloud SQL upload.")
+        return
 
     print("Connecting to Cloud SQL...")
     connector = Connector()

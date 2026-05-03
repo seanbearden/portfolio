@@ -173,26 +173,21 @@ resource "google_project_iam_member" "chatbot_ai" {
   member  = "serviceAccount:${google_service_account.chatbot.email}"
 }
 
-# -----------------------------------------------------------
-# Cloud Run: Chatbot Backend
-# Note: Initial deployment handled by GH Actions, but IAM here.
-# -----------------------------------------------------------
-resource "google_cloud_run_v2_service_iam_member" "chatbot_invoker" {
+# Public invoker on the agent Cloud Run service. Single resource —
+# previously this PR had a parallel `chatbot_invoker` hardcoded to
+# "portfolio-chatbot". They referred to the same Cloud Run service;
+# kept the var-driven version that matches main's convention.
+resource "google_cloud_run_v2_service_iam_member" "agent_public_invoker" {
   project  = var.project_id
   location = var.region
-  name     = "portfolio-chatbot"
+  name     = var.agent_service_name
   role     = "roles/run.invoker"
   member   = "allUsers"
 
   depends_on = [google_project_service.apis["run.googleapis.com"]]
 }
 
-# -----------------------------------------------------------
-# Vertex AI Reasoning Engine (Agent Engine)
-# Resource itself is managed via SDK/gcloud, but IAM here.
-# -----------------------------------------------------------
-resource "google_project_iam_member" "deploy_ae" {
-  project = var.project_id
-  role    = "roles/aiplatform.admin"
-  member  = "serviceAccount:${google_service_account.deploy.email}"
-}
+# Note: the formerly-separate `deploy_ae` IAM resource (granting
+# aiplatform.admin to the deploy SA) was redundant — that role is now
+# in the deploy_roles local list at the top of this file. Single source
+# of truth for the deploy SA's roles.
