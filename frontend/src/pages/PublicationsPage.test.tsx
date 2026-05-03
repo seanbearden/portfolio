@@ -11,6 +11,7 @@ vi.mock("@/utils/content", () => ({
       year: "2024",
       link: "https://example.com/pub",
       type: "Journal Article",
+      preprint: "https://example.com/preprint",
     },
   ],
 }));
@@ -22,5 +23,7 @@ describe("PublicationsPage", () => {
     expect(screen.getByText(/Test Journal/i)).toBeInTheDocument();
     expect(screen.getByText(/2024/i)).toBeInTheDocument();
     expect(screen.getByText(/Journal Article/i)).toBeInTheDocument();
+    expect(screen.getByText("Preprint")).toBeInTheDocument();
+    expect(screen.getByText("Preprint")).toHaveAttribute("href", "https://example.com/preprint");
   });
 });

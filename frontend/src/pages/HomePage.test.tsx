@@ -2,6 +2,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
+import * as FramerMotion from "framer-motion";
+
+vi.mock("framer-motion", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("framer-motion")>();
+  return {
+    ...actual,
+    useReducedMotion: vi.fn(() => false),
+  };
+});
 
 vi.mock("@/utils/content", () => ({
   getHomeData: () => ({
@@ -45,9 +54,14 @@ vi.mock("@/utils/content", () => ({
   pdfUrl: (f: string) => `https://cdn.example.com/pdfs/${f}`,
 }));
 
+import { HomePage } from "./HomePage";
+
 describe("HomePage", () => {
+  beforeEach(() => {
+    vi.mocked(FramerMotion.useReducedMotion).mockReturnValue(false);
+  });
+
   it("renders the name and headline from home data", async () => {
-    const { HomePage } = await import("./HomePage");
     render(
       <MemoryRouter>
         <HomePage />
@@ -60,26 +74,14 @@ describe("HomePage", () => {
 
 describe("HomePage with reduced motion", () => {
   beforeEach(() => {
-    vi.stubGlobal("matchMedia", (query: string) => ({
-      matches: query.includes("prefers-reduced-motion: reduce"),
-      media: query,
-      onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    }));
+    vi.mocked(FramerMotion.useReducedMotion).mockReturnValue(true);
   });
 
   afterEach(() => {
-    vi.unstubAllGlobals();
     cleanup();
   });
 
   it("renders correctly when prefers-reduced-motion is set", async () => {
-    vi.resetModules();
-    const { HomePage } = await import("./HomePage");
     render(
       <MemoryRouter>
         <HomePage />
@@ -88,5 +90,6 @@ describe("HomePage with reduced motion", () => {
 
     expect(screen.getByRole("heading", { name: /Sean Bearden/i })).toBeInTheDocument();
     expect(screen.getByText("Test Project")).toBeInTheDocument();
+    expect(screen.getByText("Test Post")).toBeInTheDocument();
   });
 });

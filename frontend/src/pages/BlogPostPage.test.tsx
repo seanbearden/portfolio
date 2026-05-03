@@ -62,4 +62,17 @@ describe("BlogPostPage", () => {
     expect(screen.getByText("Blog Index Page")).toBeInTheDocument();
     expect(screen.queryByText("Test Blog Post")).not.toBeInTheDocument();
   });
+
+  it("redirects when no slug param is present", () => {
+    render(
+      <MemoryRouter initialEntries={["/test-no-slug"]}>
+        <Routes>
+          <Route path="/test-no-slug" element={<BlogPostPage />} />
+          <Route path="/blog" element={<div>Blog Index Page</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText("Blog Index Page")).toBeInTheDocument();
+  });
 });
