@@ -36,3 +36,26 @@ jobs:
           fail_action: false
           allow_issue_writing: true
           artifact_name: "zap-baseline-report"
+
+      # Inline labeling: bot-created issues don't trigger `issues.opened`
+      # listeners (GITHUB_TOKEN anti-recursion guard), so we label here using
+      # the "RunnerID:<run_id>" anchor the action embeds in every issue body.
+      # No-op when the scan is clean.
+      - name: Label auto-created ZAP issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          NUM=$(gh search issues "RunnerID:${RUN_ID}" \
+                  --repo "${REPO}" --state open --limit 1 \
+                  --json number --jq '.[0].number // empty')
+          if [[ -z "${NUM}" ]]; then
+            echo "No ZAP issue created for run ${RUN_ID}; nothing to label."
+            exit 0
+          fi
+          echo "Labeling issue #${NUM}"
+          gh issue edit "${NUM}" --repo "${REPO}" \
+            --add-label "jules" --add-label "security"
