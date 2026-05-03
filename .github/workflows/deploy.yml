@@ -49,8 +49,9 @@ jobs:
             echo "tag=sha-${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build and push frontend image
+      - name: Build and push images
         run: |
+          # Frontend
           docker build \
             --build-arg VITE_ASSETS_BASE_URL=${{ vars.ASSETS_BUCKET_URL }} \
             -t ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }} \
@@ -59,14 +60,15 @@ jobs:
           docker push ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }}
           docker push ${{ env.GAR_REPO }}/frontend:latest
 
-      - name: Build and push agent image
-        run: |
+          # Portfolio Agent (MCP)
+          # We need content/ directory context for the agent build
+          cp -r content portfolio-agent/content
           docker build \
-            -t ${{ env.GAR_REPO }}/agent:${{ steps.version.outputs.tag }} \
-            -t ${{ env.GAR_REPO }}/agent:latest \
-            agent/
-          docker push ${{ env.GAR_REPO }}/agent:${{ steps.version.outputs.tag }}
-          docker push ${{ env.GAR_REPO }}/agent:latest
+            -t ${{ env.GAR_REPO }}/portfolio-agent:${{ steps.version.outputs.tag }} \
+            -t ${{ env.GAR_REPO }}/portfolio-agent:latest \
+            portfolio-agent/
+          docker push ${{ env.GAR_REPO }}/portfolio-agent:${{ steps.version.outputs.tag }}
+          docker push ${{ env.GAR_REPO }}/portfolio-agent:latest
 
       - name: Deploy Agent to Cloud Run
         id: deploy-agent
@@ -74,7 +76,7 @@ jobs:
         with:
           service: portfolio-agent
           region: us-central1
-          image: ${{ env.GAR_REPO }}/agent:${{ steps.version.outputs.tag }}
+          image: ${{ env.GAR_REPO }}/portfolio-agent:${{ steps.version.outputs.tag }}
 
       - name: Deploy Frontend to Cloud Run
         id: deploy
@@ -84,7 +86,7 @@ jobs:
           region: us-central1
           image: ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }}
           env_vars: |
-            CHATBOT_API_URL=${{ steps.deploy-agent.outputs.url }}
+            MCP_SERVER_URL=${{ steps.deploy-agent.outputs.url }}
 
       - name: Deployment summary
         run: |
@@ -128,13 +130,10 @@ jobs:
       # ZAP-created issue. The action embeds "RunnerID:<run_id>" in every
       # issue body, so we look up our own run's issue and label it directly.
       # No-op when the scan is clean (no issue created).
-      #
-      # Auth: uses JULES_LABEL_PAT (a user PAT with Issues: write) instead of
-      # GITHUB_TOKEN — see zap-baseline.yml for full rationale.
       - name: Label auto-created ZAP issue
         if: always()
         env:
-          GH_TOKEN: ${{ secrets.JULES_LABEL_PAT }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
         run: |

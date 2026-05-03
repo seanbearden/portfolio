@@ -2,9 +2,7 @@
   "hero": {
     "name": "Sean Bearden Ph.D.",
     "headline": "Data Scientist and Researcher",
-    "email": "seanbearden@seanbearden.com",
-    "illustration": "hero_v1_bleed.svg",
-    "illustrationAlt": "Sean Bearden - Scientist, Builder, Leader. An abstract illustration showing neural connections, architectural blocks, and upward growth vectors."
+    "email": "seanbearden@seanbearden.com"
   },
   "social": {
     "linkedin": "https://www.linkedin.com/in/sean-bearden-730aa189/",
