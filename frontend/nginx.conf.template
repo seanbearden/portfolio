@@ -39,8 +39,12 @@ server {
     add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
     add_header Cross-Origin-Resource-Policy "same-origin" always;
 
-    # Rate limiting for API/MCP
-    limit_req_zone $binary_remote_addr zone=api_limit:10m rate=5r/s;
+    # Note: nginx-level rate limiting is intentionally NOT defined here.
+    # `limit_req_zone` is only valid in the http context, but this template
+    # renders inside an http{} block that we don't fully control on Cloud
+    # Run nginx, and Cloud Run is multi-instance — per-instance counters
+    # would be wrong anyway. Rate limiting is handled at the application
+    # layer in the agent service (see PR #191 / portfolio-agent guardrails).
 
     # Phase 2: uncomment to proxy chatbot API
     # location /api/ {
@@ -51,9 +55,8 @@ server {
     #     proxy_set_header X-Forwarded-Proto $scheme;
     # }
 
-    # MCP Server Proxy
+    # MCP Server Proxy — rate limiting handled by the agent service.
     location /mcp/ {
-        limit_req zone=api_limit burst=10 nodelay;
         proxy_pass ${MCP_SERVER_URL}/;
         proxy_set_header Host $proxy_host;
         proxy_set_header X-Real-IP $remote_addr;
