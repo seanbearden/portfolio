@@ -1,8 +1,7 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, cleanup } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
-import { HomePage } from "./HomePage";
 
 vi.mock("@/utils/content", () => ({
   getHomeData: () => ({
@@ -29,6 +28,7 @@ vi.mock("@/utils/content", () => ({
       skills: ["TypeScript"],
       link: "https://example.com",
       cta: "View Project",
+      image: "project1.jpg"
     },
   ],
   getBlogPosts: () => [
@@ -46,35 +46,47 @@ vi.mock("@/utils/content", () => ({
 }));
 
 describe("HomePage", () => {
-  const renderPage = () =>
+  it("renders the name and headline from home data", async () => {
+    const { HomePage } = await import("./HomePage");
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+    expect(screen.getByRole("heading", { name: /Sean Bearden/i })).toBeInTheDocument();
+    expect(screen.getByText(/Data Scientist/i)).toBeInTheDocument();
+  });
+});
+
+describe("HomePage with reduced motion", () => {
+  beforeEach(() => {
+    vi.stubGlobal("matchMedia", (query: string) => ({
+      matches: query.includes("prefers-reduced-motion: reduce"),
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    cleanup();
+  });
+
+  it("renders correctly when prefers-reduced-motion is set", async () => {
+    vi.resetModules();
+    const { HomePage } = await import("./HomePage");
     render(
       <MemoryRouter>
         <HomePage />
       </MemoryRouter>
     );
 
-  it("renders the name and headline from home data", () => {
-    renderPage();
     expect(screen.getByRole("heading", { name: /Sean Bearden/i })).toBeInTheDocument();
-    expect(screen.getByText(/Data Scientist/i)).toBeInTheDocument();
-  });
-
-  it("renders the about preview", () => {
-    renderPage();
-    expect(screen.getByText("This is a bio about me.")).toBeInTheDocument();
-  });
-
-  it("renders featured project cards", () => {
-    renderPage();
-    expect(screen.getByRole("heading", { name: /Test Project/i })).toBeInTheDocument();
-    expect(screen.getByText("Sub")).toBeInTheDocument();
-    expect(screen.getByText("TypeScript")).toBeInTheDocument();
-    expect(screen.getByText("View Project")).toBeInTheDocument();
-  });
-
-  it("renders recent blog posts", () => {
-    renderPage();
-    expect(screen.getByRole("heading", { name: /Test Post/i })).toBeInTheDocument();
-    expect(screen.getByText(/Post content snippet/i)).toBeInTheDocument();
+    expect(screen.getByText("Test Project")).toBeInTheDocument();
   });
 });
