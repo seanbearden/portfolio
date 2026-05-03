@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchLatestEval, fetchEvalHistory } from "@/utils/content";
 import type { EvalResult, EvalMetrics } from "@/types/evals";
 import { Sparkline } from "@/components/ui/sparkline";
 import { ExternalLink, Info } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export function EvalSuite() {
   const [latest, setLatest] = useState<EvalResult | null>(null);
