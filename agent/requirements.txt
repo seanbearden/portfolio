@@ -1,4 +1,4 @@
 fastapi==0.115.8
 uvicorn==0.34.0
 langgraph==1.0.10rc1
-langchain-core==0.3.37
+langchain-core==1.2.28
