@@ -74,11 +74,13 @@ export function Mascot({ state = "idle", className, size = 40, contrast = false 
 
   return (
     <div
+      data-testid="mascot-root"
       className={cn("relative flex items-center justify-center", className)}
       style={{ width: size, height: size }}
     >
       {/* Glow Effect */}
       <motion.div
+        data-testid="mascot-glow"
         className={cn("absolute rounded-full blur-xl", colors.glow)}
         style={{ width: size * 1.2, height: size * 1.2 }}
         animate={
@@ -98,7 +100,7 @@ export function Mascot({ state = "idle", className, size = 40, contrast = false 
       >
         {/* Orbits */}
         {!shouldReduce && (
-          <g>
+          <g data-testid="mascot-orbits">
             <motion.circle
               cx="50"
               cy="50"
@@ -127,6 +129,7 @@ export function Mascot({ state = "idle", className, size = 40, contrast = false 
 
         {/* Core Body */}
         <motion.g
+          data-testid="mascot-body"
           animate={
             shouldReduce
               ? {}
@@ -136,10 +139,10 @@ export function Mascot({ state = "idle", className, size = 40, contrast = false 
           }
           transition={state === "error" ? { duration: 0.2, repeat: Infinity } : floatTransition}
         >
-          <circle cx="50" cy="50" r="30" className={colors.core} />
+          <circle data-testid="mascot-core" cx="50" cy="50" r="30" className={colors.core} />
 
           {/* Eyes */}
-          <g fill="currentColor" className={colors.features}>
+          <g data-testid="mascot-features" fill="currentColor" className={colors.features}>
             {state === "idle" && (
               <>
                 <motion.circle
@@ -198,18 +201,20 @@ export function Mascot({ state = "idle", className, size = 40, contrast = false 
         {/* Orbiting Nodes */}
         {!shouldReduce && (
           <motion.g
+            data-testid="mascot-orbiting-node-1"
             animate={{ rotate: 360 }}
             transition={orbitTransition}
-            style={{ originX: "50px", originY: "50px" }}
+            style={{ transformOrigin: "50px 50px" }}
           >
             <circle cx="50" cy="10" r="4" className={colors.core} />
           </motion.g>
         )}
         {!shouldReduce && (
           <motion.g
+            data-testid="mascot-orbiting-node-2"
             animate={{ rotate: -360 }}
             transition={{ ...orbitTransition, duration: orbitTransition.duration * 1.5 }}
-            style={{ originX: "50px", originY: "50px" }}
+            style={{ transformOrigin: "50px 50px" }}
           >
             <circle cx="50" cy="5" r="3" className={colors.core} />
           </motion.g>
