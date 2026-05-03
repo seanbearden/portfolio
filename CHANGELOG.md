@@ -1,5 +1,30 @@
 # portfolio
 
+## 0.4.0
+
+### Minor Changes
+
+- [#180](https://github.com/seanbearden/portfolio/pull/180) [`dadf0f8`](https://github.com/seanbearden/portfolio/commit/dadf0f8a76c5447bc2588ac854395eb7e90f59c5) Thanks [@seanbearden](https://github.com/seanbearden)! - add synthesis illustration to about page anchoring personal narrative
+
+- [#186](https://github.com/seanbearden/portfolio/pull/186) [`90acef6`](https://github.com/seanbearden/portfolio/commit/90acef6f6d00d7548383bd45d376830cff827708) Thanks [@seanbearden](https://github.com/seanbearden)! - Add animated portfolio agent mascot and popup UI.
+
+- [#179](https://github.com/seanbearden/portfolio/pull/179) [`f0de5a2`](https://github.com/seanbearden/portfolio/commit/f0de5a26a060c87155d116cf9522beb037e18c56) Thanks [@seanbearden](https://github.com/seanbearden)! - Add decorative SVG section dividers for improved visual rhythm across Home, About, and Blog pages.
+
+- [#174](https://github.com/seanbearden/portfolio/pull/174) [`eeb54d5`](https://github.com/seanbearden/portfolio/commit/eeb54d516a557bd9f256491fcce6130bfa0f1477) Thanks [@seanbearden](https://github.com/seanbearden)! - Bootstrap Phase 2 AI agent with FastAPI and Cloud Run infrastructure.
+
+- [#188](https://github.com/seanbearden/portfolio/pull/188) [`dd16b23`](https://github.com/seanbearden/portfolio/commit/dd16b2309c4dd0f05465047c5cb173ef66460d92) Thanks [@seanbearden](https://github.com/seanbearden)! - Add site-wide AI chatbot with resume-streaming capabilities.
+
+### Patch Changes
+
+- [#189](https://github.com/seanbearden/portfolio/pull/189) [`e99ebab`](https://github.com/seanbearden/portfolio/commit/e99ebab3ebdbf7627d0236832471612f63450afc) Thanks [@seanbearden](https://github.com/seanbearden)! - Add embeddable portfolio agent widget with iframe support
+
+- [#173](https://github.com/seanbearden/portfolio/pull/173) [`4255e21`](https://github.com/seanbearden/portfolio/commit/4255e211a0dc2e8fa86946e15ab724f86fde86cd) Thanks [@seanbearden](https://github.com/seanbearden)! - Added a physics-themed 'collapsed state vector' illustration and witty copy to the 404 page while maintaining legacy URL redirect logic.
+
+- [#177](https://github.com/seanbearden/portfolio/pull/177) [`270648e`](https://github.com/seanbearden/portfolio/commit/270648e932ee454499f6ae5f8cb647354140c262) Thanks [@seanbearden](https://github.com/seanbearden)! - Triage ZAP baseline scan alerts:
+  - Resolved Information Disclosure (Rule 10027) by removing a deployment-related comment from `sitemap.xml`.
+  - Documented accepted trade-offs for caching policies (Rules 10049, 10015) in `nginx.conf.template`, favoring freshness for HTML and performance for static assets.
+  - Re-confirmed that existing justifications for CSP `style-src 'unsafe-inline'` (Rule 10055) and COEP `unsafe-none` (Rule 90004) in `nginx.conf.template` remain necessary for compatibility with framer-motion and GCS assets, respectively.
+
 ## 0.3.3
 
 ### Patch Changes
