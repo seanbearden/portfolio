@@ -78,19 +78,16 @@ export function NotFoundPage() {
             transition={{ delay: 1.5, duration: 0.5, type: "spring" }}
           />
 
-          {/* Annotation text in SVG. Reduced-motion: render at final
-              opacity immediately, no delayed fade. MotionConfig only
-              suppresses transform-axis animations, not opacity, so we
-              gate this explicitly. */}
+          {/* Annotation text in SVG */}
           <motion.text
             x="105"
             y="25"
             fill="currentColor"
             fontSize="10"
             className="font-mono italic opacity-70"
-            initial={shouldReduce ? { opacity: 0.7 } : { opacity: 0 }}
+            initial={{ opacity: 0 }}
             animate={{ opacity: 0.7 }}
-            transition={shouldReduce ? { duration: 0 } : { delay: 2 }}
+            transition={{ delay: 2 }}
           >
             |ψ⟩ collapsed
           </motion.text>
@@ -99,17 +96,17 @@ export function NotFoundPage() {
 
       <motion.h1
         className="text-7xl font-black tracking-tighter"
-        initial={shouldReduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: shouldReduce ? 0 : 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={shouldReduce ? { duration: 0 } : { duration: 0.8 }}
+        transition={{ duration: 0.8 }}
       >
         404
       </motion.h1>
 
       <motion.div
-        initial={shouldReduce ? { opacity: 1 } : { opacity: 0 }}
+        initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={shouldReduce ? { duration: 0 } : { delay: 0.5, duration: 1 }}
+        transition={{ delay: 0.5, duration: 1 }}
         className="space-y-2 mt-4"
       >
         <p className="text-xl font-medium">This URL collapsed before observation.</p>
@@ -119,9 +116,9 @@ export function NotFoundPage() {
       </motion.div>
 
       <motion.div
-        initial={shouldReduce ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: shouldReduce ? 0 : 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={shouldReduce ? { duration: 0 } : { delay: 1.2 }}
+        transition={{ delay: 1.2 }}
         className="mt-12"
       >
         <Link

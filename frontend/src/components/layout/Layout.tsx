@@ -13,7 +13,6 @@ import { PortfolioChatbot } from "@/components/chatbot/PortfolioChatbot";
 
 export function Layout() {
   return (
-<<<<<<< HEAD
     <MotionConfig reducedMotion="user">
       <div className="flex min-h-svh flex-col">
         <Header />
@@ -21,17 +20,8 @@ export function Layout() {
           <Outlet />
         </main>
         <Footer />
+        <PortfolioChatbot />
       </div>
     </MotionConfig>
-=======
-    <div className="flex min-h-svh flex-col">
-      <Header />
-      <main className="flex-1">
-        <Outlet />
-      </main>
-      <Footer />
-      <PortfolioChatbot />
-    </div>
->>>>>>> origin/main
   );
 }
