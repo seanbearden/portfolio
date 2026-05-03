@@ -14,6 +14,7 @@ import {
 } from "@/utils/content";
 import { cn } from "@/lib/utils";
 import { motion, useReducedMotion } from "framer-motion";
+import { handleCtaClick, ctaAnchorProps } from "@/utils/cta";
 
 const MotionCard = motion.create(Card);
 
@@ -22,13 +23,6 @@ export function HomePage() {
   const projects = getProjects().slice(0, 3);
   const recentPosts = getBlogPosts().slice(0, 3);
   const shouldReduce = useReducedMotion();
-
-  const handleCtaClick = (e: React.MouseEvent, action: string) => {
-    if (action === "chat") {
-      e.preventDefault();
-      window.dispatchEvent(new CustomEvent("portfolio-agent:open"));
-    }
-  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -178,10 +172,7 @@ export function HomePage() {
                   {project.link && project.cta && (
                     <div className="mt-auto pt-5">
                       <a
-                        href={project.link}
-                        target={project.link.startsWith("#") ? undefined : "_blank"}
-                        rel={project.link.startsWith("#") ? undefined : "noopener noreferrer"}
-                        onClick={project.link === "#chat" ? (e) => handleCtaClick(e, "chat") : undefined}
+                        {...ctaAnchorProps(project.link)}
                         className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1.5 group transition-colors"
                       >
                         {project.cta} <ArrowRight className="h-3.5 w-3.5 transform group-hover:translate-x-1 transition-transform" />
