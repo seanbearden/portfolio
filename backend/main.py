@@ -1,10 +1,14 @@
+import logging
+from typing import Optional
+
 from fastapi import FastAPI, HTTPException
+from langchain_core.messages import HumanMessage
 from pydantic import BaseModel
-from typing import Optional, List
+
 from .agent import app as agent_app
 from .history import get_history, save_history
-from langchain_core.messages import HumanMessage, AIMessage
 
+logger = logging.getLogger(__name__)
 app = FastAPI(title="Sean Bearden Portfolio Agent API")
 
 class QueryRequest(BaseModel):
@@ -18,28 +22,21 @@ async def health():
 @app.post("/chat")
 async def chat(request: QueryRequest):
     try:
-        # Load history
         history = get_history(request.session_id)
-
-        # Add current message
         current_messages = history + [HumanMessage(content=request.query)]
-
-        # Run agent
         state = {"messages": current_messages}
         result = agent_app.invoke(state)
-
-        # Extract last message (response)
         last_message = result["messages"][-1]
-
-        # Save updated history
         save_history(request.session_id, result["messages"])
-
         return {
             "response": last_message.content,
-            "session_id": request.session_id
+            "session_id": request.session_id,
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        # Log full traceback server-side; return generic message to client so
+        # we don't leak file paths, env config, or stack frames.
+        logger.exception("chat endpoint failed for session %s", request.session_id)
+        raise HTTPException(status_code=500, detail="An internal error occurred.")
 
 if __name__ == "__main__":
     import uvicorn

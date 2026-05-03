@@ -1,13 +1,24 @@
+import logging
 from typing import List
 from langchain_core.messages import BaseMessage, messages_from_dict, messages_to_dict
 from google.cloud import firestore
-import os
+
+logger = logging.getLogger(__name__)
 
 class FirestoreHistory:
     def __init__(self, session_id: str, collection: str = "chat_history"):
         self.session_id = session_id
         self.collection = collection
-        self.db = firestore.Client() if os.getenv("GOOGLE_APPLICATION_CREDENTIALS") else None
+        # Don't gate on GOOGLE_APPLICATION_CREDENTIALS — on Cloud Run / App
+        # Engine the library auto-discovers Application Default Credentials
+        # without that env var, and gating on it would silently disable
+        # history in production. Try to construct and fall back if it fails
+        # (e.g., local dev with no credentials).
+        try:
+            self.db = firestore.Client()
+        except Exception as exc:
+            logger.warning("FirestoreHistory disabled: %s", exc)
+            self.db = None
 
     def get_messages(self) -> List[BaseMessage]:
         if not self.db:

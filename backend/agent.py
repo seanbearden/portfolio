@@ -1,8 +1,9 @@
+import functools
 import os
-from typing import TypedDict, Annotated, List, Union
+from typing import TypedDict, Annotated, List
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
+from langchain_core.messages import BaseMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_anthropic import ChatAnthropic
 from .tools import search_blog, search_publications, list_projects, get_about, get_resume, get_cv, get_publication_pdf
@@ -11,13 +12,14 @@ from .prompt import SYSTEM_PROMPT
 class AgentState(TypedDict):
     messages: Annotated[List[BaseMessage], lambda x, y: x + y]
 
+# Cache the model so we don't re-instantiate on every LangGraph step. The
+# tool list is static, env-driven config (LLM_PROVIDER) is read once.
+@functools.lru_cache(maxsize=1)
 def get_model():
     provider = os.getenv("LLM_PROVIDER", "google").lower()
     if provider == "anthropic":
         return ChatAnthropic(model="claude-3-5-sonnet-20240620", temperature=0).bind_tools(tools)
-    else:
-        # Default to Gemini
-        return ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0).bind_tools(tools)
+    return ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0).bind_tools(tools)
 
 tools = [search_blog, search_publications, list_projects, get_about, get_resume, get_cv, get_publication_pdf]
 tool_node = ToolNode(tools)

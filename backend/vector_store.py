@@ -1,6 +1,5 @@
-import numpy as np
-from typing import List, Optional, Dict, Any
-from .models import SearchResult, BlogPost, Publication
+from typing import List, Optional
+from .models import SearchResult
 from .loader import load_blog_posts, load_publications
 
 class SimpleVectorStore:
