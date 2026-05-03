@@ -4,17 +4,21 @@ exports[`Mascot Component > State: error > matches snapshot for error state 1`] 
 <DocumentFragment>
   <div
     class="relative flex items-center justify-center"
+    data-testid="mascot-root"
     style="width: 40px; height: 40px;"
   >
     <div
       class="absolute rounded-full blur-xl bg-destructive/20"
+      data-testid="mascot-glow"
       style="width: 48px; height: 48px;"
     />
     <svg
       class="relative z-10 h-full w-full overflow-visible"
       viewBox="0 0 100 100"
     >
-      <g>
+      <g
+        data-testid="mascot-orbits"
+      >
         <circle
           class="stroke-destructive/40"
           cx="50"
@@ -35,15 +39,19 @@ exports[`Mascot Component > State: error > matches snapshot for error state 1`] 
           style="transform-origin: 50px 50px;"
         />
       </g>
-      <g>
+      <g
+        data-testid="mascot-body"
+      >
         <circle
           class="fill-destructive"
           cx="50"
           cy="50"
+          data-testid="mascot-core"
           r="30"
         />
         <g
           class="text-destructive-foreground"
+          data-testid="mascot-features"
           fill="currentColor"
         >
           <path
@@ -70,6 +78,7 @@ exports[`Mascot Component > State: error > matches snapshot for error state 1`] 
         </g>
       </g>
       <g
+        data-testid="mascot-orbiting-node-1"
         style="transform-origin: 50px 50px;"
       >
         <circle
@@ -80,6 +89,7 @@ exports[`Mascot Component > State: error > matches snapshot for error state 1`] 
         />
       </g>
       <g
+        data-testid="mascot-orbiting-node-2"
         style="transform-origin: 50px 50px;"
       >
         <circle
@@ -98,17 +108,21 @@ exports[`Mascot Component > State: idle > matches snapshot for idle state 1`] = 
 <DocumentFragment>
   <div
     class="relative flex items-center justify-center"
+    data-testid="mascot-root"
     style="width: 40px; height: 40px;"
   >
     <div
       class="absolute rounded-full blur-xl bg-primary/20"
+      data-testid="mascot-glow"
       style="width: 48px; height: 48px;"
     />
     <svg
       class="relative z-10 h-full w-full overflow-visible"
       viewBox="0 0 100 100"
     >
-      <g>
+      <g
+        data-testid="mascot-orbits"
+      >
         <circle
           class="stroke-primary/30"
           cx="50"
@@ -129,15 +143,19 @@ exports[`Mascot Component > State: idle > matches snapshot for idle state 1`] = 
           style="transform-origin: 50px 50px;"
         />
       </g>
-      <g>
+      <g
+        data-testid="mascot-body"
+      >
         <circle
           class="fill-primary"
           cx="50"
           cy="50"
+          data-testid="mascot-core"
           r="30"
         />
         <g
           class="text-primary-foreground"
+          data-testid="mascot-features"
           fill="currentColor"
         >
           <circle
@@ -164,6 +182,7 @@ exports[`Mascot Component > State: idle > matches snapshot for idle state 1`] = 
         </g>
       </g>
       <g
+        data-testid="mascot-orbiting-node-1"
         style="transform-origin: 50px 50px;"
       >
         <circle
@@ -174,6 +193,7 @@ exports[`Mascot Component > State: idle > matches snapshot for idle state 1`] = 
         />
       </g>
       <g
+        data-testid="mascot-orbiting-node-2"
         style="transform-origin: 50px 50px;"
       >
         <circle
@@ -192,17 +212,21 @@ exports[`Mascot Component > State: refusal > matches snapshot for refusal state 
 <DocumentFragment>
   <div
     class="relative flex items-center justify-center"
+    data-testid="mascot-root"
     style="width: 40px; height: 40px;"
   >
     <div
       class="absolute rounded-full blur-xl bg-amber-500/20"
+      data-testid="mascot-glow"
       style="width: 48px; height: 48px;"
     />
     <svg
       class="relative z-10 h-full w-full overflow-visible"
       viewBox="0 0 100 100"
     >
-      <g>
+      <g
+        data-testid="mascot-orbits"
+      >
         <circle
           class="stroke-amber-500/40"
           cx="50"
@@ -223,15 +247,19 @@ exports[`Mascot Component > State: refusal > matches snapshot for refusal state 
           style="transform-origin: 50px 50px;"
         />
       </g>
-      <g>
+      <g
+        data-testid="mascot-body"
+      >
         <circle
           class="fill-amber-500"
           cx="50"
           cy="50"
+          data-testid="mascot-core"
           r="30"
         />
         <g
           class="text-amber-50"
+          data-testid="mascot-features"
           fill="currentColor"
         >
           <rect
@@ -260,6 +288,7 @@ exports[`Mascot Component > State: refusal > matches snapshot for refusal state 
         </g>
       </g>
       <g
+        data-testid="mascot-orbiting-node-1"
         style="transform-origin: 50px 50px;"
       >
         <circle
@@ -270,6 +299,7 @@ exports[`Mascot Component > State: refusal > matches snapshot for refusal state 
         />
       </g>
       <g
+        data-testid="mascot-orbiting-node-2"
         style="transform-origin: 50px 50px;"
       >
         <circle
@@ -288,17 +318,21 @@ exports[`Mascot Component > State: thinking > matches snapshot for thinking stat
 <DocumentFragment>
   <div
     class="relative flex items-center justify-center"
+    data-testid="mascot-root"
     style="width: 40px; height: 40px;"
   >
     <div
       class="absolute rounded-full blur-xl bg-primary/30"
+      data-testid="mascot-glow"
       style="width: 48px; height: 48px;"
     />
     <svg
       class="relative z-10 h-full w-full overflow-visible"
       viewBox="0 0 100 100"
     >
-      <g>
+      <g
+        data-testid="mascot-orbits"
+      >
         <circle
           class="stroke-primary/60"
           cx="50"
@@ -319,15 +353,19 @@ exports[`Mascot Component > State: thinking > matches snapshot for thinking stat
           style="transform-origin: 50px 50px;"
         />
       </g>
-      <g>
+      <g
+        data-testid="mascot-body"
+      >
         <circle
           class="fill-primary"
           cx="50"
           cy="50"
+          data-testid="mascot-core"
           r="30"
         />
         <g
           class="text-primary-foreground"
+          data-testid="mascot-features"
           fill="currentColor"
         >
           <circle
@@ -360,6 +398,7 @@ exports[`Mascot Component > State: thinking > matches snapshot for thinking stat
         </g>
       </g>
       <g
+        data-testid="mascot-orbiting-node-1"
         style="transform-origin: 50px 50px;"
       >
         <circle
@@ -370,6 +409,7 @@ exports[`Mascot Component > State: thinking > matches snapshot for thinking stat
         />
       </g>
       <g
+        data-testid="mascot-orbiting-node-2"
         style="transform-origin: 50px 50px;"
       >
         <circle
