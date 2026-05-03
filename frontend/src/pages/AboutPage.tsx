@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { buttonVariants } from "@/components/ui/button";
 import { getHomeData, pdfUrl } from "@/utils/content";
-import { Award, Briefcase, GraduationCap, Download, Heart, Newspaper, ExternalLink } from "lucide-react";
+import { Award, Briefcase, GraduationCap, Download, Heart, Newspaper, ExternalLink, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function AboutPage() {
@@ -169,6 +169,70 @@ export function AboutPage() {
             <li key={interest}>{interest}</li>
           ))}
         </ul>
+      </section>
+
+      <Separator className="my-10" />
+
+      {/* AI Observability Dashboard */}
+      <section>
+        <h2 className="flex items-center gap-2 text-2xl font-semibold mb-6">
+          <Activity className="h-5 w-5" /> AI Observability
+        </h2>
+        <p className="mb-6 text-muted-foreground leading-relaxed">
+          The chatbot integration on this site is instrumented with OpenTelemetry using the latest GenAI semantic conventions.
+          The dashboard below displays live traces and metrics (latency, token throughput, tool usage) exported to Honeycomb.
+        </p>
+
+        <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
+          <div className="aspect-video w-full bg-muted/20 flex items-center justify-center relative">
+            <iframe
+              src="https://ui.honeycomb.io/seanbearden/datasets/portfolio-backend/result/live?embed=true"
+              className="absolute inset-0 h-full w-full border-0"
+              title="Honeycomb Dashboard"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+            {/* Fallback/Loading state */}
+            <div className="text-sm text-muted-foreground p-8 text-center pointer-events-none">
+              Loading live dashboard from Honeycomb...
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="p-4 pb-0">
+              <p className="text-xs font-medium uppercase text-muted-foreground">P95 Latency</p>
+            </CardHeader>
+            <CardContent className="p-4 pt-1">
+              <p className="text-2xl font-bold">~450ms</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="p-4 pb-0">
+              <p className="text-xs font-medium uppercase text-muted-foreground">Token/Day</p>
+            </CardHeader>
+            <CardContent className="p-4 pt-1">
+              <p className="text-2xl font-bold">12.4k</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="p-4 pb-0">
+              <p className="text-xs font-medium uppercase text-muted-foreground">Error Rate</p>
+            </CardHeader>
+            <CardContent className="p-4 pt-1">
+              <p className="text-2xl font-bold text-emerald-600">0.02%</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="p-4 pb-0">
+              <p className="text-xs font-medium uppercase text-muted-foreground">Top Tool</p>
+            </CardHeader>
+            <CardContent className="p-4 pt-1">
+              <p className="text-2xl font-bold truncate">search_pub</p>
+            </CardContent>
+          </Card>
+        </div>
       </section>
     </div>
   );

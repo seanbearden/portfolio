@@ -155,3 +155,13 @@ resource "google_cloud_run_v2_service_iam_member" "public_invoker" {
 
   depends_on = [google_project_service.apis["run.googleapis.com"]]
 }
+
+resource "google_cloud_run_v2_service_iam_member" "backend_invoker" {
+  project  = var.project_id
+  location = var.region
+  name     = "portfolio-backend"
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+
+  depends_on = [google_project_service.apis["run.googleapis.com"]]
+}

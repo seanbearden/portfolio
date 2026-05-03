@@ -49,8 +49,9 @@ jobs:
             echo "tag=sha-${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build and push image
+      - name: Build and push images
         run: |
+          # Frontend
           docker build \
             --build-arg VITE_ASSETS_BASE_URL=${{ vars.ASSETS_BUCKET_URL }} \
             -t ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }} \
@@ -59,13 +60,34 @@ jobs:
           docker push ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }}
           docker push ${{ env.GAR_REPO }}/frontend:latest
 
-      - name: Deploy to Cloud Run
+          # Backend
+          docker build \
+            -t ${{ env.GAR_REPO }}/backend:${{ steps.version.outputs.tag }} \
+            -t ${{ env.GAR_REPO }}/backend:latest \
+            backend/
+          docker push ${{ env.GAR_REPO }}/backend:${{ steps.version.outputs.tag }}
+          docker push ${{ env.GAR_REPO }}/backend:latest
+
+      - name: Deploy Backend to Cloud Run
+        id: deploy-backend
+        uses: google-github-actions/deploy-cloudrun@2028e2d7d30a78c6910e0632e48dd561b064884d # v3
+        with:
+          service: portfolio-backend
+          region: us-central1
+          image: ${{ env.GAR_REPO }}/backend:${{ steps.version.outputs.tag }}
+          env_vars: |
+            OTEL_EXPORTER_OTLP_ENDPOINT=${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+            OTEL_EXPORTER_OTLP_HEADERS=${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+
+      - name: Deploy Frontend to Cloud Run
         id: deploy
         uses: google-github-actions/deploy-cloudrun@2028e2d7d30a78c6910e0632e48dd561b064884d # v3
         with:
           service: portfolio-frontend
           region: us-central1
           image: ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }}
+          env_vars: |
+            CHATBOT_API_URL=${{ steps.deploy-backend.outputs.url }}
 
       - name: Deployment summary
         run: |
