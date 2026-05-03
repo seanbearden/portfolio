@@ -8,7 +8,7 @@ This document defines the coherent illustration aesthetic for the Sean Bearden p
 Anchored on the existing Tailwind dark theme with specific accent colors for glows and highlights.
 - **Background**: Dark Gray/Black (`oklch(0.145 0 0)`)
 - **Primary Accent**: Cyan (`oklch(0.7 0.2 200)`) — used for technical highlights and energy motifs.
-- **Secondary Accent**: Indigo (`oklch(0.6 0.2 300)`) — used for depth and shadow-glows.
+- **Secondary Accent**: Indigo (`oklch(0.6 0.2 270)`) — used for depth and shadow-glows. Hue 270 sits in the 260–280 indigo range and aligns with `index.css` `--sidebar-primary` (264.376).
 - **Foreground Lines**: White/Light Gray (`oklch(0.985 0 0)`) — ultra-fine strokes.
 
 ### Illustration Mode
@@ -61,4 +61,4 @@ To maintain scalability and performance:
 1.  **Generate**: Produce high-resolution raster images (WebP/PNG) using the master prompt template.
 2.  **Vectorize**: Run the raster through `vtracer` or a similar tool to create SVG paths for scalable elements.
 3.  **Optimize**: Clean up SVGs (minify) and use Tailwind CSS for hover effects or color adjustments.
-4.  **Deploy**: Host the final assets in the GCS bucket (`seanbearden-assets`).
+4.  **Deploy**: Host the final assets in the GCS bucket (`seanbearden-assets`) — the canonical location post-Squarespace migration. Reference assets in content via filename only; `assetUrl()` (`frontend/src/utils/content.ts`) prepends `VITE_ASSETS_BASE_URL`. Note that `site-data/images.md` is historical reference from the Squarespace export; treat the GCS bucket as the source of truth.
