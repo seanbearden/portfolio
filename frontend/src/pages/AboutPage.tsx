@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { SectionDivider } from "@/components/ui/section-divider";
 import { buttonVariants } from "@/components/ui/button";
 import { getHomeData, pdfUrl } from "@/utils/content";
 import { Award, Briefcase, GraduationCap, Download, Heart, Newspaper, ExternalLink } from "lucide-react";
@@ -45,7 +45,7 @@ export function AboutPage() {
         </a>
       </div>
 
-      <Separator className="my-10" />
+      <SectionDivider variant="lines" className="my-4 opacity-50" />
 
       {/* Experience */}
       <section>
@@ -73,7 +73,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <Separator className="my-10" />
+      <SectionDivider variant="dots" className="my-4 opacity-50" />
 
       {/* Education */}
       <section>
@@ -93,7 +93,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <Separator className="my-10" />
+      <SectionDivider variant="network" className="my-4 opacity-50" />
 
       {/* Awards */}
       <section>
@@ -107,7 +107,7 @@ export function AboutPage() {
         </ul>
       </section>
 
-      <Separator className="my-10" />
+      <SectionDivider variant="waves" className="my-4 opacity-50" />
 
       {/* Press & Media */}
       <section>
@@ -136,7 +136,7 @@ export function AboutPage() {
         </ul>
       </section>
 
-      <Separator className="my-10" />
+      <SectionDivider variant="particles" className="my-4 opacity-50" />
 
       {/* Skills */}
       <section>
@@ -157,7 +157,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <Separator className="my-10" />
+      <SectionDivider variant="dots" className="my-4 opacity-50" />
 
       {/* Beyond Work */}
       <section>
