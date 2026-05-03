@@ -23,6 +23,13 @@ export function HomePage() {
   const recentPosts = getBlogPosts().slice(0, 3);
   const shouldReduce = useReducedMotion();
 
+  const handleCtaClick = (e: React.MouseEvent, action: string) => {
+    if (action === "chat") {
+      e.preventDefault();
+      window.dispatchEvent(new CustomEvent("portfolio-agent:open"));
+    }
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -77,14 +84,15 @@ export function HomePage() {
               {home.hero.headline}
             </motion.p>
             <motion.div variants={itemVariants} className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
-              <a
-                href="https://bearden-resume-chatbot.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={cn(buttonVariants(), "shadow-lg hover:shadow-primary/20 transition-all duration-300")}
-              >
-                <MessageSquare className="mr-2 h-4 w-4" /> Chat with My Resume
-              </a>
+              {home.hero.cta && (
+                <a
+                  href={home.hero.cta.action === "chat" ? "#chat" : "#"}
+                  onClick={(e) => handleCtaClick(e, home.hero.cta!.action)}
+                  className={cn(buttonVariants(), "shadow-lg hover:shadow-primary/20 transition-all duration-300")}
+                >
+                  <MessageSquare className="mr-2 h-4 w-4" /> {home.hero.cta.text}
+                </a>
+              )}
               <Link to="/portfolio" className={cn(buttonVariants({ variant: "outline" }), "hover:bg-accent hover:text-accent-foreground transition-all duration-300")}>
                 View Portfolio
               </Link>
@@ -171,8 +179,9 @@ export function HomePage() {
                     <div className="mt-auto pt-5">
                       <a
                         href={project.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        target={project.link.startsWith("#") ? undefined : "_blank"}
+                        rel={project.link.startsWith("#") ? undefined : "noopener noreferrer"}
+                        onClick={project.link === "#chat" ? (e) => handleCtaClick(e, "chat") : undefined}
                         className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1.5 group transition-colors"
                       >
                         {project.cta} <ArrowRight className="h-3.5 w-3.5 transform group-hover:translate-x-1 transition-transform" />

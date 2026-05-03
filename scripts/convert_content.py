@@ -309,6 +309,10 @@ def convert_home():
             "name": "Sean Bearden Ph.D.",
             "headline": "Data Scientist and Researcher",
             "email": "seanbearden@seanbearden.com",
+            "cta": {
+                "text": "Chat with My Resume",
+                "action": "chat",
+            },
         },
         "social": {
             "linkedin": "https://www.linkedin.com/in/sean-bearden-730aa189/",

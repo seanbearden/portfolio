@@ -38,6 +38,11 @@ export function resolveOldUrl(pathname: string): string | null {
     return "/blog";
   }
 
+  // Legacy Chatbot paths
+  if (pathname === "/chat" || pathname === "/history") {
+    return "/";
+  }
+
   // Old PDF paths
   if (pathname.startsWith("/s/")) return null; // Let these 404 gracefully
 

@@ -115,7 +115,7 @@ Managed by Terraform in `infrastructure/`. Project: `bearden-portfolio`, region:
 ### Phases
 
 - **Phase 1** (live, as of 2026-05-03): Static portfolio site on Cloud Run, served at `seanbearden.com` and `www.seanbearden.com`
-- **Phase 2** (planned): AI resume chatbot — Python FastAPI on second Cloud Run service, proxied via nginx `/api/` block (already stubbed in `nginx.conf.template`). Currently lives at `bearden-resume-chatbot.com` on Heroku.
+- **Phase 2** (active): AI resume chatbot — Consolidated into the portfolio agent. Legacy Heroku app at `bearden-resume-chatbot.com` is decommissioned and redirected here.
 - **Phase 3** (planned): Interactive data playground
 
 ## Key Files

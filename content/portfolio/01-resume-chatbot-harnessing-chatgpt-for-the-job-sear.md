@@ -4,8 +4,8 @@ subtitle: "Harnessing ChatGPT for the job search"
 slug: resume-chatbot-harnessing-chatgpt-for-the-job-search
 order: 1
 skills: ["Python", "LangChain", "LLM (ChatGPT)", "AWS SAM", "DynamoDB", "Heroku", "Dashboards"]
-link: "https://bearden-resume-chatbot.com"
-cta: "Chat with My Resume"
+link: "#chat"
+cta: "Open Chat"
 image: lp_logo_3.0.webp
 ---
 

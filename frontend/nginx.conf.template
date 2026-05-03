@@ -1,5 +1,11 @@
 server {
     listen 8080;
+    server_name bearden-resume-chatbot.com www.bearden-resume-chatbot.com;
+    return 301 https://seanbearden.com$request_uri;
+}
+
+server {
+    listen 8080;
     server_name _;
     root /usr/share/nginx/html;
     index index.html;

@@ -75,5 +75,5 @@ site-data/                # Original Squarespace extraction (reference)
 ## Migration Notes
 
 - DNS cutover from Squarespace to Cloud Run completed 2026-05-03. Apex (`seanbearden.com`), `www`, and a `beta` staging subdomain all serve from the same Cloud Run service via Google-managed certs.
-- Resume chatbot (`bearden-resume-chatbot.com`, on Heroku) migrating to this app in Phase 2.
+- Resume chatbot (`bearden-resume-chatbot.com`) consolidated to the portfolio agent in Phase 2.
 - Old Squarespace URLs redirect automatically via React Router (`frontend/src/utils/redirects.ts`).
