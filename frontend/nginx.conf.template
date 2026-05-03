@@ -39,6 +39,15 @@ server {
     add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
     add_header Cross-Origin-Resource-Policy "same-origin" always;
 
+    # Caching strategy:
+    # ZAP rule 10049 (Non-Storable Content) reports 'no-store' or 'no-cache'
+    # on HTML responses. We intentionally use these for index.html and SPA
+    # routes to ensure users immediately receive the new version after a
+    # deployment. ZAP rules 10049 (Storable Content) and 10015 (Cache-Control)
+    # also report on 'public' caching of assets. We use long-term caching
+    # for hashed assets and short-term for others to balance performance
+    # and freshness. All are accepted as audit trails — do NOT silence.
+
     # Phase 2: uncomment to proxy chatbot API
     # location /api/ {
     #     proxy_pass ${CHATBOT_API_URL}/api/;

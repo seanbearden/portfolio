@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Note: Hostname is set to seanbearden.com, but the DNS cutover from Squarespace
-  to this Cloud Run service hasn't occurred yet.
--->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://seanbearden.com/</loc>
