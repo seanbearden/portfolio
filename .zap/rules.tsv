@@ -14,5 +14,9 @@
 10110	OUTOFSCOPE	.*/assets/.*
 
 # Global IGNOREs:
+# Server header is set by Google Frontend (Cloud Run's edge proxy), not our nginx.
+# Cannot be suppressed from the container side. "Google Frontend" is what GFE
+# emits regardless of upstream config.
+10009	IGNORE		Server: Google Frontend is set upstream by Cloud Run's GFE; not response-controllable.
 90005	IGNORE		Sec-Fetch-* are request headers; not response-controllable.
 10109	IGNORE		Informational alert noting that the site is an SPA.
