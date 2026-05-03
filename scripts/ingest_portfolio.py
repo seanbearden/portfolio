@@ -29,13 +29,13 @@ def parse_md_defensive(content: str) -> Dict[str, Any]:
             key, val = line.split(':', 1)
             key = key.strip()
             val = val.strip()
-            # Use ast.literal_eval for both quoted scalars ("...", '...') and
-            # list literals (["A", "B"]). It correctly handles either quote
-            # style and won't corrupt apostrophes inside strings the way
-            # manual `val[1:-1]` slicing or `val.replace("'", '"')` would.
-            if (val.startswith('"') and val.endswith('"')) or \
-               (val.startswith("'") and val.endswith("'")) or \
-               (val.startswith('[') and val.endswith(']')):
+            # Handle quoted strings
+            if val.startswith('"') and val.endswith('"'):
+                val = val[1:-1]
+            # Handle lists like ["A", "B"] or ['A', 'B']. ast.literal_eval
+            # handles both quote styles natively and won't corrupt apostrophes
+            # inside strings the way val.replace("'", '"') does.
+            if val.startswith('[') and val.endswith(']'):
                 try:
                     val = ast.literal_eval(val)
                 except (ValueError, SyntaxError):
@@ -345,14 +345,14 @@ def run_ingestion():
         embeddings = get_embeddings(texts)
     except Exception as e:
         print(f"Error generating embeddings: {e}")
-        if os.environ.get("SIMULATE"):
-            print("SIMULATE: Falling back to dummy embeddings.")
+        if os.environ.get("SIMULATE") or not PROJECT_ID:
+            print("SIMULATE or Missing Project ID: Falling back to dummy embeddings.")
             embeddings = [[0.0] * 768 for _ in chunks]
         else:
             raise
 
-    if os.environ.get("SIMULATE"):
-        print(f"SIMULATE: Successfully chunked {len(chunks)} items. Skipping Cloud SQL upload.")
+    if os.environ.get("SIMULATE") or not PROJECT_ID:
+        print(f"SIMULATE or Missing Project ID: Successfully chunked {len(chunks)} items. Skipping Cloud SQL upload.")
         return
 
     print("Connecting to Cloud SQL...")

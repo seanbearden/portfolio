@@ -5,6 +5,7 @@ from pathlib import Path
 import frontmatter
 
 def lint_markdown_files(content_dirs, strict=False):
+    failed_files = 0
     warning_files = 0
     total_files = 0
 
