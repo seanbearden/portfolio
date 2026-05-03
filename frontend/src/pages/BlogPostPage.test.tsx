@@ -44,9 +44,7 @@ describe("BlogPostPage", () => {
     expect(screen.getByText(/This is a test blog post/i)).toBeInTheDocument();
 
     // Check image
-    const img = screen.getByRole("presentation", { hidden: true });
     // The img in BlogPostPage has alt="", which often makes it presentational or ignored.
-    // Let's check by src if getByRole doesn't work well
     const image = screen.getByAltText("");
     expect(image).toHaveAttribute("src", "https://cdn.example.com/test-image.jpg");
   });
