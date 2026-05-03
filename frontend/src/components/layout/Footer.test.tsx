@@ -44,10 +44,13 @@ describe("Footer", () => {
     expect(resumeLink.getAttribute("href")).toContain("Bearden_Resume_Online.pdf");
   });
 
-  it("renders Contact link", () => {
+  it("renders Contact link to /contact (not mailto:, which silently fails without a mail client)", () => {
     renderFooter();
     const contactLink = screen.getByRole("link", { name: /contact/i });
     expect(contactLink).toBeInTheDocument();
-    expect(contactLink.getAttribute("href")).toBe("mailto:test@example.com");
+    expect(contactLink.getAttribute("href")).toBe("/contact");
+    // Regression guard: do NOT regress to mailto: — that silently fails for
+    // users whose browser/OS has no default mail client configured.
+    expect(contactLink.getAttribute("href")).not.toMatch(/^mailto:/);
   });
 });
