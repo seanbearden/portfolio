@@ -177,7 +177,11 @@ resource "google_sql_database_instance" "portfolio" {
     }
   }
 
-  deletion_protection = false # Set to true for production
+  # deletion_protection = true is safer for production; flip to false only when
+  # intentionally tearing down (e.g., during initial DB schema iteration). The
+  # site is in active development so we keep this true and override via
+  # `terraform apply -var deletion_protection=false` if needed.
+  deletion_protection = true
 
   depends_on = [google_project_service.apis["sqladmin.googleapis.com"]]
 }
