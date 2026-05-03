@@ -72,3 +72,33 @@ jobs:
           echo "## Deployment Complete" >> "$GITHUB_STEP_SUMMARY"
           echo "- **URL**: ${{ steps.deploy.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"
           echo "- **Version**: \`${{ steps.version.outputs.tag }}\`" >> "$GITHUB_STEP_SUMMARY"
+
+  # Run ZAP baseline against the just-deployed production URL. Inlined here
+  # rather than as a separate workflow with `workflow_run: ["Deploy"]` because
+  # GitHub blocks workflow_run listeners from firing when the upstream
+  # workflow was triggered by GITHUB_TOKEN (anti-recursion guard). When
+  # release.yml dispatches Deploy via `gh workflow run` using GITHUB_TOKEN
+  # (per PR #101), the listener never fires. Inlining sidesteps that.
+  # The standalone .github/workflows/zap-baseline.yml still handles the
+  # weekly cron and ad-hoc workflow_dispatch.
+  zap-scan:
+    name: ZAP baseline scan (post-deploy)
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run ZAP baseline scan
+        uses: zaproxy/action-baseline@de8ad967d3548d44ef623df22cf95c3b0baf8b25 # v0.15.0
+        with:
+          target: "https://seanbearden.com"
+          docker_name: "ghcr.io/zaproxy/zaproxy:stable"
+          rules_file_name: ".zap/rules.tsv"
+          cmd_options: "-a"
+          fail_action: false
+          allow_issue_writing: true
+          artifact_name: "zap-baseline-report-${{ github.run_id }}"
