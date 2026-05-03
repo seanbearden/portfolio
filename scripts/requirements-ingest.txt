@@ -1,5 +1,5 @@
 psycopg2-binary==2.9.9
-google-cloud-aiplatform==1.48.0
+google-cloud-aiplatform==1.133.0
 # The Cloud SQL connector package was renamed on PyPI:
 # `google-cloud-sql-connector` (legacy, no longer published) →
 # `cloud-sql-python-connector`. The Python import path
