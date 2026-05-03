@@ -4,6 +4,17 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
+    # Note on the Server response header:
+    # Cloud Run terminates TLS at Google Frontend (GFE) and rewrites the Server
+    # header to 'Server: Google Frontend' regardless of what nginx emits. We
+    # don't bother with 'server_tokens off' here — it would be a no-op.
+    #
+    # ZAP rule 10009 (In Page Banner Information Leak) reports this on every
+    # scan. We accept the warning as an audit trail: if we ever migrate off
+    # Cloud Run and the new host leaks an actual version banner (e.g.
+    # 'nginx/1.27.4'), the same rule will catch it. Silencing it via
+    # .zap/rules.tsv would mask that future signal — see closed PR #122 / issue #116.
+
     # --- Security headers ---
     # nginx add_header does not inherit when a child block uses add_header,
     # so server-level headers are also redeclared in the location blocks below.
