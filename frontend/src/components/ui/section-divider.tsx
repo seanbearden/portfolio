@@ -7,7 +7,7 @@ interface SectionDividerProps {
 
 export function SectionDivider({ variant = "lines", className }: SectionDividerProps) {
   return (
-    <div className={cn("w-full py-12 flex justify-center overflow-hidden", className)} aria-hidden="true">
+    <div className={cn("w-full py-8 flex justify-center overflow-hidden", className)} aria-hidden="true">
       {variant === "waves" && (
         <svg
           width="100%"
@@ -43,15 +43,12 @@ export function SectionDivider({ variant = "lines", className }: SectionDividerP
           xmlns="http://www.w3.org/2000/svg"
           className="text-primary/40"
         >
-          <circle cx="20" cy="6" r="2.5" fill="currentColor" />
-          <circle cx="50" cy="6" r="2.5" fill="currentColor" />
-          <circle cx="80" cy="6" r="2.5" fill="currentColor" />
-          <circle cx="110" cy="6" r="2.5" fill="currentColor" />
-          <circle cx="140" cy="6" r="2.5" fill="currentColor" />
-          <circle cx="35" cy="6" r="1.2" fill="currentColor" opacity="0.5" />
-          <circle cx="65" cy="6" r="1.2" fill="currentColor" opacity="0.5" />
-          <circle cx="95" cy="6" r="1.2" fill="currentColor" opacity="0.5" />
-          <circle cx="125" cy="6" r="1.2" fill="currentColor" opacity="0.5" />
+          {[20, 50, 80, 110, 140].map((cx) => (
+            <circle key={cx} cx={cx} cy="6" r="2.5" fill="currentColor" />
+          ))}
+          {[35, 65, 95, 125].map((cx) => (
+            <circle key={cx} cx={cx} cy="6" r="1.2" fill="currentColor" opacity="0.5" />
+          ))}
         </svg>
       )}
 
