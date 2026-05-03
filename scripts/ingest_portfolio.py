@@ -29,13 +29,13 @@ def parse_md_defensive(content: str) -> Dict[str, Any]:
             key, val = line.split(':', 1)
             key = key.strip()
             val = val.strip()
-            # Handle quoted strings
-            if val.startswith('"') and val.endswith('"'):
-                val = val[1:-1]
-            # Handle lists like ["A", "B"] or ['A', 'B']. ast.literal_eval
-            # handles both quote styles natively and won't corrupt apostrophes
-            # inside strings the way val.replace("'", '"') does.
-            if val.startswith('[') and val.endswith(']'):
+            # Use ast.literal_eval for both quoted scalars ("...", '...') and
+            # list literals (["A", "B"]). It correctly handles either quote
+            # style and won't corrupt apostrophes inside strings the way
+            # manual `val[1:-1]` slicing or `val.replace("'", '"')` would.
+            if (val.startswith('"') and val.endswith('"')) or \
+               (val.startswith("'") and val.endswith("'")) or \
+               (val.startswith('[') and val.endswith(']')):
                 try:
                     val = ast.literal_eval(val)
                 except (ValueError, SyntaxError):
