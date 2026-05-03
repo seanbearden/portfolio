@@ -25,6 +25,7 @@ locals {
     "iam.googleapis.com",
     "iamcredentials.googleapis.com",
     "cloudresourcemanager.googleapis.com",
+    "secretmanager.googleapis.com",
   ]
 }
 
@@ -155,3 +156,113 @@ resource "google_cloud_run_v2_service_iam_member" "public_invoker" {
 
   depends_on = [google_project_service.apis["run.googleapis.com"]]
 }
+
+# -----------------------------------------------------------
+# Portfolio Agent (Chatbot) infrastructure
+# -----------------------------------------------------------
+resource "google_service_account" "agent" {
+  account_id   = "portfolio-agent"
+  display_name = "Portfolio Agent"
+  description  = "Runtime service account for the portfolio-agent chatbot"
+}
+
+resource "google_project_iam_member" "agent_logging" {
+  project = var.project_id
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.agent.email}"
+}
+
+# -----------------------------------------------------------
+# Secret Manager — Agent API Keys
+# -----------------------------------------------------------
+locals {
+  agent_secrets = [
+    "ANTHROPIC_API_KEY",
+    "GOOGLE_API_KEY",
+    "LANGFUSE_PUBLIC_KEY",
+    "LANGFUSE_SECRET_KEY",
+    "LANGFUSE_HOST",
+  ]
+}
+
+resource "google_secret_manager_secret" "agent_secrets" {
+  for_each  = toset(local.agent_secrets)
+  secret_id = each.value
+
+  replication {
+    auto {}
+  }
+
+  depends_on = [google_project_service.apis["secretmanager.googleapis.com"]]
+}
+
+resource "google_secret_manager_secret_iam_member" "agent_accessor" {
+  for_each  = toset(local.agent_secrets)
+  secret_id = google_secret_manager_secret.agent_secrets[each.value].id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.agent.email}"
+}
+
+# -----------------------------------------------------------
+# Portfolio Agent Cloud Run Service
+# -----------------------------------------------------------
+resource "google_cloud_run_v2_service" "agent" {
+  name     = var.portfolio_agent_service_name
+  location = var.region
+  ingress  = "INGRESS_TRAFFIC_ALL"
+
+  template {
+    service_account = google_service_account.agent.email
+
+    containers {
+      image = "us-docker.pkg.dev/cloudrun/container/hello" # Placeholder
+
+      dynamic "env" {
+        for_each = toset(local.agent_secrets)
+        content {
+          name = env.value
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.agent_secrets[env.value].secret_id
+              version = "latest"
+            }
+          }
+        }
+      }
+    }
+  }
+
+  # Ignore changes to the image as it's managed by GitHub Actions
+  lifecycle {
+    ignore_changes = [
+      template[0].containers[0].image,
+    ]
+  }
+
+  depends_on = [google_project_service.apis["run.googleapis.com"]]
+}
+
+# -----------------------------------------------------------
+# Portfolio Agent Cloud Run permissions
+# -----------------------------------------------------------
+resource "google_cloud_run_v2_service_iam_member" "agent_public_invoker" {
+  project  = var.project_id
+  location = var.region
+  name     = var.portfolio_agent_service_name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+
+  depends_on = [google_project_service.apis["run.googleapis.com"]]
+}
+
+# Allow deploy service account to act as agent service account
+resource "google_service_account_iam_member" "deploy_as_agent" {
+  service_account_id = google_service_account.agent.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.deploy.email}"
+}
+
+# Allow deploy service account to manage the agent Cloud Run service
+# We use a project-level binding for simplicity in CI, but scoped
+# to roles/run.admin which is already in deploy_roles.
+# If we wanted to scope further, we'd use a per-service binding.

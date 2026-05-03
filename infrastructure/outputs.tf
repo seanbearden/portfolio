@@ -29,6 +29,8 @@ output "github_actions_vars" {
     WIF_POOL            = google_iam_workload_identity_pool.github.workload_identity_pool_id
     WIF_PROVIDER        = google_iam_workload_identity_pool_provider.github_oidc.workload_identity_pool_provider_id
     ASSETS_BUCKET_URL   = "https://storage.googleapis.com/${google_storage_bucket.assets.name}"
+    AGENT_SERVICE_NAME  = var.portfolio_agent_service_name
+    AGENT_SERVICE_ACCOUNT = google_service_account.agent.email
   }
 }
 

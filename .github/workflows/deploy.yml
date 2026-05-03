@@ -49,7 +49,7 @@ jobs:
             echo "tag=sha-${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build and push image
+      - name: Build and push frontend image
         run: |
           docker build \
             --build-arg VITE_ASSETS_BASE_URL=${{ vars.ASSETS_BUCKET_URL }} \
@@ -59,18 +59,45 @@ jobs:
           docker push ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }}
           docker push ${{ env.GAR_REPO }}/frontend:latest
 
-      - name: Deploy to Cloud Run
-        id: deploy
+      - name: Build and push agent image
+        run: |
+          docker build \
+            -t ${{ env.GAR_REPO }}/agent:${{ steps.version.outputs.tag }} \
+            -t ${{ env.GAR_REPO }}/agent:latest \
+            ./chatbot
+          docker push ${{ env.GAR_REPO }}/agent:${{ steps.version.outputs.tag }}
+          docker push ${{ env.GAR_REPO }}/agent:latest
+
+      - name: Deploy Agent to Cloud Run
+        id: deploy-agent
+        uses: google-github-actions/deploy-cloudrun@2028e2d7d30a78c6910e0632e48dd561b064884d # v3
+        with:
+          service: ${{ vars.AGENT_SERVICE_NAME }}
+          region: us-central1
+          image: ${{ env.GAR_REPO }}/agent:${{ steps.version.outputs.tag }}
+          service_account: ${{ vars.AGENT_SERVICE_ACCOUNT }}
+          secrets: |
+            ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest
+            GOOGLE_API_KEY=GOOGLE_API_KEY:latest
+            LANGFUSE_PUBLIC_KEY=LANGFUSE_PUBLIC_KEY:latest
+            LANGFUSE_SECRET_KEY=LANGFUSE_SECRET_KEY:latest
+            LANGFUSE_HOST=LANGFUSE_HOST:latest
+
+      - name: Deploy Frontend to Cloud Run
+        id: deploy-frontend
         uses: google-github-actions/deploy-cloudrun@2028e2d7d30a78c6910e0632e48dd561b064884d # v3
         with:
           service: portfolio-frontend
           region: us-central1
           image: ${{ env.GAR_REPO }}/frontend:${{ steps.version.outputs.tag }}
+          env_vars: |
+            CHATBOT_API_URL=${{ steps.deploy-agent.outputs.url }}
 
       - name: Deployment summary
         run: |
           echo "## Deployment Complete" >> "$GITHUB_STEP_SUMMARY"
-          echo "- **URL**: ${{ steps.deploy.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Frontend URL**: ${{ steps.deploy-frontend.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- **Agent URL**: ${{ steps.deploy-agent.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"
           echo "- **Version**: \`${{ steps.version.outputs.tag }}\`" >> "$GITHUB_STEP_SUMMARY"
 
   # Run ZAP baseline against the just-deployed production URL. Inlined here

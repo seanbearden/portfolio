@@ -32,3 +32,9 @@ variable "cloud_run_service_name" {
   type        = string
   default     = "portfolio-frontend"
 }
+
+variable "portfolio_agent_service_name" {
+  description = "Name of the Portfolio Agent Cloud Run service"
+  type        = string
+  default     = "portfolio-agent"
+}

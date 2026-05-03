@@ -32,13 +32,45 @@ jobs:
       - run: npm run test:coverage
       - run: npm run build
 
+  chatbot-quality:
+    name: Chatbot quality checks
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: chatbot
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@887a942a15af24a695919430a6c07d93054fd283 # v5
+        with:
+          enable-cache: true
+          cache-dependency-path: chatbot/uv.lock
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Lint with ruff
+        run: uv run ruff check .
+
+      - name: Type check with mypy
+        run: uv run mypy .
+
+      - name: Run tests
+        run: uv run pytest
+
       - name: Upload coverage to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/codecov-action@75cd11691c0faa626561e295848008c8a7dddffe # v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: frontend/coverage/lcov.info
-          flags: frontend
+          files: |
+            frontend/coverage/lcov.info
+            chatbot/coverage.xml
           fail_ci_if_error: false
 
       - name: Upload test results to Codecov
