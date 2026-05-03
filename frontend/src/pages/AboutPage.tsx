@@ -2,7 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { buttonVariants } from "@/components/ui/button";
-import { getHomeData, pdfUrl, assetUrl } from "@/utils/content";
+import { AboutSynthesisIllustration } from "@/components/illustrations/AboutSynthesisIllustration";
+import { getHomeData, pdfUrl } from "@/utils/content";
 import { Award, Briefcase, GraduationCap, Download, Heart, Newspaper, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,12 +21,8 @@ export function AboutPage() {
           ))}
         </div>
 
-        <div className="relative flex justify-center md:justify-end">
-          <img
-            src={assetUrl("about-synthesis.svg")}
-            alt="Isometric synthesis of physics wave equations, financial growth charts, and neural network nodes."
-            className="w-full max-w-[250px] text-primary"
-          />
+        <div className="relative flex justify-center md:justify-end text-primary">
+          <AboutSynthesisIllustration className="w-full max-w-[250px]" />
         </div>
       </div>
 
