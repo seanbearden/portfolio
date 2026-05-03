@@ -16,20 +16,24 @@ logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
-async def lifespan(_app: FastAPI):
+async def lifespan(app: FastAPI):
     # Init OTEL on startup so it's available for FastAPI auto-instrumentation
     # below. Shutdown flushes any buffered spans on container exit (the
     # MEDIUM finding from the previous OTEL PR's review).
     init_telemetry(service_name="portfolio-agent")
-    yield
+    # Persistent httpx client for the OTLP proxy — connection-pooled
+    # across requests instead of constructing a new one per call.
+    async with httpx.AsyncClient(timeout=10) as client:
+        app.state.http_client = client
+        yield
     shutdown_telemetry()
 
 
 app = FastAPI(title="Sean Bearden Portfolio Agent API", lifespan=lifespan)
 instrument_fastapi(app)
 
-# Frontend OTLP proxy. Resolved once on first proxy request — this is a
-# best-effort path; if the env vars aren't set, the endpoint just 503s.
+# Frontend OTLP proxy. Resolved once at module load — these don't change
+# at runtime. If OTEL_EXPORTER_OTLP_ENDPOINT is unset the proxy returns 503.
 _OTLP_FORWARD_ENDPOINT = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
 _OTLP_FORWARD_HEADERS = {
     pair.split("=", 1)[0].strip(): pair.split("=", 1)[1].strip()
@@ -84,8 +88,10 @@ async def otlp_proxy(request: Request) -> Response:
         **_OTLP_FORWARD_HEADERS,
     }
     try:
-        async with httpx.AsyncClient(timeout=10) as client:
-            r = await client.post(upstream, content=body, headers=headers)
+        # Reuse the lifespan-managed httpx client so we get connection
+        # pooling across requests.
+        client: httpx.AsyncClient = request.app.state.http_client
+        r = await client.post(upstream, content=body, headers=headers)
         return Response(content=r.content, status_code=r.status_code)
     except Exception:
         logger.exception("OTLP proxy upstream error")

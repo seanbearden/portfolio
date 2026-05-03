@@ -43,6 +43,15 @@ const OTLP_ENDPOINT =
 
 let _initialized = false;
 
+/** Regex-escape a string so it can be safely embedded in a RegExp.
+ *  Used to anchor propagateTraceHeaderCorsUrls to window.location.origin
+ *  without letting any URL-special chars in the origin (rare but
+ *  possible — IPv6 has colons, ports may have dots) get interpreted
+ *  as regex metacharacters. */
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 export function initTelemetry(): void {
   if (_initialized) return;
   if (!OTLP_ENDPOINT) return; // disabled
@@ -62,10 +71,14 @@ export function initTelemetry(): void {
   registerInstrumentations({
     instrumentations: [
       new DocumentLoadInstrumentation(),
-      // Propagate traceparent so the backend's /chat span links into
-      // the same trace as the frontend's fetch span.
+      // Propagate traceparent ONLY to same-origin requests — the
+      // backend's /chat (and /api/otlp) span links into the frontend's
+      // fetch span, but we don't leak trace context to third-party
+      // domains. `/.*/` would have shipped traceparent on every fetch.
       new FetchInstrumentation({
-        propagateTraceHeaderCorsUrls: [/.*/],
+        propagateTraceHeaderCorsUrls: [
+          new RegExp("^" + escapeRegExp(window.location.origin)),
+        ],
       }),
     ],
   });

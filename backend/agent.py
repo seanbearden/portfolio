@@ -10,14 +10,22 @@ from .tools import search_blog, search_publications, list_projects, get_about, g
 from .prompt import SYSTEM_PROMPT
 from .otel import agent_step_span, llm_span
 
+# Single source of truth for model identifiers. Used by both get_model()
+# (to construct the LangChain client) and _provider_and_model() (to set
+# gen_ai.request.model on telemetry spans). Updating here updates both.
+ANTHROPIC_MODEL = "claude-3-5-sonnet-20240620"
+GOOGLE_MODEL = "gemini-1.5-pro"
 
+
+@functools.lru_cache(maxsize=1)
 def _provider_and_model() -> tuple[str, str]:
     """Read the LLM provider/model env config once for span attributes.
-    Mirrors the dispatch in get_model() so the labels can't drift."""
+    Mirrors the dispatch in get_model() so the labels can't drift.
+    Cached because LLM_PROVIDER is read-once-at-startup config."""
     provider = os.getenv("LLM_PROVIDER", "google").lower()
     if provider == "anthropic":
-        return ("anthropic", "claude-3-5-sonnet-20240620")
-    return ("google", "gemini-1.5-pro")
+        return ("anthropic", ANTHROPIC_MODEL)
+    return ("google", GOOGLE_MODEL)
 
 
 class AgentState(TypedDict):
@@ -29,8 +37,8 @@ class AgentState(TypedDict):
 def get_model():
     provider = os.getenv("LLM_PROVIDER", "google").lower()
     if provider == "anthropic":
-        return ChatAnthropic(model="claude-3-5-sonnet-20240620", temperature=0).bind_tools(tools)
-    return ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0).bind_tools(tools)
+        return ChatAnthropic(model=ANTHROPIC_MODEL, temperature=0).bind_tools(tools)
+    return ChatGoogleGenerativeAI(model=GOOGLE_MODEL, temperature=0).bind_tools(tools)
 
 tools = [search_blog, search_publications, list_projects, get_about, get_resume, get_cv, get_publication_pdf]
 tool_node = ToolNode(tools)

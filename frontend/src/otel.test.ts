@@ -24,7 +24,13 @@ vi.mock("@opentelemetry/sdk-trace-web", () => ({
     addSpanProcessor = addSpanProcessorMock;
   },
   BatchSpanProcessor: class {
-    constructor(public exporter: unknown) {}
+    // Explicit field + assignment in body (parameter properties like
+    // `constructor(public exporter)` are banned by tsconfig's
+    // `erasableSyntaxOnly`).
+    exporter: unknown;
+    constructor(exporter: unknown) {
+      this.exporter = exporter;
+    }
   },
 }));
 
@@ -136,16 +142,27 @@ describe("initTelemetry", () => {
     });
   });
 
-  it("registers DocumentLoad and Fetch instrumentations with cross-origin trace propagation", async () => {
+  it("registers DocumentLoad and Fetch instrumentations with same-origin-only trace propagation", async () => {
     vi.stubEnv("VITE_OTLP_ENDPOINT", "/api/otlp");
     const { initTelemetry } = await import("./otel");
 
     initTelemetry();
 
     expect(documentLoadInstrumentationCtorMock).toHaveBeenCalled();
-    expect(fetchInstrumentationCtorMock).toHaveBeenCalledWith({
-      propagateTraceHeaderCorsUrls: [/.*/],
-    });
+    // FetchInstrumentation should be called with a regex that matches
+    // requests to the same origin only — never `/.*/` which would leak
+    // traceparent to third-party domains.
+    expect(fetchInstrumentationCtorMock).toHaveBeenCalledTimes(1);
+    const fetchCallArgs = fetchInstrumentationCtorMock.mock.calls[0][0] as {
+      propagateTraceHeaderCorsUrls: RegExp[];
+    };
+    expect(fetchCallArgs.propagateTraceHeaderCorsUrls).toHaveLength(1);
+    const re = fetchCallArgs.propagateTraceHeaderCorsUrls[0];
+    expect(re).toBeInstanceOf(RegExp);
+    // Same-origin URLs match.
+    expect(re.test(`${window.location.origin}/api/chat`)).toBe(true);
+    // Third-party origins do NOT match.
+    expect(re.test("https://evil.example.com/api")).toBe(false);
     expect(registerInstrumentationsMock).toHaveBeenCalled();
   });
 
