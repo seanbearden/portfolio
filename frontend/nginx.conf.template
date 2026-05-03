@@ -30,6 +30,12 @@ server {
     # which we DO want to be alerted on.
     add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://storage.googleapis.com; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" always;
     add_header Cross-Origin-Opener-Policy "same-origin" always;
+    # COEP: 'unsafe-none' is the deliberate value (default-permissive). Tightening to
+    # 'require-corp' would block GCS-hosted images and any other cross-origin asset
+    # that doesn't set Cross-Origin-Resource-Policy. ZAP rule 90004-2 reports this
+    # header as 'invalid' on every scan — accepted as audit trail. Do NOT silence
+    # rule 90004 — it also covers COOP (90004-3) and CORP (90004-1) which we DO
+    # want to be alerted on.
     add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
     add_header Cross-Origin-Resource-Policy "same-origin" always;
 
@@ -60,7 +66,8 @@ server {
     # Default for SPA routes (also serves index.html via try_files)
     location / {
         try_files $uri $uri/ /index.html;
-        add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+        # Use no-cache (allows 304 revalidation) for performance on SPA routes.
+        add_header Cache-Control "no-cache" always;
         # security headers
         add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
         add_header X-Content-Type-Options "nosniff" always;

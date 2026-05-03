@@ -16,5 +16,3 @@
 # Global IGNOREs:
 90005	IGNORE		Sec-Fetch-* are request headers; not response-controllable.
 10109	IGNORE		Informational alert noting that the site is an SPA.
-90004	IGNORE		COEP: unsafe-none is required for GCS asset compatibility (images).
-10049	IGNORE		Storable and Cacheable Content is intended for public static assets.
