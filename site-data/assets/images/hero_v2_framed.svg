@@ -1,0 +1,19 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Framed Illustration -->
+  <rect x="50" y="50" width="700" height="500" rx="20" stroke="currentColor" stroke-width="2" stroke-dasharray="8 8" />
+
+  <!-- Scientist, Builder, Leader elements within the frame -->
+  <g transform="translate(100, 100)">
+    <!-- Scientist -->
+    <path d="M50 50 Q100 0 150 50 T250 50" stroke="currentColor" stroke-width="2" />
+    <!-- Builder -->
+    <rect x="300" y="200" width="60" height="60" rx="8" fill="currentColor" fill-opacity="0.1" stroke="currentColor" />
+    <!-- Leader -->
+    <circle cx="500" cy="150" r="40" stroke="currentColor" stroke-width="2" />
+    <path d="M500 110 L500 190 M460 150 L540 150" stroke="currentColor" stroke-width="2" />
+  </g>
+
+  <style>
+    svg { color: oklch(92.2% 0 0); }
+  </style>
+</svg>
