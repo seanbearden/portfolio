@@ -161,6 +161,16 @@ resource "google_cloud_run_v2_service_iam_member" "public_invoker" {
   depends_on = [google_project_service.apis["run.googleapis.com"]]
 }
 
+resource "google_cloud_run_v2_service_iam_member" "agent_public_invoker" {
+  project  = var.project_id
+  location = var.region
+  name     = var.agent_service_name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+
+  depends_on = [google_project_service.apis["run.googleapis.com"]]
+}
+
 # -----------------------------------------------------------
 # Cloud SQL (PostgreSQL with pgvector)
 # -----------------------------------------------------------
