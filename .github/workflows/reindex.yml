@@ -1,0 +1,55 @@
+name: Re-index Portfolio Content
+
+on:
+  push:
+    paths:
+      - 'content/**'
+      - 'scripts/ingest_portfolio.py'
+      - 'scripts/requirements-ingest.txt'
+  workflow_dispatch:
+
+jobs:
+  reindex:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - uses: actions/checkout@v4 # v4.1.1
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v2' # v2.1.2
+        with:
+          workload_identity_provider: '${{ vars.WIF_PROVIDER }}'
+          service_account: '${{ vars.GCP_SERVICE_ACCOUNT }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2' # v2.1.0
+
+      - name: 'Set up Python'
+        uses: actions/setup-python@v5 # v5.0.0
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: 'Install dependencies'
+        run: |
+          pip install -r scripts/requirements-ingest.txt
+
+      - name: 'Run ingestion script'
+        env:
+          GCP_PROJECT_ID: '${{ vars.GCP_PROJECT_ID }}'
+          GCP_REGION: '${{ vars.GCP_REGION }}'
+          GCP_SQL_INSTANCE: 'portfolio-db'
+          GCP_SQL_USER: '${{ vars.GCP_SERVICE_ACCOUNT }}'
+        run: |
+          # The script expects GCP_SQL_USER to be the SA email without .gserviceaccount.com
+          # for the IAM user name, but the connector handles the email directly if we
+          # strip the suffix in the script OR pass it correctly.
+          # Our script uses: DB_USER = os.environ.get("GCP_SQL_USER")
+          # and trimsuffix in Terraform. Let's make sure they match.
+
+          export GCP_SQL_USER=$(echo "${{ vars.GCP_SERVICE_ACCOUNT }}" | sed 's/\.gserviceaccount\.com$//')
+          python scripts/ingest_portfolio.py
