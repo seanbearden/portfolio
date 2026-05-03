@@ -5,7 +5,6 @@ if not os.environ.get("SIMULATE") and os.environ.get("GCP_PROJECT_ID"):
     from google.cloud import aiplatform
     from google.cloud.sql.connector import Connector
     import psycopg2
-    from pgvector.psycopg2 import register_vector
     from vertexai.language_models import TextEmbeddingInput, TextEmbeddingModel
 
 # Configuration
@@ -43,7 +42,6 @@ def query_vector_store(query_text, limit=3):
         )
 
     conn = getconn()
-    register_vector(conn)
     with conn.cursor() as cur:
         cur.execute(
             "SELECT content, metadata, 1 - (embedding <=> %s::vector) AS similarity FROM portfolio_chunks ORDER BY embedding <=> %s::vector LIMIT %s",

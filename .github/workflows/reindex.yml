@@ -16,17 +16,19 @@ jobs:
       id-token: 'write'
 
     steps:
-      - uses: actions/checkout@v4 # v4.1.1
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref }}
 
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v2' # v2.1.2
+        uses: 'google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093' # v3
         with:
-          workload_identity_provider: '${{ vars.WIF_PROVIDER }}'
+          workload_identity_provider: 'projects/${{ vars.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ vars.WIF_POOL }}/providers/${{ vars.WIF_PROVIDER }}'
           service_account: '${{ vars.GCP_SERVICE_ACCOUNT }}'
 
       - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v2' # v2.1.0
+        uses: 'google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db' # v3
 
       - name: 'Set up Python'
         uses: actions/setup-python@v5 # v5.0.0
