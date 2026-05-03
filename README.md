@@ -1,5 +1,10 @@
 # Sean Bearden — Portfolio Website
 
+[![CI](https://github.com/seanbearden/portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/seanbearden/portfolio/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/seanbearden/portfolio/actions/workflows/codeql.yml/badge.svg)](https://github.com/seanbearden/portfolio/actions/workflows/codeql.yml)
+[![TruffleHog](https://github.com/seanbearden/portfolio/actions/workflows/trufflehog.yml/badge.svg)](https://github.com/seanbearden/portfolio/actions/workflows/trufflehog.yml)
+[![ZAP Baseline](https://github.com/seanbearden/portfolio/actions/workflows/zap-baseline.yml/badge.svg)](https://github.com/seanbearden/portfolio/actions/workflows/zap-baseline.yml)
+[![Mozilla Observatory](https://img.shields.io/mozilla-observatory/grade/seanbearden.com?publish&label=observatory)](https://observatory.mozilla.org/analyze/seanbearden.com)
 [![codecov](https://codecov.io/gh/seanbearden/portfolio/graph/badge.svg?token=JgoqNrfl9G)](https://codecov.io/gh/seanbearden/portfolio)
 
 Live at **[seanbearden.com](https://seanbearden.com)** — also serving on `www.seanbearden.com`.
