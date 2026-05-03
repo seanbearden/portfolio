@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { Header } from "./Header";
+import * as FramerMotion from "framer-motion";
 
 afterEach(() => {
   cleanup();
@@ -18,15 +19,38 @@ vi.mock("@/utils/content", () => ({
     social: {
       github: "https://github.com/test",
       linkedin: "https://linkedin.com/in/test",
+      twitter: "https://twitter.com/test",
+      other: "https://example.com/other",
+      unsupported: "https://example.com/unsupported"
     },
   }),
   assetUrl: (f: string) => `https://cdn.example.com/${f}`,
 }));
 
+vi.mock("@/components/common/SocialIcons", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@/components/common/SocialIcons")>();
+  return {
+    ...actual,
+    hasSocialIcon: (platform: string) => platform !== "unsupported",
+  };
+});
+
+vi.mock("framer-motion", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("framer-motion")>();
+  return {
+    ...actual,
+    useReducedMotion: vi.fn(() => false),
+  };
+});
+
 describe("Header", () => {
-  const renderHeader = () =>
+  beforeEach(() => {
+    vi.mocked(FramerMotion.useReducedMotion).mockReturnValue(false);
+  });
+
+  const renderHeader = (path = "/") =>
     render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[path]}>
         <Header />
       </MemoryRouter>
     );
@@ -39,12 +63,39 @@ describe("Header", () => {
   });
 
   it("renders social icons from home.json", () => {
-    const { container } = renderHeader();
-    // 2 social icons (github + linkedin) per the mock
-    const socialLinks = container.querySelectorAll('a[target="_blank"]');
-    expect(socialLinks.length).toBeGreaterThanOrEqual(2);
+    renderHeader();
 
-    const githubLink = Array.from(socialLinks).find(a => a.getAttribute("href") === "https://github.com/test");
-    expect(githubLink).toBeDefined();
+    expect(screen.getByLabelText("GitHub")).toBeInTheDocument();
+    expect(screen.getByLabelText("LinkedIn")).toBeInTheDocument();
+    expect(screen.getByLabelText("Twitter")).toBeInTheDocument();
+    expect(screen.getByLabelText("other")).toBeInTheDocument(); // platform name as fallback
+    expect(screen.queryByLabelText("unsupported")).not.toBeInTheDocument();
+  });
+
+  it("renders active nav indicator when not reducing motion", () => {
+    const { container } = renderHeader("/");
+    // motion.div for nav-indicator should be present
+    // We search for a div with the expected classes
+    const indicator = container.querySelector('.bg-primary');
+    expect(indicator).toBeInTheDocument();
+  });
+});
+
+describe("Header with reduced motion", () => {
+  beforeEach(() => {
+    vi.mocked(FramerMotion.useReducedMotion).mockReturnValue(true);
+  });
+
+  it("renders correctly when prefers-reduced-motion is set", () => {
+    render(
+      <MemoryRouter initialEntries={["/"]}>
+        <Header />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole("link", { name: /home/i })).toBeInTheDocument();
+    // In reduced motion, a simple div is used for the indicator
+    const indicator = document.querySelector('.bg-primary');
+    expect(indicator).toBeInTheDocument();
   });
 });
