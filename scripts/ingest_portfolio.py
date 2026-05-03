@@ -152,6 +152,40 @@ def process_home():
         }
     })
 
+    # Awards
+    awards = home.get('awards', [])
+    if awards:
+        results.append({
+            "content": "Awards and Honors:\n- " + "\n- ".join(awards),
+            "metadata": {
+                "source": "content/home.json",
+                "title": "Awards and Honors",
+                "slug": "awards",
+                "type": "awards",
+                "chunk_index": 0
+            }
+        })
+
+    # Press & Media — each item its own chunk so the agent can cite specific articles
+    for i, item in enumerate(home.get('press', [])):
+        title = item.get('title', '')
+        source = item.get('source', '')
+        date = item.get('date', '')
+        url = item.get('url', '')
+        content = f"Press: {title}\nSource: {source}\nDate: {date}"
+        if url:
+            content += f"\nURL: {url}"
+        results.append({
+            "content": content,
+            "metadata": {
+                "source": "content/home.json",
+                "title": f"Press: {title}",
+                "slug": f"press-{slugify(title)}" if title else f"press-{i}",
+                "type": "press",
+                "chunk_index": i
+            }
+        })
+
     return results
 
 def get_all_chunks():
@@ -181,6 +215,8 @@ import time
 from google.cloud import aiplatform
 from google.cloud.sql.connector import Connector
 import psycopg2
+from psycopg2.extras import execute_values
+from pgvector.psycopg2 import register_vector
 from vertexai.language_models import TextEmbeddingInput, TextEmbeddingModel
 
 # Configuration
@@ -224,17 +260,24 @@ def init_db(conn):
         conn.commit()
 
 def upsert_chunks(conn, chunks, embeddings):
-    """Insert or update chunks in the database."""
-    with conn.cursor() as cur:
-        # For simplicity, we clear and re-index.
-        # For a small site this is fine and ensures consistency.
-        cur.execute("DELETE FROM portfolio_chunks")
+    """Clear existing rows and bulk-insert the new chunks.
 
-        for chunk, embedding in zip(chunks, embeddings):
-            cur.execute(
-                "INSERT INTO portfolio_chunks (content, metadata, embedding) VALUES (%s, %s, %s)",
-                (chunk['content'], json.dumps(chunk['metadata']), embedding)
-            )
+    Uses TRUNCATE (faster than DELETE for full-table refresh) plus
+    psycopg2.extras.execute_values for a single round-trip bulk insert,
+    avoiding O(N) network round-trips that DELETE + per-row INSERT incurs.
+    """
+    with conn.cursor() as cur:
+        cur.execute("TRUNCATE TABLE portfolio_chunks RESTART IDENTITY")
+
+        rows = [
+            (chunk['content'], json.dumps(chunk['metadata']), embedding)
+            for chunk, embedding in zip(chunks, embeddings)
+        ]
+        execute_values(
+            cur,
+            "INSERT INTO portfolio_chunks (content, metadata, embedding) VALUES %s",
+            rows,
+        )
         conn.commit()
 
 def run_ingestion():
@@ -263,9 +306,12 @@ def run_ingestion():
         return conn
 
     conn = getconn()
-
-    print("Initializing DB...")
+    # Register the pgvector type with the connection so psycopg2 can serialize
+    # Python lists into the PostgreSQL `vector` column natively. Must run
+    # after CREATE EXTENSION (which init_db does), so we re-register below
+    # if init_db creates the extension on a fresh DB.
     init_db(conn)
+    register_vector(conn)
 
     print("Upserting chunks...")
     upsert_chunks(conn, chunks, embeddings)
