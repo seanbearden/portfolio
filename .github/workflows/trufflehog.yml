@@ -8,6 +8,16 @@ on:
     types: [opened, synchronize, reopened]
   schedule:
     - cron: "0 8 * * 1"  # Mondays 08:00 UTC, after ZAP
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "full = scan entire git history (same as weekly cron); diff = scan only the latest commit"
+        required: false
+        default: "full"
+        type: choice
+        options:
+          - full
+          - diff
 
 permissions:
   contents: read
@@ -30,19 +40,23 @@ jobs:
       # (which always resolve), avoiding the "unable to resolve ref" error
       # that came from passing the bare branch name "main" as base.
       # See https://github.com/trufflesecurity/trufflehog#github-action.
-      - name: TruffleHog (diff scan on PR/push)
-        if: github.event_name != 'schedule'
+      - name: TruffleHog (diff scan on PR/push, or workflow_dispatch with mode=diff)
+        if: |
+          (github.event_name == 'push' || github.event_name == 'pull_request')
+          || (github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'diff')
         uses: trufflesecurity/trufflehog@17456f8c7d042d8c82c9a8ca9e937231f9f42e26  # v3.95.2
         with:
           path: ./
           extra_args: --only-verified
 
-      # Weekly cron: scan full git history. Setting base= empty + head=HEAD
-      # tells TruffleHog to scan every commit in the repo. fetch-depth: 0
-      # above is what makes this useful — without it, the action would only
-      # see the latest commit on a shallow clone.
-      - name: TruffleHog (full history weekly)
-        if: github.event_name == 'schedule'
+      # Scheduled weekly OR workflow_dispatch with mode=full (default): full
+      # history scan. Setting base="" + head=HEAD tells TruffleHog to scan
+      # every commit. fetch-depth: 0 above is what makes this useful —
+      # without it, the action would only see the latest commit.
+      - name: TruffleHog (full history — schedule or workflow_dispatch mode=full)
+        if: |
+          github.event_name == 'schedule'
+          || (github.event_name == 'workflow_dispatch' && github.event.inputs.mode != 'diff')
         uses: trufflesecurity/trufflehog@17456f8c7d042d8c82c9a8ca9e937231f9f42e26  # v3.95.2
         with:
           path: ./
