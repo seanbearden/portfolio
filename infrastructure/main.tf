@@ -67,7 +67,7 @@ resource "google_storage_bucket" "assets" {
   public_access_prevention    = "inherited"
 
   cors {
-    origin          = ["https://${var.domain}", "https://www.${var.domain}"]
+    origin          = ["https://${var.domain}", "https://www.${var.domain}", "http://localhost:5173", "http://localhost:4173"]
     method          = ["GET", "HEAD"]
     response_header = ["Content-Type", "Cache-Control"]
     max_age_seconds = 3600
