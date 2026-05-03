@@ -38,6 +38,20 @@ vi.mock("@/utils/content", () => ({
     interests: ["BJJ", "Reading"],
   }),
   pdfUrl: (f: string) => `https://cdn.example.com/pdfs/${f}`,
+  assetUrl: (f: string) => `https://cdn.example.com/images/${f}`,
+  fetchLatestEval: async () => ({
+    date: "2024-03-20",
+    metrics: {
+      hallucination_rate: 0.05,
+      retrieval_precision: 0.95,
+      refusal_correctness: 1.0,
+      citation_validity: 0.9,
+      latency_p50: 1.2,
+      latency_p95: 1.8,
+      avg_cost: 0.005,
+    },
+  }),
+  fetchEvalHistory: async () => [],
 }));
 
 describe("AboutPage", () => {

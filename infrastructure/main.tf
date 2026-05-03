@@ -25,6 +25,8 @@ locals {
     "iam.googleapis.com",
     "iamcredentials.googleapis.com",
     "cloudresourcemanager.googleapis.com",
+    "sqladmin.googleapis.com",
+    "aiplatform.googleapis.com",
   ]
 }
 
@@ -67,7 +69,7 @@ resource "google_storage_bucket" "assets" {
   public_access_prevention    = "inherited"
 
   cors {
-    origin          = ["https://${var.domain}", "https://www.${var.domain}"]
+    origin          = ["https://${var.domain}", "https://www.${var.domain}", "http://localhost:5173", "http://localhost:4173"]
     method          = ["GET", "HEAD"]
     response_header = ["Content-Type", "Cache-Control"]
     max_age_seconds = 3600
@@ -97,6 +99,9 @@ locals {
     "roles/artifactregistry.writer",
     "roles/iam.serviceAccountUser",
     "roles/storage.admin",
+    "roles/cloudsql.client",
+    "roles/cloudsql.instanceUser",
+    "roles/aiplatform.user",
   ]
 }
 
@@ -162,9 +167,45 @@ resource "google_cloud_run_v2_service_iam_member" "public_invoker" {
 resource "google_cloud_run_v2_service_iam_member" "agent_public_invoker" {
   project  = var.project_id
   location = var.region
-  name     = "portfolio-agent"
+  name     = var.agent_service_name
   role     = "roles/run.invoker"
   member   = "allUsers"
 
   depends_on = [google_project_service.apis["run.googleapis.com"]]
+}
+
+# -----------------------------------------------------------
+# Cloud SQL (PostgreSQL with pgvector)
+# -----------------------------------------------------------
+resource "google_sql_database_instance" "portfolio" {
+  name             = "portfolio-db"
+  database_version = "POSTGRES_15"
+  region           = var.region
+
+  settings {
+    tier = "db-f1-micro"
+    database_flags {
+      name  = "cloudsql.iam_authentication"
+      value = "on"
+    }
+  }
+
+  # deletion_protection = true is safer for production; flip to false only when
+  # intentionally tearing down (e.g., during initial DB schema iteration). The
+  # site is in active development so we keep this true and override via
+  # `terraform apply -var deletion_protection=false` if needed.
+  deletion_protection = true
+
+  depends_on = [google_project_service.apis["sqladmin.googleapis.com"]]
+}
+
+resource "google_sql_database" "vector" {
+  name     = "portfolio_vector"
+  instance = google_sql_database_instance.portfolio.name
+}
+
+resource "google_sql_user" "deploy" {
+  name     = trimsuffix(google_service_account.deploy.email, ".gserviceaccount.com")
+  instance = google_sql_database_instance.portfolio.name
+  type     = "CLOUD_IAM_SERVICE_ACCOUNT"
 }
