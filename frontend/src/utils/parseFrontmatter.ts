@@ -45,6 +45,15 @@ export function parseFrontmatter(raw: string): { meta: Record<string, string | s
       if (idx === -1) continue;
       const key = line.slice(0, idx).trim();
       let val = line.slice(idx + 1).trim();
+
+      // Strip matching surrounding double or single quotes
+      if (
+        (val.startsWith('"') && val.endsWith('"')) ||
+        (val.startsWith("'") && val.endsWith("'"))
+      ) {
+        val = val.slice(1, -1);
+      }
+
       meta[key] = val;
     }
     return { meta, body: match[2].trim() };

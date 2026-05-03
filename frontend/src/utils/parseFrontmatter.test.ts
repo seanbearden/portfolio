@@ -47,4 +47,22 @@ describe("parseFrontmatter", () => {
       body: "body",
     });
   });
+
+  it("strips quotes in fallback parser when gray-matter fails", () => {
+    // Malformed YAML (e.g., unclosed bracket) to trigger fallback
+    const malformed = `---
+title: "Quoted Title"
+link: 'https://example.com'
+tags: [malformed
+---
+body`;
+    expect(parseFrontmatter(malformed)).toEqual({
+      meta: {
+        title: "Quoted Title",
+        link: "https://example.com",
+        tags: "[malformed",
+      },
+      body: "body",
+    });
+  });
 });
