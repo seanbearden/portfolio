@@ -25,7 +25,6 @@ locals {
     "iam.googleapis.com",
     "iamcredentials.googleapis.com",
     "cloudresourcemanager.googleapis.com",
-    "sqladmin.googleapis.com",
     "aiplatform.googleapis.com",
   ]
 }
@@ -69,7 +68,7 @@ resource "google_storage_bucket" "assets" {
   public_access_prevention    = "inherited"
 
   cors {
-    origin          = ["https://${var.domain}", "https://www.${var.domain}", "http://localhost:5173", "http://localhost:4173"]
+    origin          = ["https://${var.domain}", "https://www.${var.domain}"]
     method          = ["GET", "HEAD"]
     response_header = ["Content-Type", "Cache-Control"]
     max_age_seconds = 3600
@@ -99,12 +98,6 @@ locals {
     "roles/artifactregistry.writer",
     "roles/iam.serviceAccountUser",
     "roles/storage.admin",
-    "roles/cloudsql.client",
-    "roles/cloudsql.instanceUser",
-    # aiplatform.admin (not just user) — required for deploying / managing
-    # Vertex AI Agent Engine instances. Consolidates the formerly-separate
-    # `deploy_ae` google_project_iam_member that Gemini correctly flagged
-    # as redundant.
     "roles/aiplatform.admin",
   ]
 }
@@ -166,10 +159,7 @@ resource "google_cloud_run_v2_service_iam_member" "public_invoker" {
 }
 
 # -----------------------------------------------------------
-# Chatbot runtime service account
-# Separate from the `deploy` SA so the chatbot Cloud Run service runs
-# under a least-privilege identity (only aiplatform.user, not the broader
-# deploy roles).
+# Chatbot Service Account & IAM
 # -----------------------------------------------------------
 resource "google_service_account" "chatbot" {
   account_id   = "portfolio-chatbot"
@@ -183,15 +173,14 @@ resource "google_project_iam_member" "chatbot_ai" {
   member  = "serviceAccount:${google_service_account.chatbot.email}"
 }
 
-# Public invoker on the agent Cloud Run service. Single resource — the
-# previous PR conflict had two near-duplicates ("agent_public_invoker"
-# from main targeting var.agent_service_name, plus "chatbot_invoker"
-# hardcoding "portfolio-chatbot"). They're the same Cloud Run service
-# under different names.
-resource "google_cloud_run_v2_service_iam_member" "agent_public_invoker" {
+# -----------------------------------------------------------
+# Cloud Run: Chatbot Backend
+# Note: Initial deployment handled by GH Actions, but IAM here.
+# -----------------------------------------------------------
+resource "google_cloud_run_v2_service_iam_member" "chatbot_invoker" {
   project  = var.project_id
   location = var.region
-  name     = var.agent_service_name
+  name     = "portfolio-chatbot"
   role     = "roles/run.invoker"
   member   = "allUsers"
 
@@ -199,37 +188,11 @@ resource "google_cloud_run_v2_service_iam_member" "agent_public_invoker" {
 }
 
 # -----------------------------------------------------------
-# Cloud SQL (PostgreSQL with pgvector)
+# Vertex AI Reasoning Engine (Agent Engine)
+# Resource itself is managed via SDK/gcloud, but IAM here.
 # -----------------------------------------------------------
-resource "google_sql_database_instance" "portfolio" {
-  name             = "portfolio-db"
-  database_version = "POSTGRES_15"
-  region           = var.region
-
-  settings {
-    tier = "db-f1-micro"
-    database_flags {
-      name  = "cloudsql.iam_authentication"
-      value = "on"
-    }
-  }
-
-  # deletion_protection = true is safer for production; flip to false only when
-  # intentionally tearing down (e.g., during initial DB schema iteration). The
-  # site is in active development so we keep this true and override via
-  # `terraform apply -var deletion_protection=false` if needed.
-  deletion_protection = true
-
-  depends_on = [google_project_service.apis["sqladmin.googleapis.com"]]
-}
-
-resource "google_sql_database" "vector" {
-  name     = "portfolio_vector"
-  instance = google_sql_database_instance.portfolio.name
-}
-
-resource "google_sql_user" "deploy" {
-  name     = trimsuffix(google_service_account.deploy.email, ".gserviceaccount.com")
-  instance = google_sql_database_instance.portfolio.name
-  type     = "CLOUD_IAM_SERVICE_ACCOUNT"
+resource "google_project_iam_member" "deploy_ae" {
+  project = var.project_id
+  role    = "roles/aiplatform.admin"
+  member  = "serviceAccount:${google_service_account.deploy.email}"
 }

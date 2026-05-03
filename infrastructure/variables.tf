@@ -33,8 +33,8 @@ variable "cloud_run_service_name" {
   default     = "portfolio-frontend"
 }
 
-variable "agent_service_name" {
-  description = "Name of the Agent Cloud Run service (the resume chatbot backend)."
+variable "chatbot_service_name" {
+  description = "Name of the Cloud Run service for the chatbot"
   type        = string
-  default     = "portfolio-agent"
+  default     = "portfolio-chatbot"
 }

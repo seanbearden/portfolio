@@ -1,5 +1,0 @@
-langfuse
-openai
-requests
-python-dotenv
-numpy

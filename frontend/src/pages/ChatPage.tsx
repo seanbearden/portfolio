@@ -8,24 +8,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface Message {
-  id: string;
   role: "user" | "assistant";
   content: string;
 }
-
-// Stable id helper. crypto.randomUUID is widely available in modern
-// browsers + jsdom; fall back to a Math.random key for older test envs.
-const newId = () =>
-  typeof crypto !== "undefined" && "randomUUID" in crypto
-    ? crypto.randomUUID()
-    : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 export function ChatPage() {
   const [searchParams] = useSearchParams();
   const backend = searchParams.get("backend") || "cr"; // 'cr' for Cloud Run, 'ae' for Agent Engine
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: newId(),
       role: "assistant",
       content: "Hi! I'm Sean's virtual assistant. I can answer questions about his Ph.D. research in memcomputing, his transition to data science, or his professional experience. What would you like to know?",
     },
@@ -46,8 +37,7 @@ export function ChatPage() {
 
     const userMessage = input.trim();
     setInput("");
-    const userMsg: Message = { id: newId(), role: "user", content: userMessage };
-    setMessages((prev) => [...prev, userMsg]);
+    setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
     setIsLoading(true);
 
     try {
@@ -55,10 +45,9 @@ export function ChatPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          // Strip the local id before sending — the backend doesn't need it.
-          messages: [...messages, userMsg].map((m) => ({
+          messages: [...messages, { role: "user", content: userMessage }].map(m => ({
             role: m.role,
-            content: m.content,
+            content: m.content
           })),
         }),
       });
@@ -66,15 +55,12 @@ export function ChatPage() {
       if (!response.ok) throw new Error("Failed to fetch");
 
       const data = await response.json();
-      setMessages((prev) => [
-        ...prev,
-        { id: newId(), role: "assistant", content: data.content },
-      ]);
+      setMessages((prev) => [...prev, { role: "assistant", content: data.content }]);
     } catch (error) {
       console.error("Chat error:", error);
       setMessages((prev) => [
         ...prev,
-        { id: newId(), role: "assistant", content: "Sorry, I encountered an error. Please try again later." },
+        { role: "assistant", content: "Sorry, I encountered an error. Please try again later." },
       ]);
     } finally {
       setIsLoading(false);
@@ -97,9 +83,9 @@ export function ChatPage() {
       <Card className="flex-1 flex flex-col min-h-0 bg-card/50 backdrop-blur-sm border-border">
         <CardContent className="flex-1 overflow-y-auto p-4 space-y-4" ref={scrollRef}>
           <AnimatePresence initial={false}>
-            {messages.map((msg) => (
+            {messages.map((msg, i) => (
               <motion.div
-                key={msg.id}
+                key={i}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={cn(

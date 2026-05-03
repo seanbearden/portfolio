@@ -14,7 +14,6 @@ import {
 } from "@/utils/content";
 import { cn } from "@/lib/utils";
 import { motion, useReducedMotion } from "framer-motion";
-import { SectionDivider } from "@/components/ui/section-divider";
 
 const MotionCard = motion.create(Card);
 
@@ -78,12 +77,12 @@ export function HomePage() {
               {home.hero.headline}
             </motion.p>
             <motion.div variants={itemVariants} className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
-              <Link
-                to="/chat"
+            <Link
+              to="/chat"
                 className={cn(buttonVariants(), "shadow-lg hover:shadow-primary/20 transition-all duration-300")}
               >
                 <MessageSquare className="mr-2 h-4 w-4" /> Chat with My Resume
-              </Link>
+            </Link>
               <Link to="/portfolio" className={cn(buttonVariants({ variant: "outline" }), "hover:bg-accent hover:text-accent-foreground transition-all duration-300")}>
                 View Portfolio
               </Link>
@@ -110,8 +109,6 @@ export function HomePage() {
           </div>
         </motion.div>
       </section>
-
-      <SectionDivider variant="waves" className="opacity-50" />
 
       {/* Featured Projects */}
       <section className="py-12">
@@ -187,8 +184,6 @@ export function HomePage() {
         </motion.div>
       </section>
 
-      <SectionDivider variant="network" className="opacity-50" />
-
       {/* Recent Posts */}
       <section className="py-12">
         <motion.div
@@ -237,8 +232,6 @@ export function HomePage() {
           </div>
         </motion.div>
       </section>
-
-      <SectionDivider variant="particles" className="opacity-50" />
 
       {/* About Preview */}
       <section className="py-16">
