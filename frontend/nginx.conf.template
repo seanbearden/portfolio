@@ -39,6 +39,16 @@ server {
     add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
     add_header Cross-Origin-Resource-Policy "same-origin" always;
 
+    # Caching strategy — accepted ZAP alerts:
+    # Two rules fire on our deliberate caching choices:
+    # - 10049 covers both sub-alerts: "Non-Storable Content" (for HTML with
+    #   no-store/no-cache, intentional so deploys are picked up immediately)
+    #   and "Storable and Cacheable Content" (for `public` caching on hashed
+    #   assets, intentional so they're long-term immutable).
+    # - 10015 ("Re-examine Cache-control Directives") is the generic
+    #   meta-alert that fires alongside 10049 on the same responses.
+    # Both are accepted as audit trails — do NOT silence.
+
     # Phase 2: uncomment to proxy chatbot API
     # location /api/ {
     #     proxy_pass ${CHATBOT_API_URL}/api/;
