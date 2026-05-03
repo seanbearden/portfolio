@@ -200,7 +200,7 @@ export function Mascot({ state = "idle", className, size = 40, contrast = false 
           <motion.g
             animate={{ rotate: 360 }}
             transition={orbitTransition}
-            style={{ originX: "50px", originY: "50px" }}
+            style={{ transformOrigin: "50px 50px" }}
           >
             <circle cx="50" cy="10" r="4" className={colors.core} />
           </motion.g>
@@ -209,7 +209,7 @@ export function Mascot({ state = "idle", className, size = 40, contrast = false 
           <motion.g
             animate={{ rotate: -360 }}
             transition={{ ...orbitTransition, duration: orbitTransition.duration * 1.5 }}
-            style={{ originX: "50px", originY: "50px" }}
+            style={{ transformOrigin: "50px 50px" }}
           >
             <circle cx="50" cy="5" r="3" className={colors.core} />
           </motion.g>
