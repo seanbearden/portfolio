@@ -1,9 +1,10 @@
-import { getHomeData, pdfUrl } from "@/utils/content";
+import { Link } from "react-router";
+import { pdfUrl } from "@/utils/content";
 import { motion } from "framer-motion";
 
-export function Footer() {
-  const home = getHomeData();
+const MotionLink = motion.create(Link);
 
+export function Footer() {
   return (
     <footer className="border-t border-border/50 py-8 mt-auto bg-card/30 backdrop-blur-sm">
       <div className="mx-auto max-w-5xl px-4 flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
@@ -26,14 +27,14 @@ export function Footer() {
             Resume
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
           </motion.a>
-          <motion.a
-            href={`mailto:${home.hero.email}`}
+          <MotionLink
+            to="/contact"
             className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group"
             whileHover={{ y: -1 }}
           >
             Contact
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
-          </motion.a>
+          </MotionLink>
         </div>
       </div>
     </footer>
