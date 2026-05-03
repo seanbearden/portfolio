@@ -1,5 +1,29 @@
 # portfolio
 
+## 0.3.2
+
+### Patch Changes
+
+- [#129](https://github.com/seanbearden/portfolio/pull/129) [`84299e6`](https://github.com/seanbearden/portfolio/commit/84299e63bc53c46b482495fb001f15688b6bbf2a) Thanks [@seanbearden](https://github.com/seanbearden)! - Add route-table tests for App.
+
+- [#126](https://github.com/seanbearden/portfolio/pull/126) [`6e277e9`](https://github.com/seanbearden/portfolio/commit/6e277e9e62d7cec1caf923df70ffb55acb77b6a2) Thanks [@seanbearden](https://github.com/seanbearden)! - Add test coverage for blog post route.
+
+- [#131](https://github.com/seanbearden/portfolio/pull/131) [`4c54ad4`](https://github.com/seanbearden/portfolio/commit/4c54ad41e1579e3d20ed9145d0df61d5e7433a17) Thanks [@seanbearden](https://github.com/seanbearden)! - Add reduced-motion branch coverage for page components.
+
+- [#127](https://github.com/seanbearden/portfolio/pull/127) [`9cffb07`](https://github.com/seanbearden/portfolio/commit/9cffb07ee44195ca68b3c84eaa7ff9708f0d6bcd) Thanks [@seanbearden](https://github.com/seanbearden)! - Add tests for Button and Card UI primitives.
+
+- [#140](https://github.com/seanbearden/portfolio/pull/140) [`c3121b5`](https://github.com/seanbearden/portfolio/commit/c3121b54f815d418e3baf6386944f146c8c75578) Thanks [@seanbearden](https://github.com/seanbearden)! - Auto-generate YouTube thumbnails for portfolio cards.
+
+- [#135](https://github.com/seanbearden/portfolio/pull/135) [`31038e0`](https://github.com/seanbearden/portfolio/commit/31038e04c0cd03ec6fcf12dcb9df4730a183e109) Thanks [@seanbearden](https://github.com/seanbearden)! - Extend page component branch coverage.
+
+- [#141](https://github.com/seanbearden/portfolio/pull/141) [`1b4da99`](https://github.com/seanbearden/portfolio/commit/1b4da999957d0098cf358819bcd58c8dec8c02d2) Thanks [@seanbearden](https://github.com/seanbearden)! - Fix Contact page email link silently failing for users without a default mail client. Clicking the email now copies it to the clipboard with visible feedback while still attempting to open the user's mail app. Also redirects the Footer "Contact" link to the /contact page instead of mailto:.
+
+- [#143](https://github.com/seanbearden/portfolio/pull/143) [`59fc700`](https://github.com/seanbearden/portfolio/commit/59fc7009cc793146d569c4f7483d3a022e86d4fb) Thanks [@seanbearden](https://github.com/seanbearden)! - Fix broken UB Goldwater Scholars press link on home page (UB reorganized the news URL path; new URL points to the same article with its actual title).
+
+- [#138](https://github.com/seanbearden/portfolio/pull/138) [`b9a04d0`](https://github.com/seanbearden/portfolio/commit/b9a04d0e93835b1bf6380da246df9362ee510b17) Thanks [@seanbearden](https://github.com/seanbearden)! - Harden frontmatter parsing by stripping surrounding quotes in the fallback parser to prevent malformed URLs.
+
+- [#124](https://github.com/seanbearden/portfolio/pull/124) [`18465df`](https://github.com/seanbearden/portfolio/commit/18465dfceedcae0ee8048b222ff09f7df7c80d46) Thanks [@seanbearden](https://github.com/seanbearden)! - Resolve security alerts from ZAP scan by hardening Nginx configuration, adding robots.txt and sitemap.xml, and triaging false positives.
+
 ## 0.3.1
 
 ### Patch Changes
