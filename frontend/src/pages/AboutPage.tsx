@@ -1,12 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { SectionDivider } from "@/components/ui/section-divider";
+import { Separator } from "@/components/ui/separator";
 import { buttonVariants } from "@/components/ui/button";
-import { AboutSynthesisIllustration } from "@/components/illustrations/AboutSynthesisIllustration";
 import { getHomeData, pdfUrl } from "@/utils/content";
 import { Award, Briefcase, GraduationCap, Download, Heart, Newspaper, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { EvalSuite } from "@/components/EvalSuite";
 
 export function AboutPage() {
   const home = getHomeData();
@@ -14,20 +12,13 @@ export function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-3xl font-bold tracking-tight">About</h1>
-
-      <div className="mt-8 grid gap-8 md:grid-cols-[1fr_250px] items-start">
-        <div className="space-y-4 text-muted-foreground leading-relaxed">
-          {home.bio.map((paragraph, idx) => (
-            <p key={idx}>{paragraph}</p>
-          ))}
-        </div>
-
-        <div className="relative flex justify-center md:justify-end text-primary">
-          <AboutSynthesisIllustration className="w-full max-w-[250px]" />
-        </div>
+      <div className="mt-4 space-y-4 text-muted-foreground leading-relaxed">
+        {home.bio.map((paragraph, idx) => (
+          <p key={idx}>{paragraph}</p>
+        ))}
       </div>
 
-      <div className="mt-8 flex flex-wrap gap-3">
+      <div className="mt-6 flex gap-3">
         <a
           href={pdfUrl("Bearden_Resume_Online.pdf")}
           target="_blank"
@@ -54,12 +45,7 @@ export function AboutPage() {
         </a>
       </div>
 
-      <SectionDivider variant="lines" className="my-4 opacity-50" />
-
-      {/* LLM Evaluation Suite */}
-      <EvalSuite />
-
-      <SectionDivider variant="lines" className="my-4 opacity-50" />
+      <Separator className="my-10" />
 
       {/* Experience */}
       <section>
@@ -87,7 +73,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <SectionDivider variant="dots" className="my-4 opacity-50" />
+      <Separator className="my-10" />
 
       {/* Education */}
       <section>
@@ -107,7 +93,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <SectionDivider variant="network" className="my-4 opacity-50" />
+      <Separator className="my-10" />
 
       {/* Awards */}
       <section>
@@ -121,7 +107,7 @@ export function AboutPage() {
         </ul>
       </section>
 
-      <SectionDivider variant="waves" className="my-4 opacity-50" />
+      <Separator className="my-10" />
 
       {/* Press & Media */}
       <section>
@@ -150,7 +136,7 @@ export function AboutPage() {
         </ul>
       </section>
 
-      <SectionDivider variant="particles" className="my-4 opacity-50" />
+      <Separator className="my-10" />
 
       {/* Skills */}
       <section>
@@ -171,7 +157,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <SectionDivider variant="dots" className="my-4 opacity-50" />
+      <Separator className="my-10" />
 
       {/* Beyond Work */}
       <section>

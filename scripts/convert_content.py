@@ -152,10 +152,10 @@ def convert_blog_posts():
         # Build frontmatter
         fm_lines = [
             "---",
-            f'title: "{title}"',
+            f"title: {json.dumps(title)}",
             f"date: {date}",
             f"slug: {slug}",
-            f"oldUrl: \"{meta['url']}\"",
+            f"oldUrl: {json.dumps(meta['url'])}",
         ]
         if meta["categories"]:
             cats = json.dumps(meta["categories"])
@@ -233,13 +233,13 @@ def convert_portfolio():
 
         fm_lines = [
             "---",
-            f'title: "{title}"',
+            f"title: {json.dumps(title)}",
             f"slug: {slug}",
             f"order: {written + 1}",
             f"skills: {json.dumps(skills_list)}",
         ]
         if link:
-            fm_lines.append(f'link: "{link}"')
+            fm_lines.append(f"link: {json.dumps(link)}")
         if image:
             fm_lines.append(f"image: {image}")
         fm_lines.append("---")
@@ -247,6 +247,23 @@ def convert_portfolio():
         body = description
         if "\n".join(body_lines).strip():
             body += "\n\n" + "\n".join(body_lines).strip()
+
+        # Phase 2: Consolidated Chatbot
+        if slug == "resume-chatbot-harnessing-chatgpt-for-the-job-search":
+            # Override link/cta for the new integrated agent
+            # Re-build fm_lines to include cta and set link to #chat
+            fm_lines = [
+                "---",
+                f"title: {json.dumps(title)}",
+                f"slug: {slug}",
+                f"order: {written + 1}",
+                f"skills: {json.dumps(skills_list)}",
+                'link: "#chat"',
+                'cta: "Open Chat"',
+            ]
+            if image:
+                fm_lines.append(f"image: {image}")
+            fm_lines.append("---")
 
         content = "\n".join(fm_lines) + "\n\n" + body + "\n"
         filename = f"{written + 1:02d}-{slug[:50]}.md"
