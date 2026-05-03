@@ -1,7 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { SectionDivider } from "@/components/ui/section-divider";
 import { buttonVariants } from "@/components/ui/button";
+import { AboutSynthesisIllustration } from "@/components/illustrations/AboutSynthesisIllustration";
 import { getHomeData, pdfUrl } from "@/utils/content";
 import { Award, Briefcase, GraduationCap, Download, Heart, Newspaper, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,13 +14,20 @@ export function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-3xl font-bold tracking-tight">About</h1>
-      <div className="mt-4 space-y-4 text-muted-foreground leading-relaxed">
-        {home.bio.map((paragraph, idx) => (
-          <p key={idx}>{paragraph}</p>
-        ))}
+
+      <div className="mt-8 grid gap-8 md:grid-cols-[1fr_250px] items-start">
+        <div className="space-y-4 text-muted-foreground leading-relaxed">
+          {home.bio.map((paragraph, idx) => (
+            <p key={idx}>{paragraph}</p>
+          ))}
+        </div>
+
+        <div className="relative flex justify-center md:justify-end text-primary">
+          <AboutSynthesisIllustration className="w-full max-w-[250px]" />
+        </div>
       </div>
 
-      <div className="mt-6 flex gap-3">
+      <div className="mt-8 flex flex-wrap gap-3">
         <a
           href={pdfUrl("Bearden_Resume_Online.pdf")}
           target="_blank"
@@ -46,12 +54,12 @@ export function AboutPage() {
         </a>
       </div>
 
-      <Separator className="my-10" />
+      <SectionDivider variant="lines" className="my-4 opacity-50" />
 
       {/* LLM Evaluation Suite */}
       <EvalSuite />
 
-      <Separator className="my-10" />
+      <SectionDivider variant="lines" className="my-4 opacity-50" />
 
       {/* Experience */}
       <section>
@@ -79,7 +87,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <Separator className="my-10" />
+      <SectionDivider variant="dots" className="my-4 opacity-50" />
 
       {/* Education */}
       <section>
@@ -99,7 +107,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <Separator className="my-10" />
+      <SectionDivider variant="network" className="my-4 opacity-50" />
 
       {/* Awards */}
       <section>
@@ -113,7 +121,7 @@ export function AboutPage() {
         </ul>
       </section>
 
-      <Separator className="my-10" />
+      <SectionDivider variant="waves" className="my-4 opacity-50" />
 
       {/* Press & Media */}
       <section>
@@ -142,7 +150,7 @@ export function AboutPage() {
         </ul>
       </section>
 
-      <Separator className="my-10" />
+      <SectionDivider variant="particles" className="my-4 opacity-50" />
 
       {/* Skills */}
       <section>
@@ -163,7 +171,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <Separator className="my-10" />
+      <SectionDivider variant="dots" className="my-4 opacity-50" />
 
       {/* Beyond Work */}
       <section>
