@@ -47,6 +47,7 @@ def parse_md_defensive(content: str) -> Dict[str, Any]:
 
 def chunk_markdown(file_path, content_type):
     """Parse MD file and split by headers."""
+    file_path = Path(file_path).resolve()
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
@@ -274,6 +275,10 @@ DB_USER = os.environ.get("GCP_SQL_USER") # Should be the SA email without .gserv
 
 def get_embeddings(texts):
     """Generate embeddings using gemini-embedding-001."""
+    if os.environ.get("SIMULATE"):
+        print(f"SIMULATE: Generating dummy embeddings for {len(texts)} texts.")
+        return [[0.0] * 768 for _ in texts]
+
     aiplatform.init(project=PROJECT_ID, location=REGION)
     model = TextEmbeddingModel.from_pretrained("gemini-embedding-001")
 
@@ -327,7 +332,7 @@ def upsert_chunks(conn, chunks, embeddings):
         conn.commit()
 
 def run_ingestion():
-    if not PROJECT_ID:
+    if not PROJECT_ID and not os.environ.get("SIMULATE"):
         print("GCP_PROJECT_ID not set. Skipping ingestion.")
         return
 
@@ -336,7 +341,19 @@ def run_ingestion():
     texts = [c['content'] for c in chunks]
 
     print(f"Generating embeddings for {len(chunks)} chunks...")
-    embeddings = get_embeddings(texts)
+    try:
+        embeddings = get_embeddings(texts)
+    except Exception as e:
+        print(f"Error generating embeddings: {e}")
+        if os.environ.get("SIMULATE"):
+            print("SIMULATE: Falling back to dummy embeddings.")
+            embeddings = [[0.0] * 768 for _ in chunks]
+        else:
+            raise
+
+    if os.environ.get("SIMULATE"):
+        print(f"SIMULATE: Successfully chunked {len(chunks)} items. Skipping Cloud SQL upload.")
+        return
 
     print("Connecting to Cloud SQL...")
     connector = Connector()
