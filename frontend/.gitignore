@@ -24,3 +24,4 @@ test-report.junit.xml
 *.njsproj
 *.sln
 *.sw?
+frontend/public/og/

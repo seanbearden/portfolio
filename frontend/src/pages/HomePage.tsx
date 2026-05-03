@@ -14,6 +14,7 @@ import {
 } from "@/utils/content";
 import { cn } from "@/lib/utils";
 import { motion, useReducedMotion } from "framer-motion";
+import { SEO } from "@/components/common/SEO";
 
 const MotionCard = motion.create(Card);
 
@@ -46,6 +47,7 @@ export function HomePage() {
 
   return (
     <div className="relative mx-auto max-w-5xl px-4 overflow-hidden">
+      <SEO />
       {/* Subtle Background Glow */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[120px] mix-blend-screen" />
