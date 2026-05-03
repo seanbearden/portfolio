@@ -5,6 +5,7 @@ presidio-analyzer
 presidio-anonymizer
 spacy
 transformers
+sentencepiece
 torch
 langfuse
 pytest

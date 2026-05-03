@@ -47,7 +47,8 @@ def check_session_limit(session_id: str):
     return True
 
 @app.post("/api/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest, req: Request):
+@limiter.limit("20/minute")
+async def chat(request: Request, chat_request: ChatRequest):
     # 1. Cost Ceiling
     if check_cost_ceiling():
         return ChatResponse(
@@ -58,7 +59,7 @@ async def chat(request: ChatRequest, req: Request):
         )
 
     # 2. Per-session Rate Limit
-    if not check_session_limit(request.session_id):
+    if not check_session_limit(chat_request.session_id):
         raise HTTPException(status_code=429, detail="Session rate limit exceeded")
 
     # 3. Input Guardrails
@@ -66,12 +67,12 @@ async def chat(request: ChatRequest, req: Request):
     # For this simplified implementation, we'll use create_event for firings.
 
     # Prompt Injection
-    if is_prompt_injection(request.message):
+    if is_prompt_injection(chat_request.message):
         try:
             langfuse.create_event(
                 name="guardrail_firing",
-                input=request.message,
-                metadata={"type": "prompt_injection", "session_id": request.session_id},
+                input=chat_request.message,
+                metadata={"type": "prompt_injection", "session_id": chat_request.session_id},
                 tags=["adversarial"]
             )
         except Exception:
@@ -83,12 +84,12 @@ async def chat(request: ChatRequest, req: Request):
         )
 
     # PII Check
-    if contains_pii(request.message):
+    if contains_pii(chat_request.message):
         try:
             langfuse.create_event(
                 name="guardrail_firing",
-                input=request.message,
-                metadata={"type": "pii_leak", "session_id": request.session_id},
+                input=chat_request.message,
+                metadata={"type": "pii_leak", "session_id": chat_request.session_id},
                 tags=["adversarial"]
             )
         except Exception:
@@ -100,7 +101,7 @@ async def chat(request: ChatRequest, req: Request):
         )
 
     # Off-topic Check
-    if is_off_topic(request.message):
+    if is_off_topic(chat_request.message):
         return ChatResponse(
             response="I'm here to talk about Sean Bearden's professional background, resume, and projects. Can we stick to those topics?",
             safety_trigger=True,
@@ -109,7 +110,7 @@ async def chat(request: ChatRequest, req: Request):
 
     # 4. Mock LLM Response (for now)
     # In Phase 2, this will call Claude/Gemini
-    ai_response = f"I've received your message about '{request.message}'. I'm currently being updated to provide better answers!"
+    ai_response = f"I've received your message about '{chat_request.message}'. I'm currently being updated to provide better answers!"
 
     # 5. Output Guardrails (PII leak and Off-topic detection on AI response)
     if contains_pii(ai_response):
@@ -117,7 +118,7 @@ async def chat(request: ChatRequest, req: Request):
             langfuse.create_event(
                 name="guardrail_firing_output",
                 input=ai_response,
-                metadata={"type": "pii_leak_output", "session_id": request.session_id},
+                metadata={"type": "pii_leak_output", "session_id": chat_request.session_id},
                 tags=["adversarial"]
             )
         except Exception:
