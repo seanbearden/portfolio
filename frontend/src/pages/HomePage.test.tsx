@@ -13,6 +13,8 @@ vi.mock("framer-motion", async (importOriginal) => {
 });
 
 vi.mock("@/utils/content", () => ({
+  extractYouTubeId: () => null,
+  youtubeThumbnail: (id: string) => `https://img.youtube.com/vi/${id}/maxresdefault.jpg`,
   getHomeData: () => ({
     hero: {
       name: "Sean Bearden",

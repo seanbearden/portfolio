@@ -5,6 +5,8 @@ import { MemoryRouter } from "react-router";
 import { BlogPage } from "./BlogPage";
 
 vi.mock("@/utils/content", () => ({
+  extractYouTubeId: () => null,
+  youtubeThumbnail: (id: string) => `https://img.youtube.com/vi/${id}/maxresdefault.jpg`,
   getBlogPosts: () => [
     {
       title: "Blog Post One",

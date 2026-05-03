@@ -6,7 +6,8 @@ import {
   parseAndSortProjects,
   getProjects,
   getPublications,
-  getHomeData
+  getHomeData,
+  extractYouTubeId,
 } from './content.ts';
 
 vi.mock("../../../content/publications.json", () => ({
@@ -142,5 +143,31 @@ describe('getHomeData', () => {
   it('should return the home data JSON', () => {
     const homeData = getHomeData();
     expect(homeData.hero.name).toBe('Test');
+  });
+});
+
+describe('extractYouTubeId', () => {
+  it('should extract ID from youtu.be links', () => {
+    expect(extractYouTubeId('https://youtu.be/wvPlTin-Nto')).toBe('wvPlTin-Nto');
+  });
+
+  it('should extract ID from youtube.com/watch links', () => {
+    expect(extractYouTubeId('https://www.youtube.com/watch?v=wvPlTin-Nto')).toBe('wvPlTin-Nto');
+  });
+
+  it('should extract ID from youtube.com/embed links', () => {
+    expect(extractYouTubeId('https://www.youtube.com/embed/wvPlTin-Nto')).toBe('wvPlTin-Nto');
+  });
+
+  it('should return null for non-YouTube links', () => {
+    expect(extractYouTubeId('https://example.com')).toBeNull();
+  });
+
+  it('should return null for undefined input', () => {
+    expect(extractYouTubeId(undefined)).toBeNull();
+  });
+
+  it('should extract ID with underscores and hyphens', () => {
+    expect(extractYouTubeId('https://youtu.be/abc_123-xyz')).toBe('abc_123-xyz');
   });
 });

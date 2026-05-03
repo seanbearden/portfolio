@@ -4,6 +4,8 @@ import { render, screen } from "@testing-library/react";
 import { AboutPage } from "./AboutPage";
 
 vi.mock("@/utils/content", () => ({
+  extractYouTubeId: () => null,
+  youtubeThumbnail: (id: string) => `https://img.youtube.com/vi/${id}/maxresdefault.jpg`,
   getHomeData: () => ({
     bio: ["Paragraph one.", "Paragraph two."],
     experience: [
