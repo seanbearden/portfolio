@@ -5,6 +5,8 @@ import { PortfolioPage } from "./PortfolioPage";
 import * as FramerMotion from "framer-motion";
 
 vi.mock("@/utils/content", () => ({
+  extractYouTubeId: () => null,
+  youtubeThumbnail: (id: string) => `https://img.youtube.com/vi/${id}/maxresdefault.jpg`,
   getProjects: () => [
     {
       title: "Portfolio Project 1",

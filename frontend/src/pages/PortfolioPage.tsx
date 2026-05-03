@@ -1,6 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getProjects, assetUrl } from "@/utils/content";
+import {
+  getProjects,
+  assetUrl,
+  extractYouTubeId,
+  youtubeThumbnail,
+} from "@/utils/content";
 import { ExternalLink } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 
@@ -39,10 +44,14 @@ export function PortfolioPage() {
             transition={{ duration: 0.5, delay: shouldReduce ? 0 : i * 0.1 }}
             whileHover={shouldReduce ? undefined : { y: -5, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.5)" }}
           >
-            {project.image && (
+            {(project.image || extractYouTubeId(project.link)) && (
               <div className="aspect-video bg-muted overflow-hidden shrink-0">
                 <motion.img
-                  src={assetUrl(project.image)}
+                  src={
+                    project.image
+                      ? assetUrl(project.image)
+                      : youtubeThumbnail(extractYouTubeId(project.link)!)
+                  }
                   alt={project.title}
                   className="h-full w-full object-cover"
                   loading="lazy"

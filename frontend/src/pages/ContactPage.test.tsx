@@ -4,6 +4,8 @@ import { render, screen, cleanup, act, fireEvent } from "@testing-library/react"
 import { ContactPage } from "./ContactPage";
 
 vi.mock("@/utils/content", () => ({
+  extractYouTubeId: () => null,
+  youtubeThumbnail: (id: string) => `https://img.youtube.com/vi/${id}/maxresdefault.jpg`,
   getHomeData: () => ({
     hero: {
       email: "sean@example.com",

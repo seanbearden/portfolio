@@ -29,6 +29,25 @@ export function pdfUrl(filename: string): string {
   return `${ASSETS_BASE}/pdfs/${filename}`;
 }
 
+const YT_PATTERNS = [
+  /youtu\.be\/([\w-]{11})/, // https://youtu.be/wvPlTin-Nto
+  /youtube\.com\/watch\?v=([\w-]{11})/, // https://www.youtube.com/watch?v=wvPlTin-Nto
+  /youtube\.com\/embed\/([\w-]{11})/, // https://www.youtube.com/embed/wvPlTin-Nto
+];
+
+export function extractYouTubeId(url: string | undefined): string | null {
+  if (!url) return null;
+  for (const re of YT_PATTERNS) {
+    const m = url.match(re);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+export function youtubeThumbnail(videoId: string): string {
+  return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+}
+
 // --- Blog posts ---
 
 const blogModules = import.meta.glob<string>("../../../content/blog/*.md", {
