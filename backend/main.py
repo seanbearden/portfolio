@@ -1,51 +1,43 @@
-import os
-from typing import List, Optional
-from fastapi import FastAPI, Query
-from pydantic import BaseModel
-from backend.agent import app as agent_app
-from langchain_core.messages import HumanMessage, AIMessage
+import logging
+from typing import Optional
 
+from fastapi import FastAPI, HTTPException
+from langchain_core.messages import HumanMessage
+from pydantic import BaseModel
+
+from .agent import app as agent_app
+from .history import get_history, save_history
+
+logger = logging.getLogger(__name__)
 app = FastAPI(title="Sean Bearden Portfolio Agent API")
 
-class ChatMessage(BaseModel):
-    role: str
-    content: str
+class QueryRequest(BaseModel):
+    query: str
+    session_id: Optional[str] = "anonymous"
 
-class ChatRequest(BaseModel):
-    messages: List[ChatMessage]
-
-class ChatResponse(BaseModel):
-    content: str
-
-@app.post("/api/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest, backend: Optional[str] = Query(None)):
-    # Convert request messages to LangChain messages
-    messages = []
-    for msg in request.messages:
-        if msg.role == "user":
-            messages.append(HumanMessage(content=msg.content))
-        else:
-            messages.append(AIMessage(content=msg.content))
-
-    if backend == "ae":
-        # In a real scenario, this might call the Vertex AI Reasoning Engine endpoint
-        # For this portfolio demo, we'll simulate the alternate path or
-        # actually call the Reasoning Engine if configured.
-        # For now, we use the same agent but could add specific AE headers/logging.
-        print("Routing to Agent Engine (Simulated)")
-
-    # Run the LangGraph agent
-    result = await agent_app.ainvoke({"messages": messages})
-
-    # Get the last message from the result
-    last_message = result["messages"][-1]
-
-    return ChatResponse(content=last_message.content)
-
-@app.get("/api/health")
+@app.get("/health")
 async def health():
     return {"status": "ok"}
 
+@app.post("/chat")
+async def chat(request: QueryRequest):
+    try:
+        history = get_history(request.session_id)
+        current_messages = history + [HumanMessage(content=request.query)]
+        state = {"messages": current_messages}
+        result = agent_app.invoke(state)
+        last_message = result["messages"][-1]
+        save_history(request.session_id, result["messages"])
+        return {
+            "response": last_message.content,
+            "session_id": request.session_id,
+        }
+    except Exception:
+        # Log full traceback server-side; return generic message to client so
+        # we don't leak file paths, env config, or stack frames.
+        logger.exception("chat endpoint failed for session %s", request.session_id)
+        raise HTTPException(status_code=500, detail="An internal error occurred.")
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    uvicorn.run(app, host="0.0.0.0", port=8000)
