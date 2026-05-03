@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { getHomeData, pdfUrl } from "@/utils/content";
 import { Award, Briefcase, GraduationCap, Download, Heart, Newspaper, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { EvalSuite } from "@/components/EvalSuite";
 
 export function AboutPage() {
   const home = getHomeData();
@@ -44,6 +45,11 @@ export function AboutPage() {
           <Download className="mr-2 h-4 w-4" /> Dissertation Synopsis
         </a>
       </div>
+
+      <Separator className="my-10" />
+
+      {/* LLM Evaluation Suite */}
+      <EvalSuite />
 
       <Separator className="my-10" />
 
