@@ -45,14 +45,33 @@ server {
     add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
     add_header Cross-Origin-Resource-Policy "same-origin" always;
 
-    # Phase 2: uncomment to proxy chatbot API
-    # location /api/ {
-    #     proxy_pass ${CHATBOT_API_URL}/api/;
-    #     proxy_set_header Host $proxy_host;
-    #     proxy_set_header X-Real-IP $remote_addr;
-    #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    #     proxy_set_header X-Forwarded-Proto $scheme;
-    # }
+    # Caching strategy — accepted ZAP alerts:
+    # Two rules fire on our deliberate caching choices:
+    # - 10049 covers both sub-alerts: "Non-Storable Content" (for HTML with
+    #   no-store/no-cache, intentional so deploys are picked up immediately)
+    #   and "Storable and Cacheable Content" (for `public` caching on hashed
+    #   assets, intentional so they're long-term immutable).
+    # - 10015 ("Re-examine Cache-control Directives") is the generic
+    #   meta-alert that fires alongside 10049 on the same responses.
+    # Both are accepted as audit trails — do NOT silence.
+
+    # Phase 2: proxy portfolio-agent API.
+    # SSE-aware config: streamed token-by-token responses break under nginx's
+    # default response buffering. Disable buffering and cache, force HTTP/1.1
+    # with empty Connection header for keepalive, and bump read timeout well
+    # past LLM generation times.
+    location /api/ {
+        proxy_pass ${CHATBOT_API_URL}/api/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $proxy_host;
+        proxy_set_header Connection "";
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 3600s;
+    }
 
     # 1. HTML — no-cache so deploys are picked up immediately
     location = /index.html {
@@ -102,7 +121,32 @@ server {
         add_header Cross-Origin-Resource-Policy "same-origin" always;
     }
 
-    # 3. Non-hashed static files (favicon.svg, robots.txt, sitemap.xml)
+    # 3. Embed — allow cross-origin framing
+    location = /embed.html {
+        add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        # X-Frame-Options is incompatible with 'frame-ancestors *' but we remove 'DENY'
+        # and prefer CSP for modern browsers.
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()" always;
+        # CSP: frame-ancestors * allows off-site embedding.
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://storage.googleapis.com https://img.youtube.com; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors *; upgrade-insecure-requests" always;
+        add_header Cross-Origin-Opener-Policy "same-origin-allow-popups" always;
+        add_header Cross-Origin-Embedder-Policy "unsafe-none" always;
+        add_header Cross-Origin-Resource-Policy "cross-origin" always;
+    }
+
+    location = /embed.js {
+        add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+        add_header Content-Type "application/javascript" always;
+        add_header Access-Control-Allow-Origin "*" always;
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    }
+
+    # 4. Non-hashed static files (favicon.svg, robots.txt, sitemap.xml)
     location ~* \.(ico|svg|txt|xml)$ {
         expires 1h;
         add_header Cache-Control "public, max-age=3600" always;
