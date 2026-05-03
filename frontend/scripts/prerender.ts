@@ -6,15 +6,11 @@ const DIST_DIR = path.resolve(process.cwd(), "dist");
 const BLOG_DIR = path.resolve(process.cwd(), "../content/blog");
 const INDEX_HTML = path.resolve(DIST_DIR, "index.html");
 
-// Mirrors frontend/src/utils/seo.ts:sanitizeDescription. Duplicated here
-// (rather than imported) because tsx run from frontend/scripts/ can't
-// resolve the @/ alias used in the application source. Keep these two
-// implementations in sync — both strip link syntax + markdown chars.
+// Mimic the logic from frontend/src/utils/seo.ts without needing tsx to handle aliases
 function sanitizeDescription(text: string, length = 160): string {
   if (!text) return "";
   const plainText = text
-    .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1")
-    .replace(/[#*`_~]/g, "")
+    .replace(/[#*`]/g, "")
     .replace(/\s+/g, " ")
     .trim();
   if (plainText.length <= length) return plainText;
@@ -34,29 +30,21 @@ async function prerender() {
   const template = fs.readFileSync(INDEX_HTML, "utf-8");
 
   function injectMeta(html: string, tags: Record<string, string>) {
-    // Find the closing </head> tag (case-insensitive). Splitting by the
-    // string and taking parts [0]+[1] would lose body content if the
-    // exact substring "</head>" appeared anywhere downstream (in a script,
-    // template, or comment). Index-based slicing keeps the rest intact.
-    const headEndIndex = html.toLowerCase().indexOf("</head>");
-    if (headEndIndex === -1) return html;
+    let head = html.split("</head>")[0];
+    const rest = html.split("</head>")[1];
 
-    let head = html.slice(0, headEndIndex);
-    const rest = html.slice(headEndIndex);
-
-    let newMeta = "";
     for (const [name, content] of Object.entries(tags)) {
       if (name.startsWith("og:") || name.startsWith("twitter:")) {
-        newMeta += `  <meta property="${name}" content="${content}">\n`;
+        head += `  <meta property="${name}" content="${content}">\n`;
       } else if (name === "title") {
-        head = head.replace(/<title>.*<\/title>/i, `<title>${content}</title>`);
-        newMeta += `  <meta name="title" content="${content}">\n`;
+        head = head.replace(/<title>.*<\/title>/, `<title>${content}</title>`);
+        head += `  <meta name="title" content="${content}">\n`;
       } else {
-        newMeta += `  <meta name="${name}" content="${content}">\n`;
+        head += `  <meta name="${name}" content="${content}">\n`;
       }
     }
 
-    return head + newMeta + rest;
+    return head + "</head>" + rest;
   }
 
   const { siteUrl } = SEO_CONFIG;

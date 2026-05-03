@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import https from "node:https";
 import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
 import matter from "gray-matter";
@@ -8,16 +7,6 @@ import matter from "gray-matter";
 const BLOG_DIR = path.resolve(process.cwd(), "../content/blog");
 const PUBLIC_DIR = path.resolve(process.cwd(), "public");
 const OG_DIR = path.resolve(PUBLIC_DIR, "og");
-// Local cache for the downloaded font. The cache dir is gitignored
-// (.gitignore: scripts/fonts/) so we don't commit a binary blob; the
-// download runs once per fresh checkout / CI runner.
-const FONT_CACHE_DIR = path.resolve(process.cwd(), "scripts", "fonts");
-const FONT_CACHE_PATH = path.resolve(FONT_CACHE_DIR, "inter-400.ttf");
-// Inter Regular from the @fontsource mirror on jsdelivr — same files
-// distributed via the @fontsource/inter npm package, but accessible
-// without adding a dev dependency.
-const FONT_URL =
-  "https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.18/files/inter-latin-400-normal.ttf";
 
 // Colors from index.css (approximate hex)
 const COLORS = {
@@ -27,50 +16,57 @@ const COLORS = {
   muted: "#b0b0b0",     // oklch(0.708 0 0)
 };
 
-function downloadFile(url: string, dest: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const file = fs.createWriteStream(dest);
-    https
-      .get(url, (res) => {
-        if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-          // follow one redirect
-          downloadFile(res.headers.location, dest).then(resolve, reject);
-          return;
-        }
-        if (res.statusCode !== 200) {
-          reject(new Error(`Font download failed: HTTP ${res.statusCode}`));
-          return;
-        }
-        res.pipe(file);
-        file.on("finish", () => file.close(() => resolve()));
-      })
-      .on("error", (err) => {
-        fs.unlinkSync(dest);
-        reject(err);
-      });
-  });
-}
-
-async function loadFont(): Promise<Buffer> {
-  if (!fs.existsSync(FONT_CACHE_DIR)) {
-    fs.mkdirSync(FONT_CACHE_DIR, { recursive: true });
-  }
-  if (!fs.existsSync(FONT_CACHE_PATH)) {
-    console.log(`Downloading Inter font from ${FONT_URL} ...`);
-    await downloadFile(FONT_URL, FONT_CACHE_PATH);
-    console.log(`Cached at ${FONT_CACHE_PATH}`);
-  }
-  return fs.readFileSync(FONT_CACHE_PATH);
-}
-
 async function generate() {
   if (!fs.existsSync(OG_DIR)) {
     fs.mkdirSync(OG_DIR, { recursive: true });
   }
 
+  // Load font
   let fontData: Buffer;
   try {
-    fontData = await loadFont();
+    const systemFonts = [
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/TTF/DejaVuSans.ttf",
+        "C:/Windows/Fonts/Arial.ttf"
+    ];
+
+    let foundFont = "";
+    for (const f of systemFonts) {
+        if (fs.existsSync(f)) {
+            foundFont = f;
+            break;
+        }
+    }
+
+    if (foundFont) {
+        fontData = fs.readFileSync(foundFont);
+        console.log(`Using font: ${foundFont}`);
+    } else {
+        // As a last resort, try to find ANY ttf in /usr/share/fonts
+        const findTtf = (dir: string): string | null => {
+            if (!fs.existsSync(dir)) return null;
+            const files = fs.readdirSync(dir);
+            for (const file of files) {
+                const fullPath = path.join(dir, file);
+                const stat = fs.statSync(fullPath);
+                if (stat.isDirectory()) {
+                    const found = findTtf(fullPath);
+                    if (found) return found;
+                } else if (file.endsWith(".ttf")) {
+                    return fullPath;
+                }
+            }
+            return null;
+        };
+        const anyFont = findTtf("/usr/share/fonts");
+        if (anyFont) {
+            fontData = fs.readFileSync(anyFont);
+            console.log(`Using fallback font: ${anyFont}`);
+        } else {
+            console.error("No font found for Satori. OG image generation failed.");
+            return;
+        }
+    }
   } catch (e) {
     console.error("Error loading font:", e);
     return;
@@ -172,7 +168,7 @@ async function generate() {
     const pngBuffer = pngData.asPng();
 
     fs.writeFileSync(filename, pngBuffer);
-    console.log(`Generated ${filename}`);
+    console.log(`Generated OG image: ${path.basename(filename)}`);
   }
 
   // 1. Generate Main OG

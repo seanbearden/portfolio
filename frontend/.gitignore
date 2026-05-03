@@ -24,7 +24,4 @@ test-report.junit.xml
 *.njsproj
 *.sln
 *.sw?
-# Paths in this nested .gitignore are relative to frontend/, NOT repo root.
-public/og/
-# Cache for the Inter TTF downloaded by scripts/generate-og.ts.
-scripts/fonts/
+frontend/public/og/

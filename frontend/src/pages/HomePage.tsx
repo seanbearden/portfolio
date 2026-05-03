@@ -15,7 +15,6 @@ import {
 import { cn } from "@/lib/utils";
 import { motion, useReducedMotion } from "framer-motion";
 import { SEO } from "@/components/common/SEO";
-import { SectionDivider } from "@/components/ui/section-divider";
 
 const MotionCard = motion.create(Card);
 
@@ -81,7 +80,9 @@ export function HomePage() {
             </motion.p>
             <motion.div variants={itemVariants} className="mt-8 flex flex-wrap justify-center gap-3 md:justify-start">
               <a
-                href="#chat"
+                href="https://bearden-resume-chatbot.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={cn(buttonVariants(), "shadow-lg hover:shadow-primary/20 transition-all duration-300")}
               >
                 <MessageSquare className="mr-2 h-4 w-4" /> Chat with My Resume
@@ -112,8 +113,6 @@ export function HomePage() {
           </div>
         </motion.div>
       </section>
-
-      <SectionDivider variant="waves" className="opacity-50" />
 
       {/* Featured Projects */}
       <section className="py-12">
@@ -189,8 +188,6 @@ export function HomePage() {
         </motion.div>
       </section>
 
-      <SectionDivider variant="network" className="opacity-50" />
-
       {/* Recent Posts */}
       <section className="py-12">
         <motion.div
@@ -239,8 +236,6 @@ export function HomePage() {
           </div>
         </motion.div>
       </section>
-
-      <SectionDivider variant="particles" className="opacity-50" />
 
       {/* About Preview */}
       <section className="py-16">
