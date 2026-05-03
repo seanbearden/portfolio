@@ -1,0 +1,24 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Scientist: Memcomputing Nodes -->
+  <g>
+    <circle cx="200" cy="150" r="8" fill="#ffffff" fill-opacity="0.9" />
+    <circle cx="300" cy="200" r="10" fill="#ffffff" fill-opacity="0.9" />
+    <circle cx="250" cy="300" r="9" fill="#ffffff" fill-opacity="0.9" />
+    <line x1="200" y1="150" x2="300" y2="200" stroke="#ffffff" stroke-width="3" stroke-opacity="0.8" />
+    <line x1="300" y1="200" x2="250" y2="300" stroke="#ffffff" stroke-width="3" stroke-opacity="0.8" />
+    <line x1="250" y1="300" x2="200" y2="150" stroke="#ffffff" stroke-width="3" stroke-opacity="0.8" />
+  </g>
+
+  <!-- Builder: Architectural Blocks -->
+  <g transform="translate(400, 250)">
+    <rect x="0" y="0" width="100" height="50" rx="6" fill="#ffffff" fill-opacity="0.15" stroke="#ffffff" stroke-width="3" stroke-opacity="0.8" />
+    <rect x="110" y="-30" width="100" height="50" rx="6" fill="#ffffff" fill-opacity="0.15" stroke="#ffffff" stroke-width="3" stroke-opacity="0.8" />
+    <rect x="55" y="60" width="100" height="50" rx="6" fill="#ffffff" fill-opacity="0.15" stroke="#ffffff" stroke-width="3" stroke-opacity="0.8" />
+  </g>
+
+  <!-- Leader: Upward Growth -->
+  <g transform="translate(150, 450)">
+    <path d="M0 0 L120 -60 L240 -20 L360 -120" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M360 -120 L335 -115 M360 -120 L355 -95" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+</svg>
