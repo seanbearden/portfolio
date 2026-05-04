@@ -1,20 +1,5 @@
 fastapi
 uvicorn
-httpx
-pytest
-
-# LangGraph agent stack (from main / #182)
-langgraph
-langchain
-langchain-google-genai
-langchain-anthropic
-google-cloud-firestore
-pydantic
-python-frontmatter
-langchain-community
-numpy
-
-# Guardrails (this PR's contribution)
 slowapi
 presidio-analyzer
 presidio-anonymizer
@@ -23,3 +8,5 @@ transformers
 sentencepiece
 torch
 langfuse
+pytest
+httpx

@@ -4,14 +4,6 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!--
-      Hero image preload removed: hardcoding the GCS bucket URL here was
-      brittle (would silently break on bucket/file rename) and bypassed the
-      VITE_ASSETS_BASE_URL env-driven URL logic. The hero <picture> already
-      ships AVIF/WebP fallbacks so the LCP impact is minimal. If we want
-      to re-introduce a preload, do it dynamically in main.tsx using
-      assetUrl() so the env logic is honored.
-    -->
     <title>Sean Bearden, Ph.D. — Data Scientist &amp; Researcher</title>
     <meta name="description" content="Portfolio of Sean Bearden, Ph.D. — Data Scientist, Researcher, and Cloud Architect." />
   </head>
