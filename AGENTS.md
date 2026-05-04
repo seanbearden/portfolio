@@ -37,9 +37,6 @@ If a PR mixes shipped code with one of the above, still add a changeset for the 
 ## Commands
 
 ```bash
-# Retrieval layer (ingestion)
-python3 scripts/ingest_portfolio.py
-
 # Development (from frontend/)
 cd frontend
 npm run dev          # Vite dev server on localhost:5173
@@ -65,19 +62,6 @@ python3 scripts/convert_content.py    # site-data/ → content/
 ```
 
 ## Architecture
-
-### Retrieval Layer (Vector Store)
-
-The portfolio-agent queries a unified knowledge base hosted on **Cloud SQL (PostgreSQL)** with the `pgvector` extension.
-
-- **Database**: `portfolio_vector`
-- **Table**: `portfolio_chunks`
-- **Embedding Model**: `gemini-embedding-001` (768 dimensions)
-- **Ingestion**: Automated via `.github/workflows/reindex.yml` on pushes to `content/`.
-- **Chunking Strategy**:
-    - Blog/Portfolio: By markdown headings (`#`, `##`, `###`).
-    - Publications: Individual entries.
-    - Home: Logical sections (Bio, Experience, Education, Skills).
 
 ### Content Pipeline
 
@@ -131,14 +115,19 @@ Managed by Terraform in `infrastructure/`. Project: `bearden-portfolio`, region:
 ### Phases
 
 - **Phase 1** (live, as of 2026-05-03): Static portfolio site on Cloud Run, served at `seanbearden.com` and `www.seanbearden.com`
-- **Phase 2** (planned): AI resume chatbot — Python FastAPI on second Cloud Run service, proxied via nginx `/api/` block (already stubbed in `nginx.conf.template`). Currently lives at `bearden-resume-chatbot.com` on Heroku.
+- **Phase 2** (beta): AI resume chatbot — Python FastAPI on second Cloud Run service, proxied via nginx `/api/` block. Implements production safety guardrails:
+    - **Prompt Injection**: Classifier-based detection (`ProtectAI/deberta-v3-base-prompt-injection-v2`).
+    - **PII Leak Detection**: Presidio-based anonymization/detection.
+    - **Off-topic Filter**: Keyword and semantic filtering to keep conversations professional.
+    - **Rate Limiting**: Dual-layer (per-IP via `slowapi` and per-session).
+    - **Cost Ceiling**: Daily budget kill switch with graceful fallback to static assets.
+    - **Eval Integration**: Guardrail firings logged to Langfuse with `adversarial` tag for automated dataset expansion.
 - **Phase 3** (planned): Interactive data playground
 
 ## Key Files
 
 | File | Purpose |
 |------|---------|
-| `scripts/ingest_portfolio.py` | Content ingestion to pgvector |
 | `frontend/src/utils/content.ts` | Content loading, asset URL builder |
 | `frontend/src/utils/parseFrontmatter.ts` | Custom YAML-ish frontmatter parser |
 | `frontend/src/utils/redirects.ts` | Old Squarespace URL → new route mapping |

@@ -30,7 +30,7 @@ The inner ring is `frontend/`; outer rings are subdirectories and files. Color =
 | Phase | Description | Status |
 |-------|-------------|--------|
 | **1. Portfolio Site** | Static site with blog, portfolio, publications, about | Live |
-| **2. Resume Chatbot** | "Talk to my resume" powered by Claude/Gemini | Planned |
+| **2. Resume Chatbot** | "Talk to my resume" powered by Claude/Gemini | Beta (Guardrails Live) |
 | **3. Data Playground** | Upload data → instant analysis, dashboards, ML demos | Planned |
 
 ## Development
