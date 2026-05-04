@@ -152,10 +152,10 @@ def convert_blog_posts():
         # Build frontmatter
         fm_lines = [
             "---",
-            f'title: "{title}"',
+            f"title: {json.dumps(title)}",
             f"date: {date}",
             f"slug: {slug}",
-            f"oldUrl: \"{meta['url']}\"",
+            f"oldUrl: {json.dumps(meta['url'])}",
         ]
         if meta["categories"]:
             cats = json.dumps(meta["categories"])
@@ -233,13 +233,13 @@ def convert_portfolio():
 
         fm_lines = [
             "---",
-            f'title: "{title}"',
+            f"title: {json.dumps(title)}",
             f"slug: {slug}",
             f"order: {written + 1}",
             f"skills: {json.dumps(skills_list)}",
         ]
         if link:
-            fm_lines.append(f'link: "{link}"')
+            fm_lines.append(f"link: {json.dumps(link)}")
         if image:
             fm_lines.append(f"image: {image}")
         fm_lines.append("---")
@@ -247,6 +247,23 @@ def convert_portfolio():
         body = description
         if "\n".join(body_lines).strip():
             body += "\n\n" + "\n".join(body_lines).strip()
+
+        # Phase 2: Consolidated Chatbot
+        if slug == "resume-chatbot-harnessing-chatgpt-for-the-job-search":
+            # Override link/cta for the new integrated agent
+            # Re-build fm_lines to include cta and set link to #chat
+            fm_lines = [
+                "---",
+                f"title: {json.dumps(title)}",
+                f"slug: {slug}",
+                f"order: {written + 1}",
+                f"skills: {json.dumps(skills_list)}",
+                'link: "#chat"',
+                'cta: "Open Chat"',
+            ]
+            if image:
+                fm_lines.append(f"image: {image}")
+            fm_lines.append("---")
 
         content = "\n".join(fm_lines) + "\n\n" + body + "\n"
         filename = f"{written + 1:02d}-{slug[:50]}.md"
@@ -309,6 +326,10 @@ def convert_home():
             "name": "Sean Bearden Ph.D.",
             "headline": "Data Scientist and Researcher",
             "email": "seanbearden@seanbearden.com",
+            "cta": {
+                "text": "Chat with My Resume",
+                "action": "chat",
+            },
         },
         "social": {
             "linkedin": "https://www.linkedin.com/in/sean-bearden-730aa189/",
@@ -401,7 +422,63 @@ def convert_home():
                 "Computational Physics",
             ],
         },
-        "about": "Sean Bearden earned his Ph.D. in Physics from UC San Diego as a member of Dr. Massimiliano Di Ventra's research group, focusing on constraint satisfaction problems using digital memcomputing machines. A nontraditional learner who began his academic journey while incarcerated, he went from a GED to a Ph.D. He is committed to lifelong learning, creative projects with Arduino and Raspberry Pi, and practices Brazilian Jiu-Jitsu in San Diego.",
+        "about": "Physicist turned data scientist. Ph.D. from UC San Diego in memcomputing — a non-quantum alternative computing paradigm. Now applying that research mindset to financial services, AI assistants, and platform engineering.",
+        "bio": [
+            "I earned my Ph.D. in Physics from UC San Diego under Dr. Massimiliano Di Ventra, designing dynamical-systems algorithms for constraint satisfaction problems. The work was published in Nature Scientific Reports, Communications Physics, and Physical Review Applied, and built an independent memcomputing implementation separate from MemComputing, Inc.",
+            "My path here wasn't linear. I started with a GED while incarcerated, transferred from Ohio University to SUNY Buffalo for a B.S. in Physics and Applied Mathematics, then to UCSD for graduate work. The Story Collider podcast captured part of that story. I've talked about it more openly because the path I took shouldn't be unusual — it should be possible.",
+            "Today I work as a data scientist across two companies under common ownership: Bayview Solutions LLC (debt portfolio management, COGS modeling, BigQuery analytics) and Cash Lane Holdings (consumer lending, LangGraph-powered AI assistants on Google Cloud). I'm also Product Owner for an enterprise platform migration at BV-Tech-Solutions. The work spans ETL pipelines, RAG systems, conversational AI, and forecasting — building things that actually run in production.",
+        ],
+        "interests": [
+            "Brazilian Jiu-Jitsu at P5 Academy in San Diego",
+            "Arduino and Raspberry Pi projects (the talking Deadpool head was a personal favorite)",
+            "Buffalo, NY native — and yes, a connoisseur of chicken wings",
+            "Storytelling and public speaking, including a Story Collider appearance",
+            "Lifelong learner — currently into LLM agent architectures and Kaggle competitions",
+        ],
+        "press": [
+            {
+                "title": "Q&A: Sean Bearden on his journey from prison to a Ph.D. in physics",
+                "source": "Physics Today",
+                "date": "2020-05",
+                "url": "https://physicstoday.scitation.org/do/10.1063/PT.6.4.20200501a/full/",
+            },
+            {
+                "title": "A Whole New World — Stories About Taking On the Challenge of a Whole New Existence",
+                "source": "The Story Collider",
+                "date": "2020-02",
+                "url": "https://www.storycollider.org/stories/2020/2/18/a-whole-new-world-stories-about-having-to-take-on-the-challenge-of-a-whole-new-existence",
+            },
+            {
+                "title": "Leading through education",
+                "source": "Ohio Today",
+                "date": "2016-03",
+                "url": "https://www.ohio.edu/news/2016/03/leading-through-education",
+            },
+            {
+                "title": "Sean Bearden's redemption road",
+                "source": "UB Reporter",
+                "date": "2015-06",
+                "url": "https://www.buffalo.edu/fellowships/start/our-scholars.host.html/content/shared/university/news/ub-reporter-articles/stories/2015/06/bearden_nsf_grad_fellowship.detail.html",
+            },
+            {
+                "title": "Prison adds up to physics career for math whiz Sean Bearden",
+                "source": "The Buffalo News",
+                "date": "2015-06",
+                "url": "https://buffalonews.com/2015/06/21/prison-adds-up-to-physics-career-for-math-whiz-sean-bearden/",
+            },
+            {
+                "title": "UB's outstanding seniors receive awards from the College of Arts and Sciences",
+                "source": "The Spectrum",
+                "date": "2015-05",
+                "url": "https://www.ubspectrum.com/article/2015/05/ubs-outstanding-seniors-receive-awards-from-the-college-of-arts-and-sciences",
+            },
+            {
+                "title": "Two UB students win highly competitive Goldwater Scholarships",
+                "source": "UB News",
+                "date": "2014-03",
+                "url": "https://www.buffalo.edu/news/releases/2014/03/048.html",
+            },
+        ],
     }
 
     out = CONTENT / "home.json"

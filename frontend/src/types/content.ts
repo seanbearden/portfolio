@@ -55,8 +55,10 @@ export interface HomeData {
     name: string;
     headline: string;
     email: string;
-    illustration?: string;
-    illustrationAlt?: string;
+    cta?: {
+      text: string;
+      action: string;
+    };
   };
   social: Record<string, string>;
   experience: Experience[];

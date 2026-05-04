@@ -15,6 +15,13 @@ export function PortfolioPage() {
   const projects = getProjects();
   const shouldReduce = useReducedMotion();
 
+  const handleCtaClick = (e: React.MouseEvent, action: string) => {
+    if (action === "chat") {
+      e.preventDefault();
+      window.dispatchEvent(new CustomEvent("portfolio-agent:open"));
+    }
+  };
+
   return (
     <div className="relative mx-auto max-w-5xl px-4 py-16 overflow-hidden">
       {/* Subtle Background Glow */}
@@ -82,8 +89,9 @@ export function PortfolioPage() {
                 <div className="mt-auto pt-6">
                   <a
                     href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={project.link.startsWith("#") ? undefined : "_blank"}
+                    rel={project.link.startsWith("#") ? undefined : "noopener noreferrer"}
+                    onClick={project.link === "#chat" ? (e) => handleCtaClick(e, "chat") : undefined}
                     className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 group transition-colors"
                   >
                     {project.cta || "View Project"} <ExternalLink className="h-4 w-4 transform group-hover:scale-110 transition-transform" />

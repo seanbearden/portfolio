@@ -1,5 +1,5 @@
 ---
-title: "Delving into the 'Home Credit - Credit Risk Model Stability' Kaggle Competition"
+title: "Delving into the \"Home Credit - Credit Risk Model Stability\" Kaggle Competition"
 date: 2024-02-07
 slug: delving-into-the-home-credit-credit-risk-model-stability-kaggle-competition
 oldUrl: "/news/2024/2/7/delving-into-the-home-credit-credit-risk-model-stability-kaggle-competition"

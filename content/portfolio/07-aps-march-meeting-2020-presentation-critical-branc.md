@@ -9,3 +9,4 @@ link: "https://youtu.be/fCTOu-nbOwc"
 Technical video presentation originally scheduled for APS March Meeting in Denver (canceled due to COVID-19). Covers advanced research topics for physics audience.
 
 APS Conference Presentation
+**Related Publication:** https://arxiv.org/pdf/1904.04899.pdf

@@ -22,7 +22,7 @@ describe("NotFoundPage", () => {
     );
 
     expect(screen.getByText("404")).toBeInTheDocument();
-    expect(screen.getByText(/This URL collapsed before observation/i)).toBeInTheDocument();
+    expect(screen.getByText(/Page not found/i)).toBeInTheDocument();
   });
 
   it("redirects for known old URLs", () => {

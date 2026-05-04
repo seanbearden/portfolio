@@ -1,5 +1,4 @@
 import type { BlogPost, PortfolioProject, Publication, HomeData } from "@/types/content";
-import type { EvalResult } from "@/types/evals";
 import { parseFrontmatter } from "./parseFrontmatter.ts";
 
 
@@ -142,36 +141,4 @@ import homeJson from "../../../content/home.json";
 
 export function getHomeData(): HomeData {
   return homeJson as HomeData;
-}
-
-// --- Eval results ---
-
-export function getEvalResultsUrl(): string {
-  return `${ASSETS_BASE}/scores/latest.json`;
-}
-
-export function getEvalHistoryUrl(): string {
-  return `${ASSETS_BASE}/scores/history.json`;
-}
-
-export async function fetchLatestEval(): Promise<EvalResult | null> {
-  try {
-    const res = await fetch(getEvalResultsUrl());
-    if (!res.ok) return null;
-    return await res.json();
-  } catch (e) {
-    console.error("Failed to fetch latest eval:", e);
-    return null;
-  }
-}
-
-export async function fetchEvalHistory(): Promise<EvalResult[]> {
-  try {
-    const res = await fetch(getEvalHistoryUrl());
-    if (!res.ok) return [];
-    return await res.json();
-  } catch (e) {
-    console.error("Failed to fetch eval history:", e);
-    return [];
-  }
 }
