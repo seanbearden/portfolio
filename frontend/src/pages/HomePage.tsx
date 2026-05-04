@@ -14,7 +14,6 @@ import {
 } from "@/utils/content";
 import { cn } from "@/lib/utils";
 import { motion, useReducedMotion } from "framer-motion";
-import { handleCtaClick, ctaAnchorProps } from "@/utils/cta";
 
 const MotionCard = motion.create(Card);
 
@@ -23,6 +22,13 @@ export function HomePage() {
   const projects = getProjects().slice(0, 3);
   const recentPosts = getBlogPosts().slice(0, 3);
   const shouldReduce = useReducedMotion();
+
+  const handleCtaClick = (e: React.MouseEvent, action: string) => {
+    if (action === "chat") {
+      e.preventDefault();
+      window.dispatchEvent(new CustomEvent("portfolio-agent:open"));
+    }
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -56,18 +62,21 @@ export function HomePage() {
       {/* Hero */}
       <section className="py-16 md:py-24">
         <motion.div
-          className={cn(
-            "grid items-center gap-12",
-            home.hero.illustration ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"
-          )}
+          className="flex flex-col items-center gap-8 md:flex-row md:gap-12 md:text-left"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          <div className={cn(
-            "text-center md:text-left",
-            home.hero.illustration ? "order-2 md:order-1" : ""
-          )}>
+          <motion.img
+            variants={itemVariants}
+            src={assetUrl("dr_bearden_celebration.webp")}
+            alt="Sean Bearden"
+            className="h-40 w-40 shrink-0 rounded-full object-cover ring-4 ring-border shadow-xl md:h-56 md:w-56"
+            loading="eager"
+            whileHover={shouldReduce ? undefined : { scale: 1.05 }}
+            transition={shouldReduce ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 20 }}
+          />
+          <div className="text-center md:text-left">
             <motion.h1 variants={itemVariants} className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-foreground">
               {home.hero.name}
             </motion.h1>
@@ -108,34 +117,6 @@ export function HomePage() {
               </Link>
             </motion.div>
           </div>
-          {home.hero.illustration && (
-            <motion.div
-              variants={itemVariants}
-              className="flex justify-center md:justify-end order-1 md:order-2"
-              animate={shouldReduce ? undefined : {
-                y: [0, -10, 0],
-                transition: {
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }
-              }}
-            >
-              <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/0 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                <picture className="relative">
-                  <source srcSet={assetUrl(home.hero.illustration.replace(".svg", ".avif"))} type="image/avif" />
-                  <source srcSet={assetUrl(home.hero.illustration.replace(".svg", ".webp"))} type="image/webp" />
-                  <img
-                    src={assetUrl(home.hero.illustration)}
-                    alt={home.hero.illustrationAlt}
-                    className="w-full max-w-[320px] md:max-w-[400px] aspect-square object-contain drop-shadow-2xl"
-                    loading="eager"
-                  />
-                </picture>
-              </div>
-            </motion.div>
-          )}
         </motion.div>
       </section>
 
@@ -197,7 +178,10 @@ export function HomePage() {
                   {project.link && project.cta && (
                     <div className="mt-auto pt-5">
                       <a
-                        {...ctaAnchorProps(project.link)}
+                        href={project.link}
+                        target={project.link.startsWith("#") ? undefined : "_blank"}
+                        rel={project.link.startsWith("#") ? undefined : "noopener noreferrer"}
+                        onClick={project.link === "#chat" ? (e) => handleCtaClick(e, "chat") : undefined}
                         className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-1.5 group transition-colors"
                       >
                         {project.cta} <ArrowRight className="h-3.5 w-3.5 transform group-hover:translate-x-1 transition-transform" />
