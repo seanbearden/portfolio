@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
         with:
           # Full history is needed for the weekly scheduled scan (which scans
           # all commits, not just the diff). For PR/push events the action
